@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>人员专业列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+	<thead>
+		<tr>
+			<th align='center'>编号</th>
+			<th align='center'>姓名</th>
+			<th align='center'>合同来源</th>
+			<th align='center'>专兼职</th>
+			<th align='center'>体系</th> 
+			<th align='center'>申请代码</th>
+			<th align='center'>申请时间</th>
+		 
+		</tr>
+	</thead>
+	<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr>
+			<td align="center"><?=$row['code'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['ctfrom'];?></td>
+			<td align="center"><?=$row['audit_job'];?></td>
+			<td align="center"><?=$row['iso_v'];?></td>
+			<td align="center"><?=$row['app_audit_code'];?></td> 
+			<td align="center"><?=$row['cerate_date'];?></td> 
+		</tr>
+		<?php
+	}
+}
+?>
+	</tbody>
+</table>
+</body>
+</html>

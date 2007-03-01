@@ -1,0 +1,31 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>任务列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+
+<?php if( $pds ):foreach( $pds as $pd_id => $pd ):?>
+			<tr style="border-bottom:1px solid #ccc;">
+				<th width="120" align='right'>标准版本：</th>
+				<th><?=$pd['audit_ver_V'];?></th>
+				<th>审核类型</th>
+				<th><?=$pd['audit_type_V'];?></th>
+			</tr>
+			
+			<tr style="border-bottom:1px solid #ccc;">
+				<td width="120" align='right' valign="top">评定问题：</td>
+				<td colspan="3"><?=$assess_note[$pd_id];?></td>
+			</tr>
+<?php endforeach; endif;?>
+</table>
+</body>
+</html>

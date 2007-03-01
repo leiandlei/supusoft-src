@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>证书列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr align='center'>
+<!-- 			<th width="*">合同编号</th> -->
+<!-- 			<th width="*">项目编号</th> -->
+			<th width="*">编号</th>
+			<th width="*">单位名称</th>
+			<th width="*">办公场所地址</th>
+			<th width="*">认证范围</th>
+			<th width="*">批准注册日期</th>
+			<th width="*">颁证日期</th>
+			<th width="*">有效期</th>
+			<th width="*">证书状态</th>
+            <th width="*">通知序号</th>
+            <th width="*">邮编</th>
+            <th width="*">电话</th>
+            <th width="*">传真</th>
+            <th width="*">法人</th>
+            <th width="*">企业总人数</th>
+            <th width="*">体系覆盖人数</th>
+            <th width="*">人日数</th>
+            <th width="*">认证费用(元)</th>
+            <th width="*">合同号</th>
+            <th width="*">联系人</th>
+			<th width="*">手机</th>
+			<th width="*">邮箱</th>
+
+
+<!-- 
+            <th width="*">状态</th>
+            
+            
+            <th width="*">暂停时间</th>
+            <th width="*">暂停到期</th>
+            <th width="*">撤销时间</th>
+            <th>恢复时间</th>
+			<th width="*">认可标志</th>
+			<th width="*">合同来源</th>
+			<th width="*">标准版本</th> -->
+
+			
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+
+			<td align="center"><?=$row['certno'];?></a></td>
+			<td align="left"><?=$row['cert_name'];?></td>
+			<td align="center"><?=$row['cert_addr'];?></td>
+			<td align="center"><?=$row['cert_scope'];?></td>
+            <td align="center"><?=$row['s_date'];?></td>
+			<td align="center"></td>
+			<td align="center"><?=$row['e_date'];?></td>
+            <td align="center"></td>
+			<td align="center"></td>
+			<td align="center"></td>
+			<td align="center"></td>
+			<td align="center"></td>
+			<td align="center"></td>
+			<td align="center"></td>
+			<td align="center"></td>
+			<td align="center"></td>
+			<td align="center"></td>
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['person'];?></td>
+			<td align="center"><?=$row['person_tel'];?></td>
+			<td align="center"><?=$row['person_email'];?></td>
+
+
+           <!-- <td align="center"><?=$row['status'];?></td> -->
+
+
+
+            
+            
+            <!-- <td align="center"><?=$row['time1'];?></td> --> <!--暂停时间-->
+            <!-- <td align="center"><?=$row['time2'];?></td> --> <!--暂停到期-->
+            <!-- <td align="center"><?=$row['time3'];?></td> --><!--撤销日期-->
+            <!-- <td align="center"><?=$row['time4'];?></td> --><!--恢复时间-->
+			<!-- <td align="center"><?=$row['mark'];?></a></td>
+			<td align="center"><?=$row['ctfrom'];?></td>
+			<td align="center"><?=$row['audit_ver'];?></td>  -->
+            
+			
+		</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

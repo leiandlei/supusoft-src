@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>编辑计划任务</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<style  type="text/css">
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('#J_time_select').change( _change );
+	_change();
+});
+
+function _change(){
+	$('.J_time_item').hide();
+	$('#J_time_'+$('#J_time_select').val() ).show();
+}
+</script>
+</head>
+
+<body>
+
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:750px;margin:0 auto;'>
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top"><a href="javascript:;">编辑计划任务</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<div style="margin-bottom:9px;">
+			<ol style="padding:0 0 0 20px;">
+				<li>计划任务是一项使系统在规定时间自动执行某些特定任务的功能。</li>
+				<li>计划任务与系统核心紧密关联，上传不当的文件可能造成站点无法正常运行。</li>
+				<li>关于计划任务的添加，您需要上传相应执行文件到 control/cron/目录下,文件名必须为.php结尾</li>
+			</ol>
+		</div>
+<form method="post" action="<?=$REQUEST_URI;?>">
+<input type="hidden" name="step" value="1" />
+<input type="hidden" name="cron_id" value="<?=$cron_id;?>" />
+
+		<table class="grid-table">
+			<tbody>
+			<tr>
+				<th width="120">计划任务标题</th>
+				<td><input type="text" name="subject" value="<?=$subject;?>" class="input input-basic" /></td>
+			</tr>
+			<tr>
+				<th>执行时间</th>
+				<td><select id="J_time_select" name="loop_type">
+						<option value="month"<?=$loop_type_month;?>>每月</option>
+						<option value="week"<?=$loop_type_week;?>>每周</option>
+						<option value="day"<?=$loop_type_day;?>>每天</option>
+						<option value="hour"<?=$loop_type_hour;?>>每小时</option>
+						<option value="now"<?=$loop_type_now;?>>每隔</option>
+					</select>
+					<span class="J_time_item" id="J_time_month"><select name="month_day">
+						<?=$day_select;?>
+					</select> <select name="month_hour">
+						<?=$hour_select;?>
+					</select></span> <span class="J_time_item" id="J_time_week"><select name="week_day">
+						<?=$week_select;?>
+					</select> <select name="week_hour">
+						<?=$hour_select;?>
+					</select></span> <span class="J_time_item" id="J_time_day"><select name="day_hour">
+						<?=$hour_select;?>
+					</select></span> <span class="J_time_item" id="J_time_hour"><select name="hour_minute">
+						<?=$minute_select;?>
+					</select></span> <span class="J_time_item" id="J_time_now">
+					<input type="text" name="now_time" value="<?=$now_time;?>" />
+					<select name="now_type">
+						<?=$now_type_select;?>
+					</select></span>
+				</td>
+			</tr>
+			<tr>
+				<th>开启计划</th>
+				<td><label><input type="radio" name="is_open" value="1" <?=$is_open_Y;?>/> 开启</label>
+					<label><input type="radio" name="is_open" value="0" <?=$is_open_N;?>/> 关闭</label></td>
+			</tr>
+			<tr>
+				<th>执行文件</th>
+				<td><select name="run_script">
+					<?=$run_script_select;?>
+				</select></td>
+			</tr>
+			</tbody>
+		</table>
+		<p class="button-panel tac" style="margin-top:9px;">
+			<button type="submit" class="btn btn-submit"> 保存 </button>
+		</p>
+</form>
+	</div>
+</div>
+</body>
+</html>

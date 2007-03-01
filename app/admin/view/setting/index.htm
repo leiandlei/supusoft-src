@@ -1,0 +1,111 @@
+<? tpl('header')?>
+</head>
+
+<body style="margin:0 auto;width:750px;">
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">系统设置</a></li>
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <div class="sys-conf clearfix">
+      <dl class="ui-corner-all conf-col">
+        <dt>审核相关</dt>
+        <dd>
+          <ul>
+            <li><a href="?c=setting&a=list&type=iso">认证体系[C]</a></li>
+            <li><a href="?c=setting_audit_ver&a=audit_ver">标准版本[C]*</a></li>
+               <li><a href="?c=setting_audit_code&a=list">业务分类[C]*</a></li>
+               
+            <li><a href="?c=setting&a=list&type=audit_type">审核类型[C]</a></li>
+            <li><a href="?c=setting&a=list&type=risk_level">风险等级[C]</a></li>
+            <li><a href="?c=setting&a=list&type=mark">认可标志[C]</a></li>
+         
+            <li><a href="?c=setting_attach&a=list&type=contract_upload" title="申请认证时需提供的符件资料表">合同上传资料选项</a></li>
+            <li><a href="?c=setting_attach&a=list&type=audit_task_upload" title="审核员上传时候需要提提供的符合资料表">审核员上传资料选项</a></li>
+            <li><a href="?c=setting&a=list&type=question">评定问题</a></li>
+          </ul>
+        </dd>
+      </dl>
+      <dl class="ui-corner-all conf-col">
+        <dt>企业相关</dt>
+        <dd>
+          <ul>
+            <li><a href="?c=setting&a=list&type=nature">企业性质[C]</a></li>
+            <li><a href="?c=setting&a=list&type=industry">行业代码[C]</a></li>
+            <li><a href="?c=setting&a=list&type=statecode">国家代码[C]</a></li>
+            <li><a href="?c=setting&a=list&type=currency">注册资本币种[C]</a></li>
+            <li><a href="?c=setting&a=list&type=ep_level">客户级别</a></li>
+            <li><a href="?c=setting&a=list&type=ep_type">客户类别</a></li>
+            <li><a href="?c=setting_ctfrom&a=list">合同来源*</a></li>
+            <li><a href="?c=setting&a=list&type=area">区域区划</a></li>
+            <li><a href="?c=setting_region&a=list">行政区划[C]*</a></li>
+            <li><a href="?c=setting_postcode&a=list">邮政编码*</a></li>
+            <li><a href="?c=setting&a=list&type=cost_type">收费类型</a></li>
+            <li><a href="?c=setting&a=list&type=site_type">分场所类型</a></li>
+            <li><a href="?c=setting&a=list&type=arctype">文档类型</a></li>
+            <li><a href="?c=setting&a=list&type=add_basis">增人日依据</a></li>
+            <li><a href="?c=setting&a=list&type=exc_basis">减人日依据</a></li>
+          </ul>
+        </dd>
+      </dl>
+      <dl class="ui-corner-all conf-col">
+        <dt>证书相关</dt>
+        <dd>
+          <ul>
+            <li><a href="?c=setting&a=list&type=certstate">证书状态[C]</a></li>
+            <li><a href="?c=setting&a=list&type=certpasue">暂停原因[C]</a></li>
+            <li><a href="?c=setting&a=list&type=certrecall">撤消原因[C]</a></li>
+            <li><a href="?c=setting&a=list&type=certchange">变更类别[C]</a></li>
+            <li><a href="?c=setting&a=list&type=certreplace">换证原因[C]</a></li>
+             <li><a href="?c=setting&a=list&type=pasuequs">暂停问题</a></li>
+              <li><a href="?c=setting&a=list&type=recalqus">撤销问题</a></li>
+          </ul>
+        </dd>
+        <dt>培训辅导</dt>
+        <dd>
+          <ul>
+            <li><a href="?c=setting&a=list&type=class">课程设置</a></li>
+          </ul>
+        </dd>
+      </dl>
+      <dl class="ui-corner-all conf-col">
+        <dt>人员相关</dt>
+        <dd>
+          <ul>
+            <li><a href="?c=setting&a=list&type=card_type">身份证件[C]</a></li>
+            <li><a href="?c=setting&a=list&type=qualification">注册资格[C]</a></li>
+            <li><a href="?c=setting&a=list&type=audit_role">审核组成员角色[C]</a></li>
+            <li><a href="?c=setting&a=list&type=audit_job">是否专职[C]</a></li>
+            <li><a href="?c=setting&a=list&type=political">政治面貌</a></li>
+            <li><a href="?c=setting&a=list&type=technical">人员职称</a></li>
+            <li><a href="?c=setting&a=list&type=education">学历信息</a></li>
+            <li><a href="?c=setting&a=list&type=skill_source">能力来源</a></li>
+            <li><a href="?c=setting&a=list&type=job_type">人员性质</a></li>
+            <li><a href="?c=setting&a=list&type=department">部门设置</a></li>
+            <li><a href="?c=setting&a=list&type=attachtype">附件类型</a></li>
+            <li><a href="?c=setting&a=list&type=ct_type">合同类型</a></li>
+            <li><a href="?c=setting&a=list&type=insurance">社保登记</a></li>
+            <li><a href="?c=setting&a=list_kh">考核依据</a></li>
+          </ul>
+        </dd>
+      </dl>
+      <dl class="ui-corner-all conf-col">
+        <dt class="ui-corner-all conf-col">OA相关</dt>
+        <dd>
+          <ul>
+            <li><a href="?c=setting_files&a=list">文档管理*</a></li>
+            <li><a href="?c=setting&a=list&type=send_company">快递公司</a></li>
+          </ul>
+        </dd>
+        <dt class="ui-corner-all conf-col">系统相关</dt>
+        <dd>
+          <ul>
+            <li><a href="?c=setting&a=cache_all">生成全部缓存</a></li>
+          </ul>
+        </dd>
+      </dl>
+    </div>
+  </div>
+</div>
+</body>
+</html>

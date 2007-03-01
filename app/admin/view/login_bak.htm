@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta name="renderer" content="webkit">
+<title></title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<script src="theme/js/jquery.js" type="text/javascript"></script>
+<script type="text/javascript">
+//<![CDATA[
+$(function(){
+	var uname,upwd,utype;
+
+	var s = $("#submit");
+	uname = $('[name="username"]');
+	upwd = $('[name="password"]');
+  utype = $('[name="login_type"]');
+	var func = function(){
+		var u = uname.val(),p = upwd.val(),t = utype.val();
+
+		if(!u || !p){
+			alert("用户名及密码均不能为空！");
+			return false;
+		}
+    	$.post("?c=login&a=login_in",{'uname' : u,'upwd' : p,'utype': t},function(r){
+        	var r = Trim(r);
+    		if(r == 'ok'){
+    			location.href="";
+    		}else {
+    			alert(r);
+    		}
+    	});
+	}
+	
+	s.click(func);
+	$("#password").keydown(function(e){
+	    　if(e.keyCode == 13){
+	    	func();
+	    return false;
+	                }
+	  });
+
+});
+function Trim(str){
+ var result; 
+ result = str.replace(/(^\s+)|(\s+$)/g,"");
+
+ return result;
+}
+//]]>
+
+</script>
+</head>
+<body  background="theme/images/test-bg.png" style='background-repeat:repeat; padding:0px;margin:0px'>
+    <div style="background-image:url('theme/images/test-t.png');background-size:cover;margin:0 auto;max-height:700px">
+      <form METHOD=POST ACTION="" ID="testform" style="background-image:url('theme/images/test-w.png');background-position:0px 200px;background-size:1800px 300px;background-repeat:no-repeat; ">
+      <!-- <form METHOD=POST ACTION="" ID="testform" style="background-image:url('theme/images/ps_02.gif');background-repeat:repeat-x;"> -->
+        <table width="539" border="0" align="center" cellpadding="0" cellspacing="0" style="height:540px;">
+          <tr>
+           <td width="400" style="background-image:url('theme/images/test-f.png');background-repeat : no-repeat; background-position : 75px 100px; padding-bottom:55px;">
+             <table width="200" border="0" align="center" cellpadding="0" cellspacing="0" style="height:88px;">
+                <tr>
+                  <td height="28" class="font1">登陆类型：</td>
+                  <td height="28" class="font1">
+                    <select name="login_type">
+                      <option value ="stuff">机构</option>
+                      <option value ="customer">企业或合作方</option>
+                    </select>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="28" class="font1">用户名：</td>
+                  <td><input name="username" type="text" class="box3" value="" style="width:120px;"/></td>
+                </tr>
+                <tr>
+                  <td height="28" class="font1">密　码：</td>
+                  <td><input id='password' name="password" type="password" class="box3" style="width:120px;" /></td>
+                </tr>
+                <tr>
+                  <div style="float:left;margin:0 auto;">
+                  <!-- <td height="40" >&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td> -->
+                   <td >
+                   <a href="?c=customer&a=reg"><button type="button">注册</button></a>                  
+                  </td>
+                  <td >
+                    <img src="theme/images/but_03.gif" style="cursor:pointer;" id="submit" />               
+                  </td>              
+                  </div>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+        <!-- <img src="theme/images/test-w.png"> -->
+      </form>
+
+    <div> 
+      <p>Powered By: 北京中标卓越信息技术有限公司 <a href="zbzytech.com">zbzyTech</a> <img src="theme/images/zbzy_logo.png" width="15px"></p>
+
+    </div> 
+    </div>
+
+</body>
+
+</html>

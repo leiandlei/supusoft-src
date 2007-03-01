@@ -1,0 +1,75 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同列表</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>  
+<script>
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+} 
+</script>
+</head>
+<body>
+<form method="get" id="search-form" action="" class="search-form tal" style='width:1100px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" /> 
+	<table>
+		<tr> 
+			<td class='left'>姓名：</td>
+			<td class='right'><input type="text" id="name" name="name" value="<?=$_GET['name'];?>" class="input finput" /></td> 
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;  
+	</p>
+</form>
+<br/>  
+<form method="post">
+
+<div style="margin:0 auto;width:1100px;"  class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">人员外出查询 <?=$total;?></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+ 		 <table class="grid-table">
+              <thead>
+                <tr>  
+                	<th width="30">操作</th>
+                    <th>姓名</th>
+                    <th>开始时间</th> 
+                    <th>结束日期</th>
+                </tr>
+              </thead>
+              <tbody>
+              <? if($task_list)foreach($task_list as $v){?>
+                 <tr>   
+                 	<td align="center"><a href="?c=<?=$c;?>&a=carbon_edit&auditorId=<?=$v['id'];?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+                    <td><?=$v['name']?></td>
+                    <td><?=$v['taskBeginDate'];?></td>
+                    <td><?=$v['taskEndDate'];?></td>
+                     <!-- <td><?=$row['ejdshsj_start'];?></td>
+                    <td><?=$row['ejdshsj_end'];?></td> -->
+                   </tr> 
+              <? } ?>
+              </tbody>
+  		</table>
+        <?=$pages['pages'];?>
+    </div>
+</div>
+</form>
+</body>
+</html>

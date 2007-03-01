@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同项目列表</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	$( "#enterprise-tab" ).tabs({
+		collapsible: false
+	});
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#export-xls-btn').click( function(){
+		var form = $('#search-form');
+		form.append($('<input type="hidden" name="export" value="1" />'));
+		form.submit();
+		form.find('input[name=export]').remove();
+	} );
+});
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" action="?" class="search-form tal" id="search-form" style='width:1100px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+            <td class="left">项目编号：</td>
+			<td class="right"><input type="text" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+			<td class="left">合同编号：</td>
+			<td class="right"><input type="text" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+			
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			
+			<!--<td class="left">专业代码：</td>
+			<td class="right"><input type="text" name="audit_code" value="<?=$audit_code?>" class="input finput" /></td>
+            -->
+			<td class="left">认证体系：</td>
+			<td class="right"><select name="iso" class='fselect'><option value=""></option><?=$iso_select;?></select></td>
+            <td class="left">合同来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value=""></option><?=$ctfrom_select;?></select></td>
+			<td class="left"></td>
+			<td class="right"></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			<td class="left">受理日期：</td>
+			<td class="right"><input type="text" name="accept_date_start" value="<?=$accept_date_start?>" class="input finput input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="accept_date_end" value="<?=$accept_date_end?>" class="input finput input-date" /></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button"  onclick="clearForm(this.form);">清空</button>&nbsp;
+		<button class="btn btn-button" type="button" id="export-xls-btn"> 批量导出 </button>
+	</p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1100px;margin:0 auto;'>
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top"><a href="javascript:;">增加特殊审核项 <span class="cnt-total"><?=$total;?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<div>
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="30">详细</th>
+			<th width="30">操作</th>
+			<th width="*">合同编号</th>
+			<th width="*">项目编号</th>
+			<th width="220">组织名称</th>
+			<th width="*">受理日期</th>
+			<th width="*">类型</th>
+			<th width="*">标准</th>
+            <th width="*">分组代码</th>
+			<th width="*">专业代码</th>
+			<th width="*">合同来源</th>
+			<th width="*">受理人</th> 
+			<th width="*">状态</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $contract_items ){
+	foreach( $contract_items as $cti_id => $row ){
+?>
+		<tr>
+			<td align="center"><a href="?c=contract&a=show&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/select1.gif" border="0" /></a></td>
+			<td align="center"><a href="?c=audit&a=edit_item&cti_id=<?=$cti_id;?>&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/b_edit.png" border="0" /></a></td>
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['cti_code'];?></td>
+			<td><?=$row['ep_name'];?></td>
+			<td align="center"><?=$row['accept_date'];?></td>
+			<td align="center"><?=$row['audit_type_V'];?></td>
+			<td align="center"><?=$row['audit_ver_V'];?></td>
+			<td align="center"><?=$row['audit_code'];?></td>
+            <td align="center"><?=$row['use_code'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td align="center"><?=$row['name'];?></td> 
+			<td align="center"><?=$cti_status[$row['status']];?></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="14">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+	<p><?=$pages['pages'];?></p>
+</div>
+
+	</div>
+</div>
+</body>
+</html>

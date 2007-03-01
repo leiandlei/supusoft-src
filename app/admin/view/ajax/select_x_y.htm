@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style type="text/css">
+#allmap {width: 500px;height: 300px;overflow: hidden;margin:0 auto;}
+#l-map{height:100%;width:78%;float:left;border-right:2px solid #bcbcbc;}
+div{margin:0 auto; width:500px;}
+</style>
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=VofpmsviZo6bCVX7CyluORG9"></script>
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<title>百度地取经纬度</title>
+</head>
+<body>
+	<div id="allmap"></div><br>
+    <div id="r-result">
+    <form action="" method="get">
+    <input type="hidden" name="c" value="<?=$c?>">
+    <input type="hidden" name="a" value="<?=$a?>">
+请输入:<input type="text"  name="add"  value="<?=$add?>"  />
+ <button class="btn btn-submit submit-btn" type="submit"> 搜索 </button><br><br>
+ </form>
+经度：<input type="text" name="xvalue" id="xvalue" class="x-val">
+经度：<input type="text" name="yvalue" id="yvalue" class="y-val"><br></div>
+<!--地址：<input type="text" name="address" id="add">
+<button class="btn btn-submit submit-btn" type="buttion" id="btn" > 保存 </button>
+<a href="javascript:;" onclick="window.parent.update_x_y($("#xvalue").val(),$("#yvalue").val()');"><img src="<?php sysinfo('url');?>/include/images/b_edit.png" border="0" /></a>
+<!--</form>
+<td width="30"><a href="javascript:;" onclick="window.parent.update_group(1,2);"><img src="<?php sysinfo('url');?>/include/images/b_edit.png" border="0" /></a></td>-->
+</body>
+</html>
+<script type="text/javascript">
+$(function(){
+	$("#btn").click(function(){
+		xvalue=$("#xvalue").val();
+		yvalue=$("#yvalue").val();
+		window.parent.update_x_y(xvalue,yvalue);
+		})
+	
+	})
+//alert("111");
+var map = new BMap.Map("allmap"); //实例化一个地图对象
+var point = new BMap.Point(116.331398,39.897445); //设置地图中心的位置
+//map.centerAndZoom(point,12); //设置地图元素的可视层
+
+map.enableScrollWheelZoom();    //启用滚轮放大缩小，默认禁用
+map.enableContinuousZoom();    //启用地图惯性拖拽，默认禁用
+
+/*function myFun(result){
+    var cityName = result.name;
+    map.setCenter(cityName);
+
+}
+var myCity = new BMap.LocalCity();
+myCity.get(myFun);
+
+*/i=0
+//点击获取坐标
+map.addEventListener("click",function(e){
+
+    if(i === 0)
+    {
+     //存储经纬度
+     lng = e.point.lng;
+     lat = e.point.lat;
+	 $("#xvalue").val(lng);
+	 $("#yvalue").val(lat);
+	 
+     //在地图上面描点
+     //var marker = new BMap.Marker(new BMap.Point(lng,lat));  // 创建标注
+     //map.addOverlay(marker);
+    // marker.enableDragging();    //可拖拽
+
+    var gc = new BMap.Geocoder();
+     //获取地址的数据地址
+     var pt = e.point;
+     gc.getLocation(pt, function(rs){
+     var addComp = rs.addressComponents;
+     //address = addComp.province +  addComp.city + addComp.district + addComp.street + addComp.streetNumber;
+	 address = addComp.city + addComp.district + addComp.street + addComp.streetNumber;
+	 $("#add").val(address);
+//alert("经度:"+lng+" 纬度:"+lat+"\n地址："+address);
+
+     //画图
+     //var label = new BMap.Label(address,{offset:new BMap.Size(20,-10)});
+//      marker.setLabel(label);
+     });
+
+     //i=1;
+    }
+
+});
+
+var local = new BMap.LocalSearch(map, {
+		renderOptions:{map: map}
+	});
+
+
+	local.search("<?=$add?>");
+</script>

@@ -1,0 +1,117 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员信息登记</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" /> 
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script> 
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+    $(function() {
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+				//申请业务代码
+		$('.add-audit-code-btn').on('click', select_code );
+		
+        $( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+    });
+	//选择业务代码
+function select_code(){
+	var $this = $(this);
+	var iso = $this.attr( 'rel' );
+	var tbody = $this.parent().parent().find('.audit-codes');
+ 	var href = '?c=ajax&a=select_code&iso=' + iso; 
+ 	$('<iframe border="0" frameborder="no" src="' + href + '" />').dialog({
+		title: '选择专业代码',
+		autoOpen: true,
+		width: 800,
+		height: 420,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		overlay: {opacity: 0.5,background: "black"},
+		close: function(ev,ui){$(this).remove();},
+		buttons: {
+			'取消'	: function(){$(this).dialog('close');},
+			'确定'	: function(){
+				var audit_code_arr = new Array();
+				var use_code_arr = new Array();
+				var audit_input = $('#app_audit_code');
+				var use_input = $('#app_use_code');
+				var old_audit_code = audit_input.val();
+				var old_use_code = use_input.val();
+				$(this).contents().find('input[name="code[]"]:checked').each(function(index){
+					var _this = $(this);
+					var audit_code = _this.val(); 
+					var use_code = _this.attr("i");
+					use_code_arr[index] = use_code;
+					audit_code_arr[index] = audit_code;
+					
+					 
+				});
+				audit_input.val( ( old_audit_code ? old_audit_code+'；' : '' ) + audit_code_arr.join('；') ); 
+				use_input.val( ( old_use_code ? old_use_code+'；' : '' ) +use_code_arr.join('；') ); 
+				$(this).dialog('close');
+			}
+		},
+		open	: function(){
+			var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+			btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+		}
+	}).width(780);
+}
+</script>
+</head>
+
+<body>
+<form method="post" name="winput" action="?c=auditor&a=appcode_save" enctype="multipart/form-data" onsubmit="return Validator.Validate(this,2);" >
+
+<input type="hidden" name="uid" value="<?=$uid?>" />
+<input type="hidden" name="iso" value="<?=$iso?>" />
+<input type="hidden" name="acaid" value="<?=$id?>" />
+<input type="hidden" name="qua_id" value="<?=$_GET[qua_id]?>" />
+<div id="enterprise-tab" style="margin:0 auto;width:600px;" class="tal">
+	<ul>
+		<li>体系：<?=$iso_v?></li>
+	</ul>
+	<br/>
+	<div id="tab-basic">
+		<ul class="main-form">
+			<li>
+				<label class="field">申请代码：</label><em></em> 
+				<span> 
+                <textarea name="app_use_code" id="app_use_code" style="width:300px;height:80px;" readonly="readonly"><?=$app_use_code?></textarea>
+               <!-- <br />
+                <textarea name="app_audit_code" id="app_audit_code" style="width:300px;height:80px;" readonly="readonly"><?=$app_audit_code?></textarea>-->
+                <br />
+               <button type="button" class="btn btn-button add-audit-code-btn" rel="<?=$iso;?>">添加</button>
+               <em>*</em>如果有多个小类用全角分号分割 
+               </span> 
+			</li> 
+            
+			<li>
+				<label class="field">专业申请描述：</label><em></em>
+				<span><textarea name="note" style="width:300px;height:80px;"><?=$note?></textarea></span>
+			</li>
+			<li> 
+				<p><center><button class="btn btn-submit" type="submit"> 保 存 </button></center></p> 
+			</li>
+		</ul>
+	</div>
+</div>
+
+</form>
+
+</body>
+</html>

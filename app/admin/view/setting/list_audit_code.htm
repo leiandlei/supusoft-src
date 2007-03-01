@@ -1,0 +1,159 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>业务分类</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script>
+$(function(){
+	$('.c-del').click(function(){ 
+		confirm_dialog('确定删除配置信息？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});  
+})
+
+</script>
+</head>
+
+<body>
+
+
+<div style="margin:0 auto;width:1050px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">业务分类设置</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+		<form method="get" >
+			<input type="hidden" name="c" value="<?=$c;?>" />
+			<input type="hidden" name="a" value="<?=$a;?>" />
+			<table>
+				<tr>
+					<td class="left">版本：</td>
+					<td class="right">
+						<select name="banben" class="fselect">
+							<option value="">--请选择--</option>
+							<option value="1" <?= ($banben=='1')?'selected':'';?>>--GC--</option>
+							<option value="2" <?= ($banben=='2')?'selected':'';?>>--TRC--</option>
+						</select>
+					</td>
+					<td class="left">认证体系：</td>
+					<td class="right"><select id="iso" name="iso" class='fselect'><option value=""></option><?=$iso_select;?></select></td>
+					
+					
+					
+				</tr>
+				<tr>
+					<td>分组代码：</td>
+					<td><input type="text" name="use_code" value="<?=$use_code;?>" class="input input-search" /></td>
+					<td>上报代码：</td>
+					<td><input type="text" name="audit_code" value="<?=$audit_code;?>" class="input input-search" /></td>
+					<td>内容：</td>
+					<td><input type="text" name="desc" value="<?=$desc;?>" class="input input-search" /></td>
+					<td>行业：</td>
+					<td><input type="text" name="hy" value="<?=$hy;?>" class="input input-search" /></td>
+				</tr>
+			</table>
+			<p class="button-panel tal">
+				<button type="submit" class="btn btn-submit"> 搜索 </button>
+			</p>
+		</form>
+
+		<?=$pages['pages'];?>
+
+<p style="font-size:0;height:9px;overflow:hidden;"></p>
+<form method="post" action="?c=setting_audit_code&a=save">
+<table class="form-table">
+
+	<tr>
+		<th width="30">排序</th>
+		<th width="30">体系</th>
+		<th width="60">自用</th>
+		<th width="60">上报</th>
+		<th width="100">内容</th>
+		<th width="100">行业</th>
+		<th width="80">风险等级</th>
+		<th width="40">版本</th>
+		<th width="60">标志</th>
+		<!-- <th width="80">作业指导书</th> -->
+		<th width="120">状态</th>
+		<th width="40">删除</th>
+	</tr>
+<?php
+if( $resdb ){
+	foreach( $resdb as $id => $row ){
+		$row['stop_Y'] = $row['is_stop'] ? 'checked' : '';
+		$row['stop_N'] = $row['is_stop'] ? '' : 'checked';
+?>
+	<tr align="center">
+		<td><input type="text" name="vieworder[<?=$id;?>]" value="<?=$row['vieworder'];?>" class="input" size="3"  /></td>
+		<td><input type="text" name="iso[<?=$id;?>]" value="<?=$row['iso'];?>" class="input" size="3"  /></td>
+		<td><input type="text" name="code[<?=$id;?>]" value="<?=$row['code'];?>" class="input" size="8"  /></td>
+		<td><input type="text" name="shangbao[<?=$id;?>]" value="<?=$row['shangbao'];?>" class="input" size="8"  /></td>
+		<td align="left"><input type="text" name="msg[<?=$id;?>]" value="<?=$row['msg'];?>" class="input" size="30"  /></td>
+		<td align="left"><input type="text" name="industry[<?=$id;?>]" value="<?=$row['industry'];?>" class="input" size="15"  /></td>
+		<td align="left"><select name="risk_level[<?=$id;?>]"><option value="">--请选择--</option>
+			<?=$row['risk_level_select'];?>
+		</select></td>
+		<td align="left">
+			<select name="banben[<?=$id;?>]">
+				<option value="">--请选择--</option>
+				<option value="1" <?=($row['banben']==1)?'selected':'';?>>--GC--</option>
+				<option value="2" <?=($row['banben']==2)?'selected':'';?>>--TRC--</option>
+			</select></td>
+		<td align="left"><?=$row['mark_checkbox'];?></td>
+		<!-- <td></td> -->
+		<td>
+			<input type="radio" id="stop-{<?=$id;?>}-N" name="is_stop[<?=$id;?>]" value="0" <?=$row['stop_N'];?>/><label for="stop-{<?=$id;?>}-N"> 启用</label>
+			<input type="radio" id="stop-{<?=$id;?>}-Y" name="is_stop[<?=$id;?>]" value="1" <?=$row['stop_Y'];?>/><label for="stop-{<?=$id;?>}-Y"> 停用</label>
+		</td>
+		<td align="center"><a href="?c=<?=$c;?>&a=del&to=<?=$a;?>&id=<?=$row['id'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+	</tr>
+<?php
+	}
+}
+?>
+	<tr align="center">
+		<td><input type="text" name="new[vieworder][]" value="" class="input" size="3" /></td>
+		<td><input type="text" name="new[iso][]" value="" class="input" size="3" /></td>
+		<td><input type="text" name="new[code][]" value="" class="input" size="8" /></td>
+		<td><input type="text" name="new[shangbao][]" value="" class="input" size="8" /></td>
+		<td align="left"><input type="text" name="new[msg][]" class="input" value="" size="30" /></td>
+		<td align="left"><input type="text" name="new[industry][]" class="input" value="" size="15" /></td>
+		<td align="left"><select name="new[risk_level][]"><option value="">--请选择--</option>
+			<?=$risk_level_select;?>
+		</select></td>
+		<td align="left">
+			<select name="new[banben][]">
+				<option value="">--请选择--</option>
+				<option value="1" >--GC--</option>
+				<option value="2" >--TRC--</option>
+
+			</select>
+		</td>
+		<td><?php echo str_replace( "name=\"mark[]\"", "name=\"new[mark][]\"", $mark_checkbox );?></td>
+		<td>
+			<label><input type="radio" name="new[is_stop][]" value="0" /> 启用</label>
+			<label><input type="radio" name="new[is_stop][]" value="1" /> 停用</label>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td colspan="8" class="cRed">说明：请谨慎修改以上设置，CNAS设定的请不要修改。</td>
+	</tr>
+
+</table>
+<p style="font-size:0;height:9px;overflow:hidden;"></p>
+		<?=$pages['pages'];?>
+<p style="font-size:0;height:9px;overflow:hidden;"></p>
+<p class="button-panel tac"><button class="btn btn-submit" type="submit"> 保 存 </button></p>
+</form>
+
+	</div>
+</div>
+</body>
+</html>

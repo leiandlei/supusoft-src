@@ -1,0 +1,240 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>未登记证书列表</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+$(function() {
+	$('.c-del').click(function(){
+		confirm_dialog('确认要删除该证书？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#export-xls-btn').click( do_export_xls );
+	$('#export-xls-btn1').click( do_export_xls1 );
+	
+});
+
+
+
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function do_export_xls1(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export1" value="2" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" action="" id="search-form" class="search-form tal" style='width:1500px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput"/></td>
+            <td class="left">项目编号：</td>
+			<td class="right"><input type="text" name="cti_code" value="<?=$cti_code;?>" class="input finput"/></td>
+			<td class="left">合同编号：</td>
+			<td class="right"><input type="text" name="ct_code" value="<?=$ct_code;?>" class="input finput"/></td>
+			
+			<td class="left">省份：</td>
+      <td class="right"><select id="areacode" name="areacode"
+			class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$province_select;?>
+        </select></td>
+		</tr>
+		<tr>
+			<td class="left">证书编号：</td>
+			<td class="right"><input type="text" name="certno" value="<?=$certno;?>" class="input finput"/></td>
+			<td class="left">合同来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value="">--请选择--</option><?=$ctfrom_select;?></select></td>
+			<td class="left">审核类型：</td>
+			<td class="right"><select name="audit_type" class='fselect'><option value="">--请选择--</option><?=$audit_type_select;?></select></td>
+			<td class='left'>认证体系：</td>
+			<td class='right'><select id="iso" name="iso" class='fselect'><option value=""></option><?=$iso_select;?></select></td>
+		</tr>
+		<tr>
+			<td class="left">专业代码：</td>
+			<td class="right"><input type='text' name="audit_code"value="<?=$audit_code;?>" class="input finput"/></td>
+			<td class="left">认可标志：</td>
+			<td class="right"><select name="mark" class='fselect'><option value="">--请选择--</option><?=$mark_select;?></select></td>
+            <td class='left'>标准版本：</td>
+			<td class='right'><select id="audit_ver" name="audit_ver" class='fselect'><option value=""></option><?=$audit_ver_select;?></select></td>
+			<td class="left">证书状态：</td>
+			<td class="right"><select name="certstate" class='fselect'><option value="">--请选择--</option><?=$certstate_select;?></select></td>
+			
+		</tr>
+		<tr>
+			<td class="left">注册时间：</td>
+			<td class="right"><input type="text" name="s_dates" value="<?=$s_dates;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="s_datee" value="<?=$s_datee;?>" class="input input-date finput"/></td>
+			<td class="left">到期时间：</td>
+			<td class="right"><input type="text" name="e_dates" value="<?=$e_dates;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="e_datee" value="<?=$e_datee;?>" class="input input-date finput"/></td>
+		</tr>
+		<?php if( 'list' == $a ):?>
+		<tr>
+			<td class="left">证书范围：</td>
+			<td colspan="7"><input type="text" name="scope" value="<?=$scope;?>" class="input" style="width:953px;"/></td>
+		</tr>
+        <tr>
+        <td class='left'>规模：</td>
+			<td class='right'><select id="" name="guimo" class='fselect'>
+            <option value="">--请选择--</option>
+            <?=$guimo_select;?></select></td>
+            <td class='left'>复评初审：</td>
+			<td class='right'><select id="" name="chushen" class='fselect'>
+            <option value="">--请选择--</option>
+            <?=$chushen_select?>
+            </select>
+            </td>
+            <td class="left">大类代码：</td>
+			<td class="right"><input type='text' name="audit_code_max"value="<?=$audit_code_max;?>" class="input finput"/></td>
+            </tr>
+		<?php endif;?>
+	</table>
+    <br/>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>&nbsp;
+		<button class="btn btn-button" id="export-xls-btn1" type="button"> 导出网站证书数据 </button>
+	</p>
+	
+</form>
+<br/>
+
+<div style='width:1500px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>"><a href="javascript:;">证书查询 <span class="cnt-total"><?=$total;?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<table class="grid-table tal">
+		<thead>
+		<tr align='center'>
+        	
+			<th width="30">操作</th>
+			<th width="*">合同编号</th>
+			<th width="*">项目编号</th>
+			<th width="*">证书编号</th>
+			<th width="200">组织名称</th>
+            <th width="*">状态</th>
+            <th width="*">注册时间</th>
+            <th width="*">证书到期</th>
+            <th width="*">暂停时间</th>
+            <th width="*">暂停到期</th>
+            <th width="*">撤销时间</th>
+            <th>恢复时间</th>
+			<th width="*">认可标志</th>
+			<th width="*">合同来源</th>
+			<th width="*">标准版本</th>
+			 
+<!--			<th width="*">专业代码</th>
+-->			 
+			<th width="*">范围</th>
+			 
+ 			<th width="30">删除</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr>
+        	
+			<td align="center">
+				<?php if($a=='clist'){?>
+					<a href="?c=change&a=add&zsid=<?=$row['id'];?>&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/b_edit.png" border=0 /></a>
+				<?php }else{?>
+					<a href="?c=<?=$c;?>&a=edit&zsid=<?=$row['id'];?>&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/b_edit.png" border=0 /></a>
+				<?php }?>
+			</td>
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['cti_code'];?></a></td>
+			<td align="center"><?=$row['certno'];?></a></td>
+			<td align="left"><?=$row['cert_name'];?></td>
+            <td align="center"><?=$row['status'];?></td>
+            <td align="center"><?=$row['s_date'];?></td>
+            <td align="center"><?=$row['e_date'];?></td>
+            <td align="center"><?=$row['time1'];?></td> <!--暂停时间-->
+            <td align="center"><?=$row['time2'];?></td> <!--暂停到期-->
+            <td align="center"><?=$row['time3'];?></td><!--撤销日期-->
+            <td align="center"><?=$row['time4'];?></td><!--恢复时间-->
+			<td align="center"><?=$row['mark'];?></a></td>
+			<td align="center"><?=$row['ctfrom'];?></td>
+			<td align="center"><?=$row['audit_ver'];?></td>
+			 
+			 
+			<!--<td align="center"><?php if( $row['use_code'] ):;?><a href='#' title='<?=$row['use_code'];?>'><img src="theme/images/other.png" border=0 /></a><?php endif;?></td>-->
+			<td align="center"><a href='#' title='<?=$row['cert_scope'];?>'><img src="theme/images/other.png" border=0 /></a></td>
+            
+			<td align="center"><a href="?c=certificate&a=del&zsid=<?=$row['id'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+		</tr>
+       
+<?php
+	} ?>
+     
+<?php
+} else {
+?>
+		<tr>
+			<td align="center" colspan="13">没有找到数据 </td>
+		</tr>
+       
+<?php
+}
+?>
+	
+		</tbody>
+        
+	</table><br/>
+    
+	<p><?=$pages['pages'];?></p>
+
+	</div>
+</div>
+
+
+
+</body>
+</html>

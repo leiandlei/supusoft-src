@@ -1,0 +1,80 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>工作经历</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px dashed #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px dashed #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table class="grid-table2 list-hr">
+		<thead>
+		<tr align="center">
+			<td style="width:60px;">周</td>
+			<!--<th width="*">资格</th>-->
+<?php
+for( $i = 1; $i <= $the_month_day; $i++ ){
+?>
+			<th width="18"><?=$out_dayzjs[$month_zjs[$i]];?></th>
+<?php
+}
+?>
+		<th  style="overflow:hidden;width:60px;" >天数</th>
+		</tr>
+		<tr>
+			<th >姓名</th>
+			<!--<th width="*">资格</th>-->
+<?php
+for( $i = 1; $i <= $the_month_day; $i++ ){
+?>
+			<th style="width:60px;" ><?php printf( "%02d", $i );?></th>
+<?php
+}
+?>
+			<th width="18" ></th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+$f=1;
+if( $hrs ){
+	foreach( $hrs as $uid => $hr ){
+    if(!$hr[tasks]) continue;
+?>
+
+		
+		<tr>
+			<td align="center" ><?=$hr['name'];?></td>
+			<!--<td><?php echo implode('<br/>', $hr['qua_types']);?></td>-->
+<?php
+$num = 0;
+for( $i = 1; $i <= $the_month_day; $i++ ){
+	$str = @ implode('',$hr['days'][$i]);
+	if(strstr($str,'am')){
+		$num += 0.5;
+	}else if(strstr($str,'pm')){
+		$num += 0.5;
+	}else if(strstr($str,'all')){
+		$num += 1;
+	}
+	
+?>
+			<td class="td2"><span class="<?php if($month_zjs[$i] == 0 || $month_zjs[$i] == 6):?>day-zm<?php endif;?>"><?php if( isset( $hr['days'][$i] ) ):?><?php echo implode('',$hr['days'][$i]);?><?php endif;?></span></td>
+<?php
+}
+?>
+		<td><?=$num?></td>
+		</tr>
+		
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

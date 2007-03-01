@@ -1,0 +1,207 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>资料回收</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#export-xls-btn').click( do_export_xls );
+	$(".sort").click(function(){
+		var form = $('#search-form');
+		var sort=form.find('input[name=sort]');
+		var sort_val=form.find('input[name=sort_val]');
+		sort.val($(this).attr("i"));
+		if(sort_val.val()=='1')
+			sort_val.val(2);
+		else
+			sort_val.val(1);
+		form.submit();
+
+			})
+});
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1350px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="redata_status" value="<?=$redata_status;?>" />
+<input type="hidden" name="sort" value="<?=$sort?>" />
+<input type="hidden" name="sort_val" value="<?=$sort_val?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+			<td class="left">项目编号：</td>
+			<td class="right"><input type="text" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+            <td class="left">合同编号：</td>
+			<td class="right"><input type="text" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+            <td class="left">省份：</td>
+      <td class="right"><select id="areacode" name="areacode"
+			class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$province_select;?>
+        </select></td>
+			
+		</tr>
+		<tr>
+			
+			<td class="left">认证体系：</td>
+			<td class="right"><select name="iso" class='fselect'><option value=""></option><?=$iso_select;?></select></td>
+			<td class='left'>标准版本：</td>
+			<td class='right'><select id="audit_ver" name="audit_ver" class='fselect'><option value=""></option><?=$audit_ver_select;?></select></td>
+			 <td class="left">审核类型：</td>
+			<td class="right"><select name="audit_type" class='fselect'><option value=""></option><?=$audit_type_select;?></select></td>
+            <td class="left">合同来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value=""></option><?=$ctfrom_select;?></select></td>
+		</tr>
+		<tr>
+			<td class="left">上传时间：</td>
+			<td class="right"><input type="text" name="upload_date_start" value="<?=$upload_date_start?>"  class="input finput input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="upload_date_end" value="<?=$upload_date_end?>" class="input finput input-date" /></td>
+			
+			<td class="left">审核时间：</td>
+			<td class="right"><input type="text" name="t_date_s" value="<?=$t_date_s?>"  class="input finput input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="t_date_e" value="<?=$t_date_e?>" class="input finput input-date" /></td>
+            </tr>
+		<tr>
+			<td class="left">排序：</td>
+            <td class="right"  colspan="7"><a href="javascript:;" class="sort" i="upload_plan_date">审核员计划上传时间</a>&nbsp;&nbsp;&nbsp;<a href="javascript:;" class="sort" i="upload_file_date">审核员资料上传时间</a></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>
+	</p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1350px;margin:0 auto;'>
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top<?=$redata_0;?>"><a href="?c=archive&a=list&redata_status=0<?php gettourl();?>">待收回 <span class="cnt-total"><?=$restate_total[0];?></span></a></li>
+		<li class="ui-state-default ui-corner-top<?=$redata_1;?>"><a href="?c=archive&a=list&redata_status=1<?php gettourl();?>">已收回 <span class="cnt-total"><?=$restate_total[1];?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+		<table class="grid-table">
+			<thead>
+			<tr>
+				<th width="20"></th>
+				<th width="30">登记</th>
+				<th width="70">资料收回</th>
+				<th width="*">收回人</th>
+				<th width="*">转技委会</th>
+				<th width="*">合同编号</th>
+				<th width="*">项目编号</th>
+               <!-- <th>计划审批时间</th>
+                <th><a href="javascript:;" class="sort" i="upload_plan_date">审核员计划上传时间</a></th>-->
+                <th><a href="javascript:;" class="sort" i="upload_file_date">审核员资料上传时间</a></th>
+				<th width="200">企业名称</th>
+				<th width="*">省份</th>
+				<th width="*">组长</th>
+				<th width="*">审核类型</th>
+				<th width="*">标准</th>
+				<th width="*">审核开始</th>
+				<th width="*">审核结束</th>
+                <th width="*">是否有不符合</th>
+                <th width="*">天数</th>
+				<th width="30">备注</th>
+			</tr>
+		</thead>
+		<tbody>
+<?php
+if( $resdb ){
+	foreach( $resdb as $row ){
+?>
+		<tr>
+			<td align="center"><a href="?c=contract&a=show&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/select1.gif" border=0 /></a></td>
+			<td align="center"><a href="?c=archive&a=edit&eid=<?=$row['eid'];?>&tid=<?=$row['tid'];?>&id=<?=$row['id'];?>"><img src="theme/images/b_edit.png" border="0" /></a></td>
+			<td align="center"><?=$row['redata_date'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['to_jwh_date'];?></td>
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['cti_code'];?></td>
+        <!--     <td align="center"><?=$row['jh_sp_date'];?></td>
+            <td align="center"><?=$row['upload_plan_date'];?></td>-->
+            <td align="center"><?=$row['upload_file_date'];?></td>
+			<td style="color:<?=$row['color'];?>;"><?=$row['ep_name'];?></td>
+			<td align="center"><?=$row['province'];?></td>
+			<td align="center"><?=$row['leader'];?></td>
+			<td align="center"><?=$row['audit_type_V'];?></td>
+			<td align="center"><?=$row['audit_ver_V'];?></td>
+			<td align="center"><?=$row['tb_date'];?></td>
+            
+			<td align="center"><?=$row['te_date'];?></td>
+            <td align="center"><?=$row['bufuhe']?'是':'否';?></td>
+            <td align="center"><?=$row['num'];?></td>
+			<td align="center">
+<?php
+if( $row['redata_note'] ){
+?>
+			<a href="javascript:;" title="<?=$row['redata_note'];?>"><img src="theme/images/other.png" border="0" /></a>
+<?php
+}
+?>
+			</td>
+		</tr>
+<?php
+	}?>
+    <?php if(!$redata_status){?>
+    <tr>
+			<td align="right" colspan="13"><span class="red">注：红色表示如果没有不符合审核结束时间距当前时间超过25天，有不符合超过40天</span></td>
+		</tr>
+        <?php }?>
+        <?php
+} else {
+?>
+		<tr>
+			<td align="center" colspan="16">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+	<p><?=$pages['pages'];?></p>
+</div>
+
+	</div>
+</div>
+</body>
+</html>

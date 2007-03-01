@@ -1,0 +1,340 @@
+<? tpl('header')?>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script>
+
+    $(function() {
+
+    	$( "#contract-tab" ).tabs({
+    		collapsible: false
+    	});
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+        $( "#enterprise2-tab" ).tabs({
+            collapsible: false
+        });
+        $( "#enterprise1-tab" ).tabs({
+            collapsible: false
+        });
+		 $( "#enterprise3-tab" ).tabs({
+            collapsible: false
+        });
+        $( "#enterprise4-tab" ).tabs({
+            collapsible: false
+        });
+        $( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+
+
+    });
+    function check_form(obj){
+        $("#check_tab").find();
+	 
+ 		if(Validator.Validate(obj,2)){
+			return true;
+		}else{
+			return false;
+		}
+
+    } 
+    </script>
+</head>
+<body>
+<?php echo einfo("ct_id=$ct_id");?> <br/>
+<div id="enterprise1-tab" style="margin: 0 auto; width: 750px;" class="tal">
+ <ul>
+      <li><a href="#tab-basic">开票信息</a></li>
+    </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <table class="grid-table">
+      <thead>
+        <tr >
+          <td align='center' width="100">发票信息：</td>
+          <td> 开户名称:
+            <?=$enterprise[name_ac];?>
+            <br/>
+            开户银行：
+            <?=$enterprise[bank];?>
+            <br/>
+            银行帐号：
+            <?=$enterprise[account];?>
+            <br/>
+            公司税号：
+            <?=$enterprise[grows];?>
+            <br/>
+            开票地址:
+            <?=$enterprise[r_add];?>
+            <br/>
+            开票电话:
+            <?=$enterprise[r_tel];?>
+            <br/>
+            开户备注:
+            <?=$enterprise[ac_remark];?>
+            <br/></td>
+        </tr>
+        <tr>
+          <td align='center'>合同特殊要求：</td>
+          <td><?=$ct_info[finance_require];?></td>
+      </thead>
+    </table>
+  </div>
+ </div>
+ <br/>
+<div id="enterprise2-tab" style="margin: 0 auto; width: 750px;" class="tal">
+
+    <ul>
+      <li><a href="#tab-basic">收费明细</a></li>
+    </ul>
+  <div id="tab-basic">
+    <table class="grid-table">
+      <thead>
+        <tr align='center'>
+          <th width="30">收费编辑</th>
+          <th width="30">发票编辑</th>
+          <th width="50">体系</th>
+          <th width="80">审核类型</th>
+          <th width="80">发票号</th>
+          <th width="80">发票金额</th>
+          <!--th width="80">发票日期</th-->
+          
+          <th width="80">收费金额</th>
+          <th width="80">收费日期</th>
+          <th width="">收费备注</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+if( $datas2 ){
+	foreach( $datas2 as $row ){
+?>
+        <tr align='center'>
+          <td><a href="?c=finance&a=edit&ct_id=<?=$row['ct_id']?>&ccd_id=<?=$row['id'];?>&sf_edit=<?=$row['status']?>"><img src="theme/images/b_edit.png" border=0 title="编辑" /></a></td>
+          <?php  if($row['status']){?><td><a href="?c=finance&a=edit&ct_id=<?=$row['ct_id']?>&ccd_id=<?=$row['id'];?>&ccstatus=<?=$row['status']?>"><img src="theme/images/b_edit.png" border=0 title="编辑" /></a></td><?php }else{?><td></td><?php }?>
+          <td><?=$row['iso'];?></td>
+          <td><?=read_cache("audit_type",$row['audit_type'])?></td>
+          <td><?=$row['invoice']?></td>
+          <td><?=$row['invoice_cost']?></td>
+          <!--td><?=$row['invoice_date']?></td-->
+          <td><?=$row['dk_cost']?></td>
+          <td><?=$row['dk_date']?></td>
+          <td  align="center"><?=$row['note']?></td>
+          <!--td><a href="?c=finance&a=del&ccd_id=<?=$row['id'];?>&ct_id=<?=$row['ct_id']?>&pid=<?=$row[pid]?>"><img src="theme/images/b_drop.png" border=0 title="删除" /></a></td--> 
+        </tr>
+        <?php
+	}
+} else {
+?>
+        <tr>
+          <td align="center" colspan="8">没有找到数据 </td>
+        </tr>
+        <?php
+}
+?>
+      </tbody>
+    </table>
+  </div>
+</div>
+<br />
+<div id="enterprise-tab" style="margin: 0 auto; width: 750px;" class="tal">
+    <ul>
+      <li><a href="#tab-basic">合同收费项目</a></li>
+    </ul>
+  <div id="tab-basic">
+    <table class="grid-table">
+      <thead>
+        <tr align='center'>
+          <th width="80">收费体系</th>
+          <th width="80">收费类型</th>
+          <th width="80">合同金额</th>
+          <th width="">备注信息</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+if( $ct_cost ){
+	
+?>
+        <tr align='center'>
+          <td><?=$ct_cost['iso']?></td>
+          <td><?=read_cache('cost_type',$ct_cost['cost_type'])?></td>
+          <td><?=$ct_cost['cost']?></td>
+          <td><?=$ct_cost['note']?></td>
+        </tr>
+        <?php
+} else {
+?>
+        <tr>
+          <td align="center" colspan="3">没有找到数据 </td>
+        </tr>
+        <?php
+}
+?>
+      </tbody>
+    </table>
+  </div>
+</div>
+<br/>
+<?php if($ccstatus==null){?>
+<div id="enterprise3-tab" style="margin: 0 auto; width: 750px;" class="tal">
+  <ul>
+    <li><a href="#tab-basic">收费明细
+      <?=$str?>
+      </a></li>
+  </ul>
+  
+  <div id="tab-basic">
+  <form name="winput" method="post" action="?c=finance&a=save&" onSubmit="return check_form(this)">
+    <table class="grid-table">
+      <tr>
+        <th>选择</th>
+        <th>合同编号</th>
+        <th>项目编号</th>
+        <th>审核类型</th>
+        <th>体系</th>
+        <th>标准版本</th>
+      </tr>
+      <? if($projs)foreach($projs as $row){
+      if($row[audit_type]=='1002') continue;?>
+      <tr>
+        <td align="center"><input type="checkbox" name="pid[<?=$row['id']?>]" value="2" class="ck-contract-item" <? if($row['is_finance']==2){ echo 'checked';}?>>
+       
+        </td>
+        <td><?=$row['ct_code']?></td>
+        <td><?=$row['cti_code']?></td>
+        <td><?=$row['audit_type_V']?></td>
+        <td><?=$row['iso_V']?></td>
+        <td><?=$row['audit_ver_V']?></td>
+      </tr>
+      <? } ?>
+    </table>
+    <br>
+    <input type="hidden" name="ccd_id" value="<?=$ccd_id;?>" />
+    <input type="hidden" name="cost_id" value="<?=$cost_id;?>" />
+    <ul class="main-form">
+      <li>
+        <label class="field">到款金额：<font color="#F00">*</font></label>
+        <em></em> <span>
+        <input type="text" name="dk_cost" style="width: 160px;" value="<?=$dk_cost;?>" dataType="Require" msg="到款金额不能为空！"/>
+        </span>
+        <label class="field2">到款日期：</label>
+        <em></em> <span>
+        <input type="text" name="dk_date" style="width: 160px;" class='input-date' value="<?=$dk_date;?>"  msg="到款日期不能为空！"/>
+        <font color="#F00"></font></span> </li>
+
+      <li>
+
+        <label class="field2" style='margin-left: 30px'>币种：<font color="#FF0000">*</font></label>
+        <em></em> <span>
+        <select name="currency"  style="width: 166px;" dataType="Require" msg="币种不能为空！">
+          <?=f_select('currency',$currency)?>
+        </select>
+        </span><em></em>
+        <label class="field2">是否开票<font color="#FF0000">*</font><em></em></label>
+        <select  style='width:167px' name="ccstatus" id="ccstatus" msg="是否开票不能为空！" dataType="Require">
+          <option value="" selected></option>
+          <option value="0" <?php if($ccstatus===0||$sf_edit===0){echo "selected";}?> >否</option>
+          <option value="1" <?php if($ccstatus==1||$sf_edit==1||$sf_edit==2){echo "selected";}?>>是</option>
+        </select></li>
+
+      <li>
+        <label class="field">备注：</label>
+        <em></em> <span>
+        <textarea name="note" style="width: 540px; height: 100px;"><?=$note?>
+</textarea>
+        </span> </li>
+      <li>
+        <label class="field"> </label>
+        <em></em>
+        <p>
+          <center>
+        <input type="checkbox" name="status" value="1" class="ck-contract-item">是否全款
+        <button class="btn btn-submit" id="sf-submit" type="submit"> 保 存 </button>
+          </center>
+        </p>
+      </li>
+    </ul>
+    </div>
+  </form>
+</div>
+<?php }elseif($ccstatus!=0){?>
+<div id="enterprise4-tab" style="margin: 0 auto; width: 750px;" class="tal">
+  <ul>
+    <li><a href="#tab-basic">开票登记
+      <?=$str?>
+    </a></li>
+  </ul>
+
+  <div id="tab-basic">
+    <form name="winput" method="post" action="?c=finance&a=save&" onSubmit="return check_form(this)">
+      <table class="grid-table">
+        <tr>
+          <th>选择</th>
+          <th>合同编号</th>
+          <th>项目编号</th>
+          <th>审核类型</th>
+          <th>体系</th>
+          <th>标准版本</th>
+        </tr>
+        <? if($projs)foreach($projs as $row){
+      if($row[audit_type]=='1002') continue;?>
+        <tr>
+          <td align="center"><input type="checkbox" name="pid[<?=$row['id']?>]" value="2" class="ck-contract-item" <? if($row['is_finance']==2){ echo 'checked';}?>>
+
+          </td>
+          <td><?=$row['ct_code']?></td>
+          <td><?=$row['cti_code']?></td>
+          <td><?=$row['audit_type_V']?></td>
+          <td><?=$row['iso_V']?></td>
+          <td><?=$row['audit_ver_V']?></td>
+        </tr>
+        <? } ?>
+      </table>
+      <br>
+      <input type="hidden" name="ccd_id" value="<?=$ccd_id;?>" />
+      <input type="hidden" name="cost_id" value="<?=$cost_id;?>" />
+      <input type="hidden" name="ccstatus" value="<?=$ccstatus;?>" />
+
+      <ul class="main-form">
+
+        <li>
+        <label class="field">发票金额：</label>
+        <em></em> <span>
+        <input type="text" name='invoice_cost' value='<?=$invoice_cost?>' style="width: 160px;"  msg="发票金额不能为空！"/>
+        <font color="#FF0000"></font></span>
+        <label class="field2">开票日期：</label>
+        <em></em> <span>
+        <input type="text" name='invoice_date' class='input-date' value='<?=$invoice_date?>' style="width: 160px;"  msg="开票日期不能为空！"/>
+        <font color="#FF0000"></font></span> </li>
+        <li>
+          <label class="field">发票号码：</label>
+          <em></em> <span>
+          <input type="text" name='invoice' value='<?=$invoice?>' style="width: 160px;"  msg="发票号码不能为空！" />
+          <font color="#FF0000"></font></span>
+         </li>
+
+        <li>
+          <label class="field">发票备注：</label>
+          <em></em> <span>
+        <textarea name="fpnote" style="width: 540px; height: 100px;"><?=$fpnote?>
+      </textarea>
+        </span> </li>
+        <li>
+          <label class="field"> </label>
+          <em></em>
+          <p>
+          <center>
+            <button class="btn btn-submit" id="kp-submit" type="submit"> 保 存 </button>
+          </center>
+          </p>
+        </li>
+      </ul>
+  </div>
+  </form>
+</div>
+<?php }?>
+</body>
+
+</html>

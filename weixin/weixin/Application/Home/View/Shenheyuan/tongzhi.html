@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<include file='./Public/mui/common/html/head.html' />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a id="back" class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">公司公告</h1>
+		</header>
+		<div class="mui-content"></div>
+	</body>
+	<script type="text/javascript">
+		//启用双击监听
+		mui.init({
+			subpages:[{
+				url:'{:U("shenheyuan/tongzhi_list")}',
+				id:'shenheyuantongzhi-list',
+				styles:{
+					top: '45px',
+					bottom: '0px',
+				}
+			}]
+		});
+	</script>
+
+</html>

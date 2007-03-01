@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>审核计划上报</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="80">机构代码</th>
+			<th width="*">组织名称</th>
+			<th width="80">合同来源</th>
+			<th width="60">联系人</th>
+			<th width="90">联系电话</th>
+			<th width="80">活动类型</th>
+			<th width="110">审核开始时间</th>
+			<th width="110">审核结束时间</th>
+			<th width="110">行政区域</th>
+			<th width="150">详细地址</th>
+			<th width="200">审核员(资格)(组长)</th>
+			<th width="80">技术专家</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $task_projects ){
+	foreach( $task_projects as $pid => $row ){
+?>
+		<tr>
+			<td align="center"><?=$row['work_code'];?></td>
+			<td><?=$row['ep_name'];?></td>
+			<td align="center"><?=f_ctfrom($row['ctfrom']);?></td>
+			<td align="center"><?=$row['person'];?></td>
+			<td align="center"><?=$row['person_tel'];?></td>
+			<td align="center"><?=$row['audit_type'];?></td>
+			<td align="center"><?=$audit_teams[$pid]['tb_date'];?></td>
+			<td align="center"><?=$audit_teams[$pid]['te_date'];?></td>
+			<td align="center"><?=$row['areacode'];?></td>
+			<td align="center"><?=$row['ep_addr'];?></td>
+			<td><?php echo implode('<br/>',$audit_teams[$pid]['s']);?></td>
+			<td><?php echo implode('<br/>',$audit_teams[$pid]['z']);?></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="14">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

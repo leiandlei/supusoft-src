@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>企业列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<thead>
+
+		</tr>
+	</thead>
+	<tbody>
+<?php if( $enterprises ): foreach( $enterprises as $row ):?>
+		<tr>
+			
+         <td align="center"><?=$row['code'];?></td>
+          <!--其中href属性是用来添加分场所获取eid 用的-->
+          <td class="ep-name" href="?eid=<?=$row['eid']?>"><?=$row['ep_name'];?></td>
+          <td align="center"><?=$row['province'];?></td>
+          <td align="center"><?=$row['ctfrom'];?></td>
+          <td align="center"><?=read_cache('ep_level',$row['ep_level']);?></td>
+          <td align="center"><?=$row['person'];?></td>
+          <td align="center"><?=$row['person_tel'];?></td>
+          <td align="center"><?=$row['ep_phone'];?></td>
+          <td align="center"><?=$row['ep_fax'];?></td>
+          <td align="center"><?=$row['person_mail'];?></td>
+          <td align="center"><?=$row['ep_amount'];?></td>
+		</tr>
+<?php endforeach; endif;?>
+	</tbody>
+</table>
+</body>
+</html>

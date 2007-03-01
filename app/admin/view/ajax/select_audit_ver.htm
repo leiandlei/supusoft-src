@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>选择体系</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<style type="text/css">
+body{margin:0;padding:0;}
+</style>
+</head>
+
+<body>
+
+<div style="margin-right:12px;width:50%;height:26px;">
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="30">选择</th> 
+			<th width="*">体系</th>  
+		</tr>
+		</thead>
+	</table>
+</div>
+<div style="height:210px;overflow-y:scroll; width:50%;">
+	<table class="grid-table">
+		<tbody>
+<?php
+	foreach( $audit_ver as $row ){
+?>
+		<tr align="center">
+			<td width="30"><input type="checkbox" name="audit_ver[]" class="s-audit_ver" value="<?=$row['audit_ver'];?>" /></td>
+			<td width="*"><?=$row['audit_ver'];?></td> 
+			<td width="*"><?=$row['msg'];?></td> 
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+
+</div>
+</body>
+</html>

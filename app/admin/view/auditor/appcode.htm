@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>业务代码申请</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" /> 
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script> 
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+    $(function() {
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+
+		
+        $( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+        $('.app_edit').click( function(e) {
+    		var self = this;
+    		var href = '?c=auditor&a=appcode_edit&uid=<?=$uid?>&iso='+$(this).attr('iso')+'&acaid='+$(this).attr('acaid')+'&qua_id='+$(this).attr('i');
+    		e.preventDefault();
+    		var $this = $(this);
+    		var horizontalPadding = 0;
+    		var verticalPadding = 0;
+    		$('<iframe border="0" style="padding-left:-10px" id="frame1" frameborder="no" src="' + href + '" />').dialog({
+    			title: '申请业务代码',
+    			autoOpen: true,
+    			width: 900,
+    			height:450,
+    			modal: true,
+    			resizable: false,
+    			autoResize: true,
+    			overlay: {opacity: 0.5,background: "black"},
+    			close: function(ev,ui){$(this).remove();}
+    			}).width(900).height(450);
+    	});
+    	
+    });
+    function close_windows(){
+    	$('#frame1').dialog('close');
+    	location.reload();
+    }
+</script>
+</head>
+
+<body>
+
+
+<div style='width:1050px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>"><a href="javascript:;">我的资格</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<table width='100%' class='grid-table'>
+<tr>
+	<th align='center' width="30">申请</th>
+	<th align='center'>状态</th>
+	<th align='center'>体系</th>
+	<th align='center'>资格</th>
+	<th align='center'>资格证编号</th>
+	<th align='center'>开始时间</th>
+	<th align='center'>结束时间</th>
+	<th align='center'>备注</th>
+</tr>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+	<tr align="center">
+		<td><a href="#" ><img class='app_edit' i="<?=$row[id]?>" src="theme/images/b_edit.png" border=0 iso="<?=$row['iso'];?>"/></a></td>
+		<td ><?=$row['status'];?></td>
+		<td align="center"><?=$row['iso_v'];?></td>
+		<td align="center"><?=$row['qua_type'];?></td>
+		<td align="center"><?=$row['qua_no'];?></td>
+		<td align="center"><?=$row['s_date'];?></td>
+		<td align="center"><?=$row['e_date'];?></td>
+		<td align="center"><?php if($row['note']){?><font face="Arial"><a href="#" title="<?=$row['note'];?>"><img src="theme/images/other.png" border=0 /></a></font><?php } ?></td>
+	</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="10">没有找到数据</td>
+		</tr>
+<?php
+}
+?>
+</table>
+</div>
+</div>
+<br/>
+<div style='width:1050px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_1_tab;?>">
+        <a href="?c=auditor&a=appcode&status=1">申请中<span class="cnt-total"><?=$status_1_total;?> </span></a>
+        
+        </li>
+		<li class="ui-state-default ui-corner-top <?=$status_2_tab;?>"><a href="?c=auditor&a=appcode&status=2">未通过<span class="cnt-total"><?=$status_2_total;?> </span></a></li>
+		<li class="ui-state-default ui-corner-top <?=$status_3_tab;?>"><a href="?c=auditor&a=appcode&status=3">已通过<span class="cnt-total"><?=$status_3_total;?> </span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+	<table style='width:100%;' class='grid-table'>
+		<thead>
+		<tr align='center'>
+		<?php
+			if($status!='3'){
+		?>
+			<th width="40">操作</th>
+		<?php
+			}
+		?>
+			<th width="">体系</th>
+			<th width="">专业</th>
+           <!-- <th width="">代码</th>-->
+			<th width="">申请时间</th>
+		<?php
+			if($status=='2'){
+		?>
+			<th width="">未通过理由</th>
+		<?php
+			}
+		?>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas2 ){
+	foreach( $datas2 as $row ){
+?>
+		<tr align="center">
+		<?php
+			if($status!='3'){
+		?>
+			<td><a href="#" ><img class='app_edit' src="theme/images/b_edit.png" border=0 acaid="<?=$row['id'];?>" iso="<?=$row['iso'];?>"/></a></td>
+		<?php
+			}
+		?>
+			<td><?=$row['iso_v'];?></td>
+            <td><?=$row['app_use_code'];?></td>
+			<!--<td><?=$row['app_audit_code'];?></td>-->
+			<td><?=$row['create_date'];?></td>
+		<?php
+			if($status=='2'){
+		?>
+			<td><?=$row['note2']?></td>
+		<?php
+			}
+		?>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="10">没有找到数据 </td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+	<p><?=$pages['pages'];?></p>
+</div><br/><br/>
+
+
+	</div>
+</div>
+</body>
+</html>

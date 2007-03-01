@@ -1,0 +1,351 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>审核派人</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<style  type="text/css">
+<!--
+.trans_msg {
+	filter: alpha(opacity=100, enabled=1) revealTrans(duration=.2, transition=1) blendtrans(duration=.2);
+}
+.4 {
+	font-zise: 40px;
+	color: red
+}
+-->
+</style>
+<script type="text/javascript">
+
+var self = null;
+var add_cnt = 0;
+$(document).ready(function(){
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+	$( "#certificate1-tab" ).tabs({
+		collapsible: false
+	});
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	
+	$('input.username').on( 'click', function(e) {
+		self = this;
+		//var href = '?c=ajax&a=select_auditor&taskBeginDate=<?=$taskBeginDate;?>&taskEndDate=<?=$taskEndDate;?>&iso_str=<?=$iso_str;?>&audit_code_str=' + $(this).attr('urn');
+		var taskBeginDate=$(".taskBeginDate").val();
+		var taskEndDate=$(".taskEndDate").val();
+		var taskBeginTime=$(".taskBeginTime").val();
+		var taskEndTime=$(".taskEndTime").val();
+		var href = '?c=ajax&a=select_auditor&tid=<?=$task_info["id"];?>&taskBeginDate='+taskBeginDate+'&taskEndDate='+taskEndDate+'&taskBeginTime='+taskBeginTime+'&taskEndTime='+taskEndTime;
+		e.preventDefault();
+		var $this = $(this);
+		var horizontalPadding = 30;
+		var verticalPadding = 30;
+		$('<iframe border="0" id="frame1" frameborder="no" src="' + href + '" />').dialog({
+			title: '选择审核员',
+			autoOpen: true,
+			width: 1000,
+			height: 660,
+			modal: true,
+			resizable: false,
+			autoResize: true,
+			overlay: {opacity: 0.5,background: "black"},
+			close: function(ev,ui){$(this).remove();}
+			}).width(980).height(590);
+	});
+	$('#check-btn').click(function(){
+		/*$('#step').val(2);
+		var form = $('#send-form');
+		form.attr( 'target', 'check_code' );
+		var action=form.attr( 'action');
+		form.attr( 'action', '?c=task&a=check_send' );*/
+		href="?c=task&a=check_send&tid=<?=$tid?>"
+		$('#icheck').val(1);
+		$('<iframe border="0" name="check_code" frameborder="no" src="' + href + '" />').dialog({
+			title: '审核派人验证',
+			autoOpen: true,
+			width: 600,
+			height: 340,
+			modal: true,
+			resizable: false,
+			autoResize: false,
+			overlay: {opacity: 0.5,background: "black"},
+			close: function(ev,ui){$(this).remove();},
+			buttons : {
+				'确定' :function(){
+					$(this).dialog('close');
+				}
+			},
+			open :function(){
+				var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+				btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+			}
+			}).width(580).height(340);
+		//form.submit();
+	});//验证
+	$('#submit-btn').click(function(){
+		$('#step').val(1);
+		var form = $('#send-form');
+		form.attr( 'target', '' );
+		$('#icheck').val(0);
+		$('#status').val(2);
+		form.submit()
+	});//保存
+	$('a.del-send').on( 'click', delRecord );
+});
+
+
+function update_hr( uid, name, qua_type, iso, audit_code, qua_type_s ,use_code){
+	if( self.value == '' || self.value != name ){
+		$(self).parents('tr').find('.qua_type').val('');
+		$(self).parents('tr').find('.audit-code').val('');
+	} 
+	self.value = name; 
+	$('#uid').val(uid); 
+	
+	var qua_types = qua_type.split('|');
+	var audit_codes = audit_code.split('|');
+	var use_codes = use_code.split('|');
+	var isos = iso.split('|');
+	var qua_typess = qua_type_s.split('|');
+
+	for(var i = 0; i < isos.length; i++){
+		$('tr.tr-'+isos[i]).find('.qua_type').val(qua_types[i]);
+		$('tr.tr-'+isos[i]).find('.audit-code').val(audit_codes[i]);
+		$('tr.tr-'+isos[i]).find('.use-code').val(use_codes[i]);
+		$('tr.tr-'+isos[i]).find('.qua_type').val(qua_types[i]);
+		$('tr.tr-'+isos[i]).find('.qua_types').val(qua_typess[i]);
+	}
+	
+	$('#frame1').dialog('close');
+	$('#frame1').dialog('destroy');
+	$('#frame1').remove();
+}
+
+
+function delRecord(){
+	var tr = $(this).parent().parent();
+	if( (id = tr.attr( 'id' ) ) ){
+		//AJAX 删除派人
+		//alert( id );
+		var auditor_id = id.split('-')[1];
+		$.ajaxSetup({async:false});
+		var del_url ='?c=ajax&a=del_auditor&auditor_id='+auditor_id;
+		$.getJSON( del_url,
+			function(j){
+				if( j.state == 'ok' ){
+					tr.remove();
+					alert( '删除成功！' );
+				} else {
+					alert( '删除失败！请与管理员联系。' );
+				}
+			});
+	} else {
+		tr.remove();
+	}
+}
+
+
+function addRecord(){
+	tbody = $('#hr-items');
+	tr = $('#hr-item');
+	new_tr = tr.clone();
+	new_tr.attr('id','');
+	new_tr.find('input.input_date').datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	new_tr.show();
+	tbody.append(new_tr)
+}
+</script>
+</head>
+
+<body style="margin:0 auto;width:960px;">
+
+<?php echo einfo("tid=$_GET[tid]&width=960");?> <br/>
+<div  class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">合同信息</a></li>
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom"> <!-- 合同信息：
+   <?=$finance_require;?>
+    <br/>-->
+    专业：
+    <?php foreach($use_code as $k=>$v){
+echo f_iso($k).":".$v[use_code]."&nbsp;&nbsp;&nbsp;".$v[audit_code]."<br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;";}?>
+  </div>
+</div>
+<br/>
+<div  class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">任务信息</a></li>
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <table class="grid-table">
+      <tr>
+        <th>一阶段是否实施现场审核</th>
+        <td><?=$is_site_V;?></td>
+        <th>总人日：</th>
+        <td><?=$task_info['tk_num'];?></td>
+      </tr>
+      <tr>
+        <th>任务开始</th>
+        <td><?=$task_info['tb_date'];?></td>
+        <th>任务结束</th>
+        <td><?=$task_info['te_date'];?></td>
+      </tr>
+      <tr>
+        <td colspan="4"><?php if( $resdb ):?>
+          <table class="grid-table">
+            <tr>
+              <th>认证标准</th>
+              <th>审核类型</th>
+              <th>专业代码</th>
+              <th>认证范围</th>
+            </tr>
+            <?php foreach( $resdb as $pid => $item ):?>
+            <tr>
+              <td><?=$item['audit_ver_V'];?></td>
+              <td><?=$item['audit_type_V'];?></td>
+              <td><?=$item['audit_code'];?></td>
+              <td><?=$item['scope'];?></td>
+            </tr>
+            <?php endforeach;?>
+          </table>
+          <?php  endif;?></td>
+      </tr>
+    </table>
+  </div>
+</div>
+<br/>
+<div  class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">已派人信息</a></li>
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <table class="grid-table">
+      <tr>
+        <th width="30">编辑</th>
+       <!-- <th>序号</th>-->
+        <th>审核员</th>
+        <th>标准版本-组内身份-注册资格</th>
+        <th>见证</th>
+        <th>被见证人</th>
+        <th>开始日期</th>
+        <th>结束日期</th>
+        <th>专业</th>
+        <th width="30">删除</th>
+      </tr>
+      <?php  foreach($auditor_list as $v){ ?>
+      <tr>
+        <td align="center"><a href="?c=<?=$c;?>&a=<?=$_GET['a']?>&tid=<?=$_GET['tid']?>&id=<?=$v['id'];?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+       <!-- <td align="center"><?=$v['sort']?></td>-->
+        <td align="center"><a href="?c=audit&a=project_send_query&name=<?=$v['name'];?>" target="_blank" title="查看审核经历"><?php echo $v['name'];?></a></td>
+        <td><?=read_cache('iso',$v['iso'])?>
+          ---
+          <?=read_cache('audit_role',$v['role'])?>
+          ---
+          <?=read_cache('qualification',$v['qua_type'])?>
+          <br /></td>
+        <td><?=r_sys_cache("witness",$v['witness'])?></td>
+        <td><?=$v['witness_person']?></td>
+        <td><?=$v['taskBeginDate']?></td>
+        <td><?=$v['taskEndDate']?></td>
+        <td><?php $use_code=explode("；",$v[audit_code]);
+	sort($use_code);
+	echo join("；",$use_code); ?></td>
+        <td align="center"><a title="删除" href="?c=<?=$c;?>&a=<?=$_GET['a']?>&tid=<?=$_GET['tid']?>&id=<?=$v['id'];?>&type=del" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+      </tr>
+      <? } ?>
+    </table>
+    <br />
+    <p class="button-panel tac">
+      <button class="btn btn-button" type="button" id="check-btn"> 验 证 </button>
+    </p>
+  </div>
+</div>
+<br/>
+<div   class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">
+      <?=$action?>
+      派人</a></li>
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <form method="post" action="?c=task&a=edit_send&id=<?=$_GET['id'];?>&tid=<?=$_GET['tid']?>" id="send-form">
+      <input type="hidden" id="icheck" name="icheck" value="0" />
+      <table class="grid-table" >
+        <tr>
+          <th>姓名</th>
+          <td><input type="hidden" id="uid" name="uid" value="<?=$auditor_info['uid']?>" />
+            <input type="text" name="name" class="username"  style="width:80px" value="<?=$auditor_info['name']?>" readonly="readonly" /><!--<br />
+            序号：
+            <input type="text" name="sort" value="<?=$auditor_info['sort']?>" style="width:40px;" />--></td>
+          <th   >开始日期</th>
+          <td><input type="text" name="taskBeginDate" class="input input-date taskBeginDate" value="<?=$auditor_info['taskBeginDate'];?>" size="10" />
+            <select name="taskBeginTime" class="taskBeginTime">
+              <option value="08:00:00" <?=$swxw08;?>>上午</option>
+              <option value="13:00:00" <?=$swxw13;?>>下午</option>
+            </select></td>
+          <th>结束日期</th>
+          <td><input type="text" name="taskEndDate" class="input input-date taskEndDate" value="<?=$auditor_info['taskEndDate'];?>" size="10" />
+            <select name="taskEndTime" class="taskEndTime">
+              <option value="12:00:00" <?=$swxw12;?>>上午</option>
+              <option value="17:00:00" <?=$swxw17;?>>下午</option>
+            </select></td>
+        </tr>
+        <tr>
+          <th>标准版本</th>
+          <th>组内身份</th>
+          <th>见证/人员</th>
+          <th>注册资格</th>
+          <th>代码</th>
+          <th>专业代码</th>
+        </tr>
+        <? foreach ($isos_list as $pid=>$v){?>
+        <tr class="tr-<?=$v;?>">
+          <input type="hidden"  name="item_id[<?=$pid;?>]" value="<?=$task_audit_team_list[$v]['id']?>" />
+          <td><?=read_cache('iso',$v)?></td>
+          <input type="hidden" name="iso[<?=$pid;?>]" value="<?=$v;?>" />
+          <Td><select name="role[<?=$pid;?>]">
+              <?=f_select('audit_role',$task_audit_team_list[$v]['role']?$task_audit_team_list[$v]['role']:'02')?>
+            </select></Td>
+          <Td align="center"><select name="witness[<?=$pid;?>]" style="width:100px;">
+              <?=sys_cache_select('witness',$task_audit_team_list[$v]['witness'])?>
+            </select>
+            /
+            <input type="text" name="witness_person[<?=$pid;?>]" value="<?=$task_audit_team_list[$v]['witness_person'];?>"/></Td>
+          <Td><input type="hidden" name="qua_type[<?=$pid;?>]" class="qua_type" readonly="readonly" value="<?=$task_audit_team_list[$v]['qua_type'];?>" />
+            <input type="text" name="qua_types[]" class="qua_types" readonly="readonly" value="<?=read_cache('qualification',$task_audit_team_list[$v]['qua_type'])?>" /></Td>
+          <Td ><input type="text" class="use-code" name="use_code[<?=$pid;?>]" value="<?=$task_audit_team_list[$v]['use_code']?>" /></Td>
+          <Td ><input type="text" class="audit-code" name="audit_code[<?=$pid;?>]" value="<?=$task_audit_team_list[$v]['audit_code']?>" /></Td>
+        </tr>
+        <? } ?>
+      </table>
+      <br />
+      <p class="button-panel tac">
+        <label>
+          <input type="checkbox" name="status" id="status" value="2"<?=$task_info['status']==2? " checked":'';?> />
+          已派人</label>
+        &nbsp;
+        <button class="btn btn-submit" type="button" id="submit-btn"> 提 交 </button>
+      </p>
+    </form>
+  </div>
+</div>
+<br />
+</body>
+</html>

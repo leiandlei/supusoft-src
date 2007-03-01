@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>文件列表</title>
+		<meta name="generator" content="editplus" />
+		<meta name="author" content="" />
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+		<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="theme/js/jquery.js"></script>
+		<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+		<script type="text/javascript" src="theme/js/common.js"></script>
+	</head>
+
+	<body>
+		<form method="get" action="" class="search-form tal" id="search-form" style='width:1050px;margin:0 auto;'>
+			<input type="hidden" name="c" value="<?=$c;?>" />
+			<input type="hidden" name="a" value="<?=$a;?>" />
+			<table style="100%" class='grid-table'>
+			<table >
+			    <tr>
+			    	<td class='left'>合同来源：</td>
+			      	<td class='right'>
+			      		<select id="seach_ctfrom" name="seach_ctfrom" class='fselect'>
+			          		<option value=""></option><?=$ctfrom_select;?>
+			        	</select>
+			      	</td>
+			      	<td class='left'>审核类型：</td>
+			      	<td class='right'>
+			      		<select id="audit_type" name="seach_audit_type" class='fselect'>
+			          		<option value=""></option>
+			          		<?php foreach($arr_audit_type as $audit_type=>$audit_name):?>
+			          			<option value="<?=$audit_type?>" <?=$seach['audit_type']==$audit_type?'selected':''?>><?=$audit_name?></option>
+			          		<?php endforeach;?>
+			        	</select>
+			      	</td>
+			      	<td class="left">认可标志：</td>
+					<td class="right"><select name="seach_mark" class='fselect'><option value="">--请选择--</option><?=$mark_select;?></select></td>
+				</tr>
+				<tr>
+					<td class="left">开始时间:</td>
+			        <td class='right'>
+			            <input type="text" name="seach_approval_date_start" value="<?=$seach['approval_date_start'];?>" class="input finput input-date"/>
+			        </td>
+			        <td class="left">结束时间:</td>
+			        <td class='right'>
+			            <input type="text" name="seach_approval_date_end" value="<?=$seach['approval_date_end'];?>" class="input finput input-date"/>
+			        </td>
+				</tr>
+				<tr>
+				     <td class="left">专业代码(GC)：</td>
+				     <td class='right'><input type="text" id="audit_code_2017" name="seach_audit_code_2017" value="<?=$seach['audit_code_2017'];?>" class="input finput" /></td>
+				     <td class="left">专业代码(TRC)：</td>
+				     <td class='right'><input type="text" id="audit_code" name="seach_audit_code" value="<?=$seach['audit_code'];?>" class="input finput" /></td>
+				</tr>
+			</table>
+			</table>
+			<br />
+			<p class="button-panel">
+				<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp;
+				<button class="btn btn-button" onclick="clearForm(this.form);">清空</button>
+				<button class="btn btn-button" type="button" onclick="do_export_xls()"> 批量导出</button>
+			</p>
+		</form>
+		<br/>
+
+		<div id="toolTipLayer" style="position:absolute; visibility: hidden"></div>
+		<div style='width:1600px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+			<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+				<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>">
+					<a href="javascript:;">文件列表<span class="cnt-total"><?=count($results);?></span></a>
+				</li>
+			</ul>
+			<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+				<table class="grid-table tal">
+					<thead>
+						<tr>
+							<th width="">合同来源</th>
+							<th width="">企业名称</th>
+							<th width="">地点</th>
+							<th width="">联系人</th>
+							<th width="">联系方式</th>
+							<th width="">企业邮箱</th>
+							<th width="">体系</th>
+							<th width="">认可标志</th>
+							<th width="">范围</th>
+							<th width="">标准版本</th>
+							<th width="">人数</th>
+							<th width="">专业代码(GC)</th>
+							<th width="">专业代码(TRC)</th>
+							<th width="">上次审核类型</th>
+							<th width="">上次审核组长</th>
+							<th width="">上次审核结束时间</th>
+							<th width="">最后监审日</th>
+							<th width="">发证日期</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if( $results ):foreach( $results as $row ):?>
+						<?php $count = count($row['cti_cf']);?>
+						<?php if($count>1):?>
+							<tr align='center' data-id="<?=$row['id']?>" style="height:27px">
+								<td rowspan="<?=$count?>"><?=$ctfrom_array[$row['ctfrom']]['name'];?></td>
+								<td rowspan="<?=$count?>"><?=$row['ep_name'];?></td>
+								<td rowspan="<?=$count?>"><?=$row['areaaddr'];?></td>
+								<td rowspan="<?=$count?>"><?=$row['person'];?></td>
+								<td rowspan="<?=$count?>"><?=$row['person_tel'];?></td>
+								<td rowspan="<?=$count?>"><?=$row['person_mail'];?></td>
+								<td><?=$audit_ver_array[$row['cti_cf'][0]['audit_ver']]['msg'];?></td>
+								<td><?=$row['cti_cf'][0]['mark']==01?'CNAS':'其他';?></td>
+								<td><a href='#' title='<?=$row['cti_cf'][0]['cert_scope'];?>'><img src="theme/images/other.png" border=0 /></a></td>
+								<td><?=$audit_ver_array[$row['cti_cf'][0]['audit_ver']]['audit_basis'];?></td>
+								<td><?=$row['cti_cf'][0]['total'];?></td>
+								<td><?=$row['cti_cf'][0]['audit_code_2017'];?></td>
+								<td><?=$row['cti_cf'][0]['audit_code'];?></td>
+								<td><?=$arr_audit_type[$row['cti_cf'][0]['audit_type']];?></td>
+								<td><?=$row['cti_cf'][0]['zjname'];?></td>
+								<td><?=$row['cti_cf'][0]['te_date'];?></td>
+								<td><?=$row['cti_cf'][0]['final_date'];?></td>
+								<td><?=$row['cti_cf'][0]['first_date'];?></td>
+							</tr>
+							<?php for($i=1;$i<$count;$i++):?>
+							<tr align='center' data-id="<?=$row['id']?>" style="height:27px">
+								<td><?=$audit_ver_array[$row['cti_cf'][$i]['audit_ver']]['msg'];?></td>
+							    <td><?=$row['cti_cf'][$i]['mark']==01?'CNAS':'其他';?></td>
+							    <td><a href='#' title='<?=$row['cti_cf'][$i]['cert_scope'];?>'><img src="theme/images/other.png" border=0 /></a></td>
+								<td><?=$audit_ver_array[$row['cti_cf'][$i]['audit_ver']]['audit_basis'];?></td>
+								<td><?=$row['cti_cf'][$i]['total'];?></td>
+								<td><?=$row['cti_cf'][$i]['audit_code_2017'];?></td>
+								<td><?=$row['cti_cf'][$i]['audit_code'];?></td>
+								<td><?=$arr_audit_type[$row['cti_cf'][$i]['audit_type']];?></td>
+								<td><?=$row['cti_cf'][$i]['zjname'];?></td>
+								<td><?=$row['cti_cf'][$i]['te_date'];?></td>
+								<td><?=$row['cti_cf'][$i]['final_date'];?></td>
+								<td><?=$row['cti_cf'][$i]['first_date'];?></td>
+							</tr>
+							<?php endfor;?>
+						<?php else:?>
+							<tr align='center' data-id="<?=$row['id']?>" style="height:27px">
+								<td><?=$ctfrom_array[$row['ctfrom']]['name'];?></td>
+								<td><?=$row['ep_name'];?></td>
+								<td><?=$row['areaaddr'];?></td>
+								<td><?=$row['person'];?></td>
+								<td><?=$row['person_tel'];?></td>
+								<td><?=$row['person_mail'];?></td>
+								<td><?=$audit_ver_array[$row['cti_cf'][0]['audit_ver']]['msg'];?></td>
+                                <td><?=$row['cti_cf'][0]['mark']==01?'CNAS':'其他';?></td>
+                                <td><a href='#' title='<?=$row['cti_cf'][0]['cert_scope'];?>'><img src="theme/images/other.png" border=0 /></a></td>
+								<td><?=$audit_ver_array[$row['cti_cf'][0]['audit_ver']]['audit_basis'];?></td>
+								<td><?=$row['cti_cf'][0]['total'];?></td>
+								<td><?=$row['cti_cf'][0]['audit_code_2017'];?></td>
+								<td><?=$row['cti_cf'][0]['audit_code'];?></td>
+								<td><?=$arr_audit_type[$row['cti_cf'][0]['audit_type']];?></td>
+								<td><?=$row['cti_cf'][0]['zjname'];?></td>
+								<td><?=$row['cti_cf'][0]['te_date'];?></td>
+                                <td><?=$row['cti_cf'][0]['final_date'];?></td>
+								<td><?=$row['cti_cf'][0]['first_date'];?></td>
+							</tr>
+						<?php endif;?>
+						<?php endforeach;else:?>
+						<tr>
+							<td align="center" colspan="16">未找到相关记录</td>
+						</tr>
+						<?php endif;?>
+					</tbody>
+				</table>
+				<p>
+					<?=$pages['pages'];?>
+				</p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+		$(function()
+		{
+			$( ".input-date" ).datepicker({
+				changeMonth	: true,
+				changeYear	: true,
+				dateFormat	: "yy-mm-dd"
+			});
+		})
+		function clearForm(objE) {
+			$(objE).find(':input').each(
+				function() {
+					switch(this.type) {
+						case "text":
+						case "select-one":
+							$(this).val('');
+							break;
+					}
+				}
+			);
+		}
+		function do_export_xls(){
+		var form = $('#search-form');
+		form.append($('<input type="hidden" name="export" value="1" />'));
+		form.submit();
+		form.find('input[name=export]').remove();
+	}
+	</script>
+
+</html>

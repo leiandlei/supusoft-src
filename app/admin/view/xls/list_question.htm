@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>财务申请报销明细列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr>
+			 
+             <th width="*">合同编号</th>
+            <th width="*">项目编号</th>
+            <th width="200">企业名称</th>
+            <th width="*">等级</th>
+            <th width="*">内容</th>
+             <th width="*">组长</th>
+            
+            
+            <th width="*">审核开始时间</th>
+            <th width="*">审核结束时间</th>
+            <th width="*">评定时间</th>
+            <th width="*">创建时间</th>
+            
+		</tr>
+		</thead>
+		
+		<tbody>
+	
+   <?php
+if( $resdb ){
+	foreach( $resdb as $row ){
+?>
+          <tr>
+           
+             <td align="center"><?=$row['ct_code'];?></td>
+            <td align="center"><?=$row['cti_code'];?></td>
+            <td><?=$row['ep_name'];?></td>
+            <td align="center"><?=$row['level'];?></td>
+            <td align="center"><?=$row['note'];?></td>
+            <td align="center"><?=$row['name'];?></td>
+            <td align="center"><?=$row['tb_date'];?></td>
+             <td align="center"><?=$row['te_date'];?></td>
+            <td align="center"><?=$row['approval_date'];?></td>
+            
+            <td align="center"><?=$row['create_date'];?></td>
+            
+          </tr>
+          <?php
+	}
+} else {
+?>
+          <tr>
+            <td align="center" colspan="16">未找到相关记录</td>
+          </tr>
+          <?php
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

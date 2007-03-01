@@ -1,0 +1,415 @@
+<? tpl('header')?>
+<body>
+<form method="post" id="from" action="?c=partner&a=apply_edit">
+	<input id="id" type="hidden" name="id" value="<?=$pti_id;?>" />
+	<input type="hidden" name="sub" value="1">
+	<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+		<ul>
+		    <li><a href="#tab-basic">基本信息</a></li>
+		    <li><a href="#tab-dongtai">申请评审</a></li>
+		    <li><a href="#tab-jiage">价格信息</a></li>
+		</ul>
+		<div id="tab-basic">
+			<ul class="main-form">
+				<li>
+					<label class="field">企业名称</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="ep_name" name="ep_name" value="<?=$ep_name;?>" dataType="Require" msg="请输入企业名称！" class="input" style="width: 456px;"/>
+					</span> 
+			    </li>
+				<li>
+					<label class="field">合作方</label>
+					<em>*</em>
+					<span>
+						<input type="text"   id="pt_name" value="<?=$name;?>" dataType="Require" msg="请选择合作方！" class="input"/>
+						<input type="hidden" id="pt_id"   name="pt_id"   value="<?=$pt_id;?>" class="input"/>
+					</span>
+
+					<label class="field">合作方账号</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="username" value="<?=$username;?>" class="input"/>
+					</span>
+			    </li>
+
+				<li>
+					<label class="field">合作方联系人</label>
+					<em></em>
+					<span>
+						<input type="text" id="contacts_name" class="input" />
+					</span> 
+
+					<label class="field">合作方联系方式</label>
+					<em></em>
+					<span>
+						<input type="text" id="contacts_name_tel" class="input" />
+					</span> 
+				</li>
+
+				<li>
+					<label class="field">企业联系人</label>
+					<em></em>
+					<span>
+						<input type="text" id="ep_contacts_name" name="ep_contacts_name" value="<?=$ep_contacts_name;?>" class="input" />
+					</span>
+
+					<label class="field">企业联系方式</label>
+					<em></em>
+					<span>
+						<input type="text" id="ep_contacts_name_tel" name="ep_contacts_name_tel" value="<?=$ep_contacts_name_tel;?>" class="input" />
+					</span>
+			    </li>
+
+			    <li>
+			    	<label class="field">最晚拿证时间</label>
+					<em></em>
+					<span>
+						<input type="text" id="last_time" name="last_time" value="<?=$last_time;?>" class="input" />
+					</span>
+			    </li>
+			</ul>
+		</div>
+		<div id="tab-dongtai">
+			<ul class="main-form">
+				<li>
+			    	<label class="field">认证体系</label>
+					<em></em>
+					<span>
+						<input type="text" id="iso_str" name="iso_str" value="<?=$iso_str;?>" class="input" />
+					</span>
+
+					<label class="field">体系人数</label>
+					<em></em>
+					<span>
+						<input type="text" id="iso_person_lenth" name="iso_person_lenth" value="<?=$iso_person_lenth;?>" class="input" />
+					</span>
+			    </li>
+			    <li>
+			    	<label class="field">资质明细</label>
+					<em></em>
+					<span>
+						<textarea cols="74" rows="3" id="zizhi_note" name="zizhi_note" style="width:452px;"><?=$zizhi_note;?></textarea>
+					</span>
+			    </li>
+
+			    <li>
+			    	<label class="field">过往证书情况</label>
+					<em></em>
+					<span>
+						<textarea cols="74" rows="3" id="gwzs_note" name="gwzs_note" style="width:452px;"><?=$gwzs_note;?></textarea>
+					</span>
+			    </li>
+
+			    <li>
+			    	<label class="field">申请范围</label>
+					<em></em>
+					<span>
+						<textarea cols="74" rows="3" id="sq_scope_str" name="sq_scope_str" style="width:452px;"><?=$sq_scope_str;?></textarea>
+					</span>
+			    </li>
+				<hr style="margin: 13px;" />
+
+				<li>
+			    	<label class="field">受理范围</label>
+					<em></em>
+					<span>
+						<textarea cols="74" id="sl_scope_str" rows="3" name="sl_scope_str" style="width:452px;"><?=$sl_scope_str;?></textarea>
+					</span>
+			    </li>
+			    <li>
+			    	<label class="field">专业小类/风险等级</label>
+					<em></em>
+					<span>
+						<textarea cols="74" rows="3" id="audit_code" name="audit_code" style="width:452px;"><?=$audit_code;?></textarea>
+					</span>
+			    </li>
+
+			    <li>
+					<label class="field">总人日</label>
+					<em></em>
+					<span>
+						<input type="text" id="zongrenri" name="zongrenri" value="<?=$zongrenri;?>" class="input"/>
+					</span>
+
+					<label class="field">现场人日</label>
+					<em></em>
+					<span>
+						<input type="text" id="person_days" name="person_days" value="<?=$person_days;?>" class="input" />
+					</span> 
+			    </li>
+
+				<li>
+					<label class="field">修订审核范围</label>
+					<em></em>
+					<span>
+						<textarea cols="74" id="sh_scope_str" rows="3" name="sh_scope_str" style="width:452px;"><?=$sh_scope_str;?></textarea>
+					</span>
+			    </li>
+
+			    <li>
+			    	<label class="field">修订专业小类</label>
+					<em></em>
+					<span>
+						<textarea cols="74" id="audit_code_str" rows="3" name="audit_code_str" style="width:452px;"><?=$audit_code_str;?></textarea>
+					</span>
+			    </li>
+
+			    <li>
+			    	<label class="field">风险评估</label>
+					<em></em>
+					<span>
+						<textarea cols="74" id="fengxianpinggu" rows="3" name="fengxianpinggu" style="width:452px;"><?=empty($fengxianpinggu)?'按此范围以及专业，烤炉了目前国家法规、认可规范要求以及本机构能力，一般风险':$fengxianpinggu;?></textarea>
+					</span>
+			    </li>
+
+			    <li>
+			    	<label class="field">修订备注</label>
+					<em></em>
+					<span>
+						<textarea cols="74" id="xd_note" rows="3" name="xd_note" style="width:452px;"><?=$xd_note;?></textarea>
+					</span>
+			    </li>
+				<hr style="margin: 13px;" />
+
+				<li>
+					<label class="field">实际现场人日</label>
+					<em></em>
+					<span>
+						<input type="text" id="sj_sh_days" name="sj_sh_days" value="<?=$sj_sh_days;?>" class="input"/>
+					</span> 
+			    </li>
+			    <li>
+			    	<label class="field">机构人员能力</label>
+					<em></em>
+					<span>
+						<textarea cols="74" id="renyuannengli" rows="3" name="renyuannengli" style="width:452px;"><?=$renyuannengli;?></textarea>
+					</span>
+			    </li>
+<!-- 				<li>
+					<label class="field">一阶段审核日期</label>
+					<em></em>
+					<span>
+						<input type="text" id="yjd_sh_date" name="yjd_sh_date" value="<?=$yjd_sh_date;?>" class="input"/>
+					</span>
+
+					<label class="field">一阶段审核组</label>
+					<em></em>
+					<span>
+						<input type="text" id="yjd_sh_team" name="yjd_sh_team" value="<?=$yjd_sh_team;?>" class="input"/>
+					</span>
+			    </li>
+
+				<li>
+					<label class="field">二阶段审核日期</label>
+					<em></em>
+					<span>
+						<input type="text" id="ejd_sh_date" name="ejd_sh_date" value="<?=$ejd_sh_date;?>" class="input" />
+					</span> 
+
+					<label class="field">二阶段审核组</label>
+					<em></em>
+					<span>
+						<input type="text" id="ejd_sh_team" name="ejd_sh_team" value="<?=$ejd_sh_team;?>" class="input" />
+					</span> 
+				</li> -->
+			</ul>
+		</div>
+		<div id="tab-jiage">
+			<ul class="main-form">
+				<li>
+					<label class="field">结算价</label>
+					<em></em>
+					<span>
+						<input type="text" id="jiesuanjia" name="jiesuanjia" value="<?=$jiesuanjia;?>" class="input"/>
+					</span> 
+
+					<label class="field">审核成本</label>
+					<em></em>
+					<span>
+						<input type="text" id="shenhechengben" name="shenhechengben" value="<?=$shenhechengben;?>" class="input"/>
+					</span> 
+			    </li>
+
+			    <li>
+					<label class="field">合同底价</label>
+					<em></em>
+					<span>
+						<input type="text" id="hetongdijia" name="hetongdijia" value="<?=$hetongdijia;?>" class="input"/>
+					</span> 
+
+					<label class="field">合同价格</label>
+					<em></em>
+					<span>
+						<input type="text" id="hetongjiage" name="hetongjiage" value="<?=$hetongjiage;?>" class="input"/>
+					</span> 
+			    </li>
+
+				<li>
+					<label class="field">合同签订</label>
+					<em></em>
+					<span>
+						<select name="hetongqianding" style="width: 153px;height: 25px;">
+							<option value="0" <?=($hetongqianding=='0')?'selected':''?>>否</option>
+							<option value="1" <?=($hetongqianding=='1')?'selected':''?>>是</option>
+						</select>
+					</span>
+
+					<label class="field">合同编号</label>
+					<em></em>
+					<span>
+						<input type="text" id="hetongbianhao" name="hetongbianhao" value="<?=$hetongbianhao;?>" class="input"/>
+					</span>
+			    </li>
+
+				<li>
+					<label class="field">客户账号</label>
+					<em></em>
+					<span>
+						<input type="text" id="ep_username" name="ep_username" class="input" />
+					</span> 
+				</li>
+				<hr style="margin: 13px;" />
+				
+				<li>
+					<label class="field">实际到款</label>
+					<em></em>
+					<span>
+						<input type="text" id="shijidaokuan" name="shijidaokuan" value="<?=$shijidaokuan;?>" class="input"/>
+					</span> 
+
+					<label class="field">扣税</label>
+					<em></em>
+					<span>
+						<input type="text" id="koushui" name="koushui" value="<?=$koushui;?>" class="input"/>
+					</span> 
+			    </li>
+
+			    <li>
+					<label class="field">返款金额</label>
+					<em></em>
+					<span>
+						<input type="text" id="fankuanjine" name="fankuanjine" value="<?=$fankuanjine;?>" class="input"/>
+					</span>
+
+					<label class="field">发票需求</label>
+					<em></em>
+					<span>
+						<select name="fapiaoxuqiu" style="width: 153px;height: 25px;">
+							<option value="0" <?=($fapiaoxuqiu=='0')?'selected':''?>>否</option>
+							<option value="1" <?=($fapiaoxuqiu=='1')?'selected':''?>>是</option>
+						</select>
+					</span> 
+			    </li>
+
+			    <li>
+					<label class="field">发票抬头</label>
+					<em></em>
+					<span>
+						<input type="text" id="fapiaotaitou" name="fapiaotaitou" value="<?=empty($fapiaotaitou)?$ep_name:$fapiaotaitou;?>" class="input" style='width:456px'/>
+					</span> 
+			    </li>
+
+				<!-- <li>
+					<label class="field">计划上报</label>
+					<em></em>
+					<span>
+						<select name="jihuashangbao" style="width: 153px;height: 25px;">
+							<option value="0" <?=($jihuashangbao=='0')?'selected':''?>>否</option>
+							<option value="1" <?=($jihuashangbao=='1')?'selected':''?>>是</option>
+						</select>
+					</span>
+
+					<label class="field">现场审核</label>
+					<em></em>
+					<span>
+						<select name="xianchangshenhe" style="width: 153px;height: 25px;">
+							<option value="0" <?=($xianchangshenhe=='0')?'selected':''?>>否</option>
+							<option value="1" <?=($xianchangshenhe=='1')?'selected':''?>>是</option>
+						</select>
+					</span>
+			    </li>
+
+				<li>
+					<label class="field">资料回收</label>
+					<em></em>
+					<span>
+						<select name="ziliaohuishou" style="width: 153px;height: 25px;">
+							<option value="0">否</option>
+							<option value="1">是</option>
+						</select>
+					</span>
+				</li>
+
+				<li>
+					<label class="field">发证日期</label>
+					<em></em>
+					<span>
+						<input type="text" id="fazhengriqi" name="fazhengriqi" value="<?=$fazhengriqi;?>" class="input" />
+					</span> 
+				</li> -->
+			</ul>
+		</div>
+		<p>
+			<center style="margin-bottom: 10px;">
+				<?php if($status=='2'):?>
+				<span>
+					是否审批<input type="checkbox" name="status" value="3">
+				</span>&nbsp;&nbsp;
+				<?php endif;?>
+				<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+				<a href="?c=partner&a=apply_list" title="关闭窗口">返回列表</a>
+			</center>
+		</p>
+	</div>
+</form>
+
+</body>
+<script type="text/javascript">
+$(function(){
+	$('button.submit-btn').on('click',function(){
+    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+	   	$('#from').submit();
+	});
+
+	$( "#enterprise-tab" ).tabs({
+			collapsible: false
+	});
+
+	<?php if(in_array($status,array('4','5'))):?>
+		$("#enterprise-tab input").attr('disabled',true);
+		$("#enterprise-tab select").attr('disabled',true);
+		$("#enterprise-tab textarea").attr('disabled',true);
+		$('button.submit-btn').attr('hidden','true');
+	<?php endif;?>
+
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+
+	$("#pt_name").on('click',selectPartner);
+});
+function selectPartner(){
+	var href = '?c=ajax&a=select_partner';
+	$('<iframe id="iframe_select_partner" border="0" frameborder="no" src="' + href + '" />').dialog({
+		title: '选择专业代码',
+	    autoOpen: true,
+	    width: 900,
+	    height: 420,
+	    modal: true,
+	    resizable: false,
+	    autoResize: true,
+	}).width(900);
+}
+
+function update_partner( data ){
+	$('#pt_name').val(data.name);
+	$('#pt_id').val(data.pt_id);
+	$('#username').val(data.username);
+	$('#iframe_select_partner').remove();
+}
+
+</script>
+</html>

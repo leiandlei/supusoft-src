@@ -1,0 +1,229 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合作方项目清单协调单</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/region.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript">
+$(function() { 
+	var region = Region.init('data/cache/region.json');
+	window.region = region;
+
+	$('#select-region').click( region_dlg );
+	$('#select-audit_ver').click( audit_ver_dlg );
+	$('.c-del').click(function(){ 
+		confirm_dialog('确定删除配置信息？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});  
+});
+function region_dlg(){
+		$('#select-region-dialog').dialog({
+			title	: '选择行政区',
+			width	: 500,
+			height	: 150,
+			modal: true,
+			resizable: false,
+			autoResize: true,
+			buttons	:{
+				'取消'	: function(){
+					 $(this).dialog("close");
+				},
+				'确定'	: function(){
+					var r = false;
+					var country = parseInt($('#statecode').val());
+					
+					var code_city = $('#city-select').val();
+					var code_district = $('#district-select').val();
+					
+					var code = $('#district-select').val();
+					if( !code )
+						code = $('#city-select').val();
+
+					//if( (code && code.substring(4,6) != '00') || 156 != country ){
+					if( (DistrictNum==0 && code_city) || (DistrictNum!=0 && code_district) ){
+						var text = $('#province-select').find('option:selected').text() + $('#city-select').find('option:selected').text() + $('#district-select').find('option:selected').text();
+						text = text.replace('市辖区','');
+						text = text.replace('--县','');
+						text = text.replace('请选择市','');
+						text = text.replace('请选择区/县','');
+						$('#areaaddr').val(text);
+						$(this).dialog('close');
+					} else {
+						alert( '请选择行政区！' );
+					}
+				}
+			},
+			open	: function(){
+				var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+				btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+			}
+		});
+	}
+function audit_ver_dlg(){
+	// var id = $(this).parent().data('id');
+	$('<iframe src=?c=ajax&a=select_audit_ver></iframe>').dialog({
+		title	: '选择所属体系',
+		width	: 400,
+		height	: 320,
+		cache:false,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		buttons	:{
+			'取消'	: function(){
+				 $(this).dialog("close");
+			},
+			'确定'	: function(){
+				var s_str = '';
+				var old_str=$('#audit_ver').val(); 
+				$(this).contents().find('input.s-audit_ver').each(function(index){
+					if( $(this).attr( 'checked' ) && $(this).val() )
+						s_str     += $(this).val() + ';';
+
+				});  
+				 
+				if(old_str!=0){//如果原数据不为0的情况下追加
+				s_str         = s_str+old_str;
+
+
+				}
+				$('#audit_ver').val( s_str );
+				$(this).dialog('close');
+			}
+		},
+		open	: function(){
+			var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+			btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+		}
+	}).width(780);
+}
+
+
+</script>
+</head>
+<body>
+<div id="select-region-dialog" class="tal" style="display:none;">
+  <p style="margin-bottom:8px;">请选择行政区(到区/县)，完成后点确定。</p>
+  <p> <span id="prov-span">
+    <select name="province" id="province-select" style="width:130px;">
+      <option value="">选择省</option>
+    </select>
+    </span> <span id="city-span">
+    <select name="city" id="city-select" style="width:160px;">
+      <option value="">请选择市</option>
+    </select>
+    </span> <span id="dist-span">
+    <select name="district" id="district-select" style="width:150px;">
+      <option value="">请选择区/县</option>
+    </select>
+    </span> </p>
+</div>
+<form method="post" id="from" action="?c=concert_sheet&a=xtd_xq_list&ctfrom=<?=$ctfrom;?>">
+	<input id="id" type="hidden" name="id" value="<?=$pt_id;?>" />
+	<input type="hidden" name="sub" value="1">
+	<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+		<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+		    <li>合作方项目清单协调单详情</li>
+		 </ul>
+		<div id="tab-basic">
+			<ul class="main-form">
+				<li>
+					<label class="field">企业名称</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="name" name="name" value="<?=$name;?>" dataType="Require" msg="请输入合作方名称！"   class="input"/>
+					</span> 
+					<label class="field">地点</label>
+					<em>*</em>
+					<span>
+				        <input type="text" id="areaaddr"  name="areaaddr" value="<?=$areaaddr;?>"  readOnly/>
+				        <i class="i-select" id="select-region" style="vertical-align: bottom;"></i>
+					</span>
+				</li>
+				<li>
+					<label class="field">办公地址</label>
+					<em></em>
+					<span>
+						<textarea cols="44" rows="3" id="epaddr" name="epaddr" style="width:490px;">如有生产地址，请一并写出</textarea>
+					</span> 
+				</li>
+				<li>
+					<label class="field">联系人</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="person" name="person" value="<?=$person;?>"   class="input"/>
+					</span> 
+					<label class="field">联系电话</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="person_tel" name="person_tel" value="<?=$person_tel;?>"   class="input"/>
+					</span> 
+				</li>
+				<li>
+					<label class="field">地点附近车站及路途</label>
+					<em></em>
+					<span>
+						<input type="text" id="station" name="station" value="<?=$station;?>"  class="input"/>
+					</span>
+					<label class="field">申请体系</label>
+					<em></em>
+					<span >
+							<label>
+								<input type="text"    id="audit_ver" name="audit_ver[<?=$audit_ver;?>]" class="audit_ver" value="<?=$audit_ver;?>" />
+	        					<i id="select-audit_ver" class="i-select" style="vertical-align: bottom;" ></i>
+	       					 </label>
+					</span>
+			    </li>
+				<li>
+					<label class="field">人数</label>
+					<em></em>
+					<span>
+						<input type="text" id="renshu" name="renshu" value="<?=$renshu;?>" class="input" />
+					</span> 
+					
+			    </li>
+				<li>
+					<label class="field">范围</label>
+					<em></em>
+					<span>
+						<textarea cols="44" rows="3" id="scope" name="scope" style="width:490px;"></textarea>
+					</span> 
+				</li>
+				<li>
+					<label class="field">合作方备注</label>
+					<em></em>
+					<span>
+						<textarea cols="44" rows="3" id="partner_note" name="partner_note" style="width:490px;"></textarea>
+					</span> 
+				</li>
+
+			</ul>
+			<p>
+				<center style="margin-bottom: 10px;">
+					<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+					<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>" title="关闭窗口">返回列表</a>
+				</center>
+			</p>
+		</div>
+	</div>
+</form>
+
+</body>
+<script type="text/javascript">
+$(function(){
+	$('button.submit-btn').on('click',function(){
+    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+    $('#from').submit();
+  });
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+});
+</script>
+</html>

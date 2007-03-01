@@ -1,0 +1,251 @@
+<?php tpl('header')?>
+<body>
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top ui-state-active">
+		    	<a href="?c=development&a=feiyong">
+		    		审核员项目结算
+		      	</a>
+		    </li>
+	  	</ul>
+  	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+  	   		<form  method="post" id="from" action="?c=development&a=save">
+  	   		
+				<table class="grid-table tal" style="width: 99%;text-align: center;" id="tb">
+					<thead>
+						<tr>
+							<th colspan="2">企业名称</th>
+							<th colspan="5"><?=$detail['ep_name']?></th>
+
+							<th>审核类型</th>
+							<th colspan="2"><?=implode(',',array_unique($leixing));?></th>
+
+							<th>认证体系</th>
+							<th colspan="2"><?=implode(',',array_unique($tixi));?></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td colspan="2">审核时间</td>
+							<td colspan="11">
+								<?php foreach ($tasks as $task):?>
+									<p><?=$task['task_type'];?>:<?=$task['tb_date'];?> 至 <?=$task['te_date'];?> (<?=$task['dates'];?>天)</p>
+								<?php endforeach;?>
+							</td>
+						</tr>
+
+						<tr>
+							<td><b>审核员 </b></td>
+							<td><b>审核类型 </b></td>
+							<td><b>实际审核的体系数 </b></td>
+							<td><b>审核员资格 </b></td>
+							<td><b>是否专业 </b></td>
+							<td><b>组内身份 </b></td>
+							<td><b>文审/报告费 </b></td>
+							<td><b>单人日费用 </b></td>
+							<td><b>审核人日 </b></td>
+							<td><b>其他人日 </b></td>
+							<td><b>合计人日 </b></td>
+							<td><b>交通费</b></td>
+							<td><b>总费用  </b></td>
+						</tr>
+						<?php 
+							foreach($detail['task'] as $task):
+							foreach($task['team'] as $team):
+								$tixi = array();
+								$major = 'unmajor';
+								$team['audit_code'] = explode('；',$team['audit_code']);
+								foreach($team['project'] as $key => $project)
+								{
+									$project['audit_code'] = explode('；',$project['audit_code']);
+									if( $major=='unmajor'&&!empty(array_intersect($team['audit_code'],$project['audit_code'])) )$major='major';
+									$project['audit_code'] = implode('；',$project['audit_code']);
+									$tixi[] = $key;
+								}
+								$team['audit_code'] = implode('；',$team['audit_code']);
+
+								$cont   = !empty($contSetting[count($team['project'])])?$contSetting[count($team['project'])]:$contSetting[0];
+								
+								$leader = ($team['role']=='01')?'leader':'unleader';
+								$senior = 'senior';//$senior = ($team['qua_type']=='01')?'senior':'unsenior';
+
+								$ws     = 0;
+								$tixi_num = count($team['project']);
+								switch ($tixi_num) {
+									case '1':
+										$team['tixi_num'] = "单标";
+										break;
+									case '2':
+										$team['tixi_num'] = "双标";
+										break;
+									case '3':
+										$team['tixi_num'] = "三标";
+										break;
+									default:
+										break;
+								}
+
+								switch ($team['audit_type']) {
+									case '1001':
+									case '1002':
+									case '1007':
+										$ws = $cont[$leader]['ws']?$cont[$leader]['ws']:0;
+										break;
+									case '1004':
+									case '1005':
+										$ws = $cont[$leader]['jd']?$cont[$leader]['jd']:0;
+										break;
+									default:
+										$ws     = 0;
+										break;
+								}
+								$a = $b = $c = '0';
+								foreach ($team['qua_types'] as $key => $value) 
+								{
+									if ($value['qua_type'] != '03')            {$a = '1';}	
+									if ($value['qua_type'] == '03'&&$a == '1') {$b = '1';}
+									if ($value['qua_type'] == '01')      	   {$c = '1';}
+									if($a=='0')
+									{
+										$team['qua_types']  =  "实习审核员";
+									}
+									if($a=='1'&& $b=='1')
+									{
+  										$team['qua_types']  =  "部分实习";
+									}
+									if($c=='1')
+									{
+  										$team['qua_types']  =  "高级审核员";
+									}
+									if($a=='1'&& $c=='0' && $b !='1')
+									{
+  										$team['qua_types']  =  "审核员";
+									}
+									if($value['qua_type']   == '04')
+									{
+  										$team['qua_types']  =  "技术专家";
+									}
+ 
+								}
+
+								
+								(in_array($team['audit_type'],array('1001','1002','1007'))?$cont[$leader]['ws']:$cont[$leader]['jd']);
+								$rtf    = $cont[$leader][$senior][$major];
+								//一阶段不去现场人天费为0
+								if( $team['contract']['is_site']=='0'&&$team['audit_type']=='1002' )
+								$rtf    = 0;
+				                $rt     = timediff($team['taskBeginDate'],$team['taskEndDate']);
+						?>
+							<tr class="row">
+								<input type="hidden" name="eid"             value="<?=$team['eid']?>"                 size='5'>
+								<input type="hidden" name="tid[]"             value="<?=$team['tid']?>"               size='5'>
+								<input type="hidden" name="ct_id"           value="<?=$team['contract']['ct_id']?>"   size='5'>
+								<input type="hidden" name="month"           value="<?=$_GET['month']?>"               size='5'>
+								<input type="hidden" name="ctfrom"          value="<?=$detail['ctfrom']?>"            size='5'>
+								<input type="hidden" name="uid[]"           value="<?=$team['uid']?>"                 size='5'>
+								<input type="hidden" name="tk_num[]"        value="<?=$task['tk_num']?>"              size='5'>
+								<input type="hidden" name="is_site[]"       value="<?=$team['contract']['is_site']?>" size='5'>
+								<input type="hidden" name="taskBeginDate[]" value="<?=$team['taskBeginDate']?>"       size='5'>
+								<input type="hidden" name="taskEndDate[]"   value="<?=$team['taskEndDate']?>"         size='5'>
+								<input type="hidden" name="qua_type[]"      value="<?=$team['qua_type']?>"            size='5'>
+								<td>
+									<?=$team['name']?>
+								</td>
+								<td>
+									<?=$arr_audit_type[$team['audit_type']]?>
+									<input type="hidden" name="audit_type[]" value="<?=$team['audit_type']?>" size='5'>
+								</td>
+								<td>
+									<?=$team['tixi_num']?>
+									<input type="hidden" name="project[]" value="<?=count($team['project']);?>" size='5'>
+									<input type="hidden" name="tixi[]"   value="<?=implode(',',array_unique($tixi));?>" size='5'>
+								</td>
+								<td>
+									<?=$team['qua_types'];?>
+								</td>
+								<td>
+									<?=( $major=='major' )?'专业':'非专业';?>
+									<input type="hidden" name="audit_code[]" value="<?=$team['audit_code']?>" size='5'>
+								</td>
+								<td>
+									<?=($team['role']=='01')?'组长':'组员';?>
+									<input type="hidden" name="role[]" value="<?=$team['role']?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="ws[]"   value="<?=$ws?>"  	 class="ws"	   size='5'>
+								</td>
+								<td>
+									<input type="text" name="rtf[]"  value="<?=$rtf?>" 	 class="rtf"	   size='5'>
+								</td>
+								<td>
+									<input type="text" name="rt[]"   value="<?=$rt?>"    class="rt"      size='5'>
+								</td>
+								<td>
+									<input type="text" name="qtrt[]" value="<?=$qtrt?>"        size='5'>
+								</td>
+								<td>
+									<input type="text" name="hjrt[]" value="<?=$qtrt+$rt?>"        size='5'>
+								</td>
+								<td>
+									<input type="text" name="jtf[]" value="<?=$jtf?>"          size='5'>
+								</td>
+								<td>
+									<input type="text" name="zfy[]"  value="<?=$rt*$rtf+$ws?>" size='5'>
+								</td>
+							</tr>
+						<?php endforeach;endforeach;?>
+					</tbody>
+				</table>
+				<p>
+					<center style="margin-bottom: 10px;">
+						<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+						<a href="?c=development&a=feiyong" title="关闭窗口">返回列表</a>
+					</center>
+				</p>
+			</form>
+
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+	    $('button.submit-btn').on('click',function(){
+	    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+	    	$('#from').submit();
+	  	});
+  	})
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+  
+	$('.row input').keyup(function ()
+	{
+//		console.log();
+		if(this.name == 'zfy[]')return;
+		var row    = $(this).parent().parent();
+		var ws     = row.find('td input[name="ws[]"]').val()||0;
+		var rt     = row.find('td input[name="rt[]"]').val()||0;
+		var qtrt   = row.find('td input[name="qtrt[]"]').val()||0;
+		var rtf    = row.find('td input[name="rtf[]"]').val()||0;
+		var hjrt   = row.find('td input[name="hjrt[]"]').val()||0;
+		var jtf    = row.find('td input[name="jtf[]"]').val()||0;
+		var hjrts  = parseFloat(rt)+parseFloat(qtrt);
+		
+		row.find('td input[name="hjrt[]"]').val(hjrts);
+		var zongji    = parseFloat(rtf) * parseFloat(hjrts)+parseFloat(ws) + parseFloat(jtf);
+		
+		row.find('td input[name="zfy[]"]').val(zongji);
+	});
+
+    </script>
+</html>

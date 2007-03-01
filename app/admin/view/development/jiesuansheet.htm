@@ -1,0 +1,159 @@
+<?php tpl('header')?>
+<body>
+	<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+		<input type="hidden" name="c" value="<?=$c;?>" />
+		<input type="hidden" name="a" value="<?=$a;?>" />
+		<input type="hidden" name="status" value="<?=$status;?>" />
+		<table>
+		    <tr>
+		        <td class="left">月份:</td>
+		        <td class='right'>
+		            <input type='text' value="<?=$month?>" name="month" class="input-date" />
+		        </td>
+		        <td class="left">合同来源：</td>
+			    <td class="right"><select id="ctfrom" name="ctfrom" class='fselect'><option value=""></option><?=$ctfrom_select;?></select></td>
+		    </tr>
+		</table>
+	  	<p class="button-panel">
+	    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+	    	&nbsp;
+	    	<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+	    	<button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出</button>
+		</p>
+	</form>
+	<br/>
+
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top <?=($status=='1')?'ui-state-active':''?>">
+		    	<a href="?c=development&a=jiesuansheet&status=1<?php gettourl();?>">
+		    		未结算
+		      	</a>
+		    </li>
+		     <li class="ui-state-default ui-corner-top <?=($status=='2')?'ui-state-active':''?>">
+		    	<a href="?c=development&a=jiesuansheet&status=2<?php gettourl();?>">
+		    		已结算
+		      	</a>
+		    </li>
+	  	</ul>
+  	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+  	   		<form method="post" id="from" action="?c=development&a=jiesuansave">
+  	   			<input type="hidden" name="status"     value="<?=$status;?>">
+  	   			<input type="hidden" name="months"      value="<?=$month;?>">
+			    <table class="grid-table tal" style="text-align: center">
+					<thead>
+						<tr>
+							<th>项目名称</th>
+							<th>企业规模</th>
+							<!--<th>结算单价</th>-->
+							<th>体系</th>
+							<!--<th>结算价</th>
+							<th>其他费用</th>
+							<th>结算总金额</th>-->
+							<th>审核成本</th>
+							<th>合同金额</th>
+							<th>实收金额</th>
+							<!--<th>额定税收</th>
+							<th>返款金额</th>-->
+							<th>金额结算</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>上月结转</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td><input type="text" name="jiezhuan" value="<?=$jiezhuan;?>" size='5'></td>
+						</tr>
+						<tr>
+							<td>预付款</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td><input type="text" name="yufukuan" value="<?=$yufukuan;?>" size='5'></td>
+						</tr>
+						<tr>
+							<td>开票扣税（5%）</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td>-</td>
+							<td><input type="text" name="koushui" value="<?=$koushui;?>" size='5'></td>
+						</tr>
+
+						<?php foreach ($results as $value):?>
+							
+							<tr>
+							    <input type="hidden" name="month[]" value="<?=$month;?>">
+								<input type="hidden" name="ctfrom[]" value="<?=$value['ctfrom'];?>">
+							    <input type="hidden" name="eid[]" value="<?=$value['eid'];?>" size='5'>
+							    <input type="hidden" name="ep_amount[]" value="<?=$value['ep_amount'];?>" size='5'>
+								<td><?=$value['ep_name'];?></td>
+								<td><?=$value['ep_amount'];?></td>
+								<!--<td><input type="text" name="jiesuandian[]" value="<?=$value['enterprises']['jiesuandian'];?>" size='5'></td>-->
+								<td><?=$value['countisos'];?></td>
+								<!--<td><input type="text" name="jiesuanjia[]" value="<?=$value['enterprises']['jiesuanjia'];?>" size='5'></td>
+								<td><input type="text" name="qitafeiyong[]" value="<?=$value['enterprises']['qitafeiyong'];?>" size='5'></td>-->
+								<!--<td><input type="text" name="jiesuanzongjine[]" value="<?=$value['enterprises']['jiesuanzongjine'];?>" size='5'></td>-->
+								<td><input type="text" name="shenhechengben[]" value="<?=$value['enterprises']['shenhechengben'];?>" size='5'  readonly></td>
+								<td><input type="text" name="hetongjine[]" value="<?=$value['enterprises']['hetongjine'];?>" size='5' readonly></td>
+								<td><input type="text" name="shishoujine[]" value="<?=$value['enterprises']['shishoujine'];?>" size='5' readonly></td>
+								<!--<td><input type="text" name="edingshuishou[]" value="<?=$value['enterprises']['edingshuishou'];?>" size='5'></td>
+								<td><input type="text" name="fankuanjine[]" value="<?=$value['enterprises']['fankuanjine'];?>" size='5'></td>-->
+								<td><input type="text" name="jiesuanjine[]" value="<?=$value['enterprises']['jiesuanjine'];?>" size='5'></td>
+							</tr>
+							
+						<?php endforeach;?>
+					</tbody>
+				</table>
+				<p>
+					<center style="margin-bottom: 10px;">
+						<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+					</center>
+				</p>
+			</form>
+			
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+	    $('button.submit-btn').on('click',function(){
+	    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+	    	$('#from').submit();
+	  	});
+
+	  	$( ".input-date" ).datepicker({
+			changeMonth	: true,
+			changeYear	: true,
+			dateFormat	: "yy-mm"
+		});
+		$('#export-xls-btn').click( function(){
+		var form = $('.search-form');
+		form.append($('<input type="hidden" name="export" value="1" />'));
+		form.submit();
+		form.find('input[name=export]').remove();
+	} );
+  	})
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</html>
+

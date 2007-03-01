@@ -1,0 +1,194 @@
+<?php tpl('header')?>
+<body>
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top ui-state-active">
+		    	<a href="?c=development&a=feiyong">
+		    		审核员项目结算
+		      	</a>
+		    </li>
+	  	</ul>
+  	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+  	   		<form  method="post" id="from" action="?c=development&a=save">
+  	   		
+				<table class="grid-table tal"style="width: 99%;text-align: center;">
+					<thead>
+						<tr>
+							<th colspan="2">企业名称</th>
+							<th colspan="5"><?=$detail['ep_name']?></th>
+
+							<th>审核类型</th>
+							<th colspan="2"><?=implode(',',array_unique($leixing));?></th>
+							<th>认证体系</th>
+							<th colspan="2"><?=$detail['audit_ver1'];?>	</th>	
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td colspan="2">审核时间</td>
+							<td colspan="11">
+								<?php foreach ($tasks as $task):?>
+									<p><?=$task['task_type'];?>:<?=$task['tb_date'];?> 至 <?=$task['te_date'];?> (<?=$task['dates'];?>天)</p>
+								<?php endforeach;?>
+							</td>
+						</tr>
+
+						<tr>
+							<td><b>审核员    </b></td>
+							<td><b>审核类型  </b></td>
+							<td><b>实际审核的体系数  </b></td>
+							<td><b>审核资质  </b></td>
+							<td><b>是否专业    </b></td>
+							<td><b>组内身份  </b></td>
+							<td><b>文审/报告费  </b></td>
+							<td><b>单人日费用  </b></td>
+							<td><b>审核人日  </b></td>
+							<td><b>其他人日  </b></td>
+							<td><b>合计人日  </b></td>
+							<td><b>交通费</b></td>
+							<td><b>总费用    </b></td>
+						</tr>
+						<?php 
+						foreach($detail['cost'] as $vo):
+							$tixi_num = $vo['project'];
+								switch ($tixi_num) 
+								{
+									case '1':
+										$vo['tixi_num'] = "单标";
+										break;
+									case '2':
+										$vo['tixi_num'] = "双标";
+										break;
+									case '3':
+										$vo['tixi_num'] = "三标";
+										break;
+									default:
+										break;
+								}
+							$a = $b = $c = '0';
+								foreach ($vo['qua_types'] as $key => $value) 
+								{
+									if ($value['qua_type'] != '03')            {$a = '1';}	
+									if ($value['qua_type'] == '03'&&$a == '1') {$b = '1';}
+									if ($value['qua_type'] == '01')      	   {$c = '1';}
+									if($a=='0')
+									{
+										$vo['qua_types']  =  "实习审核员";
+									}
+									if($a=='1'&& $b=='1')
+									{
+  										$vo['qua_types']  =  "部分实习";
+									}
+									if($c=='1')
+									{
+  										$vo['qua_types']  =  "高级审核员";
+									}
+									if($a=='1'&& $c=='0' && $b !='1')
+									{
+  										$vo['qua_types']  =  "审核员";
+									}
+									if($value['qua_type']   == '04')
+									{
+  										$vo['qua_types']  =  "技术专家";
+									}
+ 
+								}
+
+					    ?>
+							<tr class="row"> 
+								<input type="hidden" name="id[]" value="<?=$vo['id']?>" size='5'>
+								<td>
+									<?=$vo['name']?>
+								</td>
+								<td>
+									<?=$arr_audit_type[$vo['audit_type']]?>
+								</td>
+								<td>
+									<?=$vo['tixi_num']?>
+								</td>
+								<td>
+									<?=$vo['qua_types'];?>
+								</td>
+								<td>
+									<?=($vo['audit_code']!='')?'专业':'非专业';?>
+								</td>
+								<td>
+									<?=($vo['role']=='01')?'组长':'组员';?>
+								</td>
+								<td>
+									<input type="text" name="ws[]" value="<?=$vo['ws']?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="rtf[]" value="<?=$vo['rtf']?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="rt[]" value="<?=$vo['rt']?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="qtrt[]" value="<?=$vo['qtrt']?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="hjrt[]" value="<?=$vo['hjrt']?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="jtf[]" value="<?=$vo['jtf']?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="zfy[]" value="<?=$vo['zfy']?>" size='5'>
+								</td>
+							</tr>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+				<p>
+					<center style="margin-bottom: 10px;">
+						<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+						<a href="?c=development&a=feiyong" title="关闭窗口">返回列表</a>
+					</center>
+				</p>
+			</form>
+
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+	    $('button.submit-btn').on('click',function(){
+	    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+	    	$('#from').submit();
+	  	});
+  	})
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+  $('.row input').keyup(function ()
+	{
+//		console.log();
+		if(this.name == 'zfy[]')return;
+		var row    = $(this).parent().parent();
+		var ws     = row.find('td input[name="ws[]"]').val()||0;
+		var rt     = row.find('td input[name="rt[]"]').val()||0;
+		var qtrt   = row.find('td input[name="qtrt[]"]').val()||0;
+		var rtf    = row.find('td input[name="rtf[]"]').val()||0;
+		var hjrt   = row.find('td input[name="hjrt[]"]').val()||0;
+		var jtf    = row.find('td input[name="jtf[]"]').val()||0;
+		var hjrts  = parseFloat(rt)+parseFloat(qtrt);
+		
+		row.find('td input[name="hjrt[]"]').val(hjrts);
+		var zongji    = parseFloat(rtf) * parseFloat(hjrts)+parseFloat(ws) + parseFloat(jtf);
+		
+		row.find('td input[name="zfy[]"]').val(zongji);
+	});
+
+    </script>
+</html>

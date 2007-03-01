@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>详情</title>
+		<meta name="generator" content="editplus" />
+		<meta name="author" content="" />
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+		<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="theme/js/jquery.js"></script>
+		<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+		<script type="text/javascript" src="theme/js/common.js"></script>
+	</head>
+
+	<body>
+		<form method="get" action="" class="search-form tal" id="search-form" style='width:1050px;margin:0 auto;'>
+			<input type="hidden" name="c"    value="<?=$c;?>" />
+			<input type="hidden" name="a"    value="<?=$a;?>" />
+			<input type="hidden" name="date" value="<?=$date;?>" />
+			<input type="hidden" name="name" value="<?=$name;?>" />
+			<input type="hidden" name="rows" value="<?=empty($seleRow)?'':implode(',',$seleRow);?>" />
+			<table>
+				<tr>
+					<td class="left">考核名称:</td>
+					<td class='right'>
+						<select  name="seach_name" class='fselect' >
+							<option></option>
+							<?php foreach($examines as $examine):?>
+								<option <?=($seach_name==$examine['id']?'selected':'')?> value="<?=$examine['id']?>">
+								<?=$examine['name']?>
+								</option>
+							<?php endforeach;?>
+						</select>
+					</td>
+				</tr>
+			</table>
+			<br />
+			<p class="button-panel">
+				<button class="btn btn-submit" type="submit" id="export-cousuo-btn"> 搜 索 </button> &nbsp;
+				<button class="btn btn-button" type="butten" onclick=''>  
+                <a href="?c=examine&a=userinfoedit&exu_id=<?=$exu_id;?>" style="color: #666666">创建考核</a>
+				</button> &nbsp;
+				<button class="btn btn-button" onclick="clearForm(this.form);">清空</button> &nbsp;
+				<button class="btn btn-button" type="button" id="export-xls-btn" > 导出 数据</button> 
+			</p>
+		</form>
+		<br/>
+
+		<div id="toolTipLayer" style="position:absolute; visibility: hidden"></div>
+		<div style='width:1200px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+			<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+				<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>">
+					<a href="javascript:;">
+						考核详情
+						<span class="cnt-total">
+			      			<?=$total;?>
+			      		</span>
+					</a>
+				</li>
+			</ul>
+			<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+				<table class="grid-table tal">
+					<thead>
+						<tr>
+							
+							<th width="">姓名</th>
+							<th width="">考核项目</th>
+							<th width="">类型</th>
+							<th width="">变更分值</th>
+							<th width="">考核创建时间</th>
+							<th width="">考核人</th>
+							<th width="">考核内容</th>
+							<th width="">删除</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if( $results ):foreach( $results as $row ):
+?>
+						<tr align='center' data-id="<?=$row['id']?>" style="height:27px">							
+							<td>
+								<?=$row['name'];?>
+							</td>
+							<td>
+								<?=$row['ename'];?>
+							</td>
+                            <td>
+                            <?php 
+                                 if($row['types']==0)
+                                 {
+                                 echo "能力类";
+                                 }else{
+                                 echo "信用类";
+                                 }
+                            ?>								
+							</td>
+							<td>
+								<?=$row['day'];?>
+							</td>
+							<td>
+								<?=$row['createTime'];?>
+							</td>
+							<td>
+								<?=$row['creatname'];?>
+							</td>                          
+                            <td>
+					            <?php if($row['content']){?>
+						            <font face="Arial"><a href="#" title="<?=$row['content'];?>"><img src="theme/images/other.png" border=0 /></a></font>
+					            <?php } ?>
+				            </td>
+							<td align="center">
+								<a href="javascript:0" class="del"><img src="theme/images/b_drop.png" border=0 /></a>
+							</td>
+						</tr>
+						<?php endforeach;?>
+						<?php else:?>
+						<tr>
+							<td align="center" colspan="16">未找到相关记录</td>
+						</tr>
+						<?php endif;?>
+					</tbody>
+				</table>
+				<p>
+					<?=$pages['pages'];?>
+				</p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('.del').on('click', function(event) {
+			if (!confirm("确认要删除？")) 
+			{
+            	window.event.returnValue = false;
+	        }else{
+	        	var id      = $(this).parent().parent().data('id');
+				var data    = {'id':id};
+				var results = ajax(data,'userinfoListdel');
+				if(results.errorCode==0){
+					alert('删除成功');
+					window.location.href="?c=examine&a=userinfolist&exu_id=<?=$exu_id;?>"; 
+				}else{
+					alert('删除失败');
+				}
+	        }
+		});
+    selectRow();
+	$(".sys_main input[type='checkbox']").on('change',selectRow);
+	$('#export-xls-btn').click( do_export_xls );
+	$('#export-cousuo-btn').click( do_export_xls );
+		});
+    function selectRow()
+		{
+			var seleRow = [];
+			$(".sys_main input[type='checkbox']").each(function()
+			{
+				if($(this)[0].checked)
+				{
+					seleRow.push($(this).data('col'));
+					$(".col-"+$(this).data('col')).css('display','');
+				}else{
+					$(".col-"+$(this).data('col')).css('display','none');
+				}
+			});
+
+			seleRow = seleRow.length>0?seleRow.join(","):'';
+			$("#search-form input[name='rows']").val(seleRow);
+			$(".pages ul li a").each(function()
+			{
+				var pagurl = '';
+				if(  getParamsByUrl($(this).attr('href'),'rows') ){
+					pagurl = $(this).attr('href').replace(/(\\?|\\&)rows=([^\\&]+)/, "rows="+seleRow);
+				}else{
+					pagurl = $(this).attr('href')+'&rows='+seleRow;
+				}
+				$(this).attr('href',pagurl);
+			});
+		}
+		function do_export_xls(){
+			
+			var form = $('#search-form');
+			form.append($('<input type="hidden" name="export" value="1" />'));
+			form.append($('<input type="hidden" name="exu_id" value="<?=$exu_id;?>" />'));
+			// form.append($('<input type="hidden" name="seach_name" value="<?=$seach_name;?>" />'));
+			form.submit();
+			form.find('input[name=export]').remove();
+		}
+
+		function getParamsByUrl(url,name)
+		{ 
+			var theRequest = new Object(); 
+			if (url.indexOf("?") != -1)
+			{ 
+				var str = url.substr(1);strs = str.split("&"); 
+				for(var i = 0; i < strs.length; i ++)
+				{ 
+					if(strs[i].split("=")[0]=='i')continue;
+					if(strs[i].split("=")[0]=='c')continue;
+					if(strs[i].split("=")[0]=='m')continue;
+					if(strs[i].split("=")[0]=='do')continue;
+					if(strs[i].split("=")[0]=='r')continue;
+					theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]); 
+				} 
+			}
+			if(name)
+			{
+				return theRequest[name]?theRequest[name]:false;
+			}else{
+				return theRequest;
+			}
+		}
+		function clearForm(objE) {
+			$(objE).find(':input').each(
+				function() {
+					switch(this.type) {
+						case "text":
+						case "select-one":
+							$(this).val('');
+							break;
+					}
+				}
+			);
+			
+		}
+
+	</script>
+
+</html>

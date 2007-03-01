@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>验证</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript">
+$(function(){ 
+	$("input.input-date").datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('.c-del').click(function(){ 
+		confirm_dialog('确认要取消本行程？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+}); 
+</script>
+</head>
+<body>
+<form method="post">  
+<div style="margin:0 auto;"  class="tal ui-tabs ui-widget ui-corner-all">
+	<div>
+		<table class="grid-table">
+			<tr> 
+				<th>行程类型</th>
+				<td>
+	                <select name="data_for">
+						<option value="2" <?=$data_for_2;?>>人员外出</option>
+						<option value="5" <?=$data_for_5;?>>培训讲课</option>
+						<option value="6" <?=$data_for_6;?>>请假</option>
+				    </select>
+				</td>
+			</tr>
+            <tr>
+				<th>开始日期</th>
+				<td><input type="text" id="taskBeginDate" name="taskBeginDate" value="<?=$taskBeginDate;?>" class="input-date" />
+	                <select name="yjdst_time">
+						<option value="08:30" <?=$yjdst_bm_8;?>>上午</option>
+						<option value="13:30" <?=$yjdst_bm_13;?>>下午</option>
+				    </select>
+				</td>
+            </tr>
+            <tr>
+				<th>结束日期</th>
+				<td><input type="text" id="taskEndDate" name="taskEndDate" value="<?=$taskEndDate;?>" class="input-date" />
+	                <select name="yjded_time">
+						<option value="12:00" <?=$yjded_bm_12;?>>上午</option>
+						<option value="17:30" <?=$yjded_bm_17;?>>下午</option>
+				    </select>
+				</td> 
+			</tr> 
+            <tr>
+				<th>备注</th><td><textarea name="note" style="width:400px; height:50px;"><?=$auditorInfo['note']?></textarea></td> 
+			</tr> 
+				<tr>
+              	<td align="center" colspan="9"> 
+                <button style="margin-right:10px" class="btn btn-submit" type="submit"> 保 存 </button>
+				<button class="btn btn-button c-del" href="?c=<?=$c;?>&a=<?=$a;?>&del=1&tatid=<?=$tatid;?>" type="submit"> 取消行程 </button>
+                </td>
+              </tr>
+		</table> 
+	</div>
+</div>
+</body>
+</html>

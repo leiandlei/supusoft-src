@@ -1,0 +1,77 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同来源</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script>
+$(function(){
+	$('.c-del').click(function(){ 
+		confirm_dialog('确定删除配置信息？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});  
+})
+
+</script>
+<script type="text/javascript">
+	function delete_msg(id){
+		$.post("?c=setting_files&a=check_id",{'id' : id},function(r){
+    		if(r == 'ok'){
+    			if(confirm('删除时会把子目录也一并删除，确定删除吗？')){
+        			location.href='?c=setting_files&a=del&id='+id;
+    			}
+    		}else {
+    			if(confirm('你是否要确定删除此目录')){
+    				location.href='?c=setting_files&a=del&id='+id;
+    			}
+    		}
+    	});
+	}
+</script>
+</head>
+
+<body>
+
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">文档分类设置</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<table class="form-table">
+	<tr>
+		<th width="160">级别</th>
+		<th>名称</th>
+		<th width="150">操作</th>
+		<th width="60">排序</th>
+	</tr>
+<?php
+if( $datas ){
+	foreach( $datas as $id => $row ){
+		$width = $row['lv']*20;
+?>
+	<tr>
+		<td align='center'><?=$row['lv'];?></td>
+		<td height='24'><font style='padding-left:<?=$width?>px'><?=$pad?>&nbsp;<?=$row['name'];?></font></td>
+		<td><?php if($row['lv']<5){?><a href="?c=setting_files&a=add&id=<?=$row['id'];?>">添加子级</a><?php }else{echo "<font style='padding-left:51px'></font>";}?> &nbsp; | &nbsp; <a href="?c=setting_files&a=edit&id=<?=$row[id]?>"><img src="theme/images/b_edit.png" border=0 /></a> &nbsp; | &nbsp; <a href="?c=<?=$c;?>&a=del&type=<?=$type?>&to=<?=$a;?>&id=<?=$row['id'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+		<td align="center"><?=$row['num'];?></td>
+	</tr>
+<?php
+	}
+}
+?>
+</table>
+
+	<p style="margin:20px auto 0;width:850px;">
+		<a href="?c=setting_files&a=add">添加顶级</a>
+	</p>
+
+	</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title><?=$nav_title?></title>
+  <link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+  <link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="theme/js/jquery.js"></script>
+  <script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+  <script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+  <script type="text/javascript" src="theme/js/jquery.url.js"></script>
+  <script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+  <script type="text/javascript" src="theme/js/validator.js"></script>
+  <script type="text/javascript" src="theme/js/region.js"></script>
+  <script type="text/javascript" src="theme/js/common.js"></script>
+  <script>
+  $(function(){
+  	$('#debug').click(function(){
+  		 $('#mydebug').toggle(); 
+           $('#debug_nav a').click(function(e) {
+              e.preventDefault();//阻止a链接的跳转行为 
+              $(this).tab('show');//显示当前选中的链接及关联的content 
+          })
+   	}) 
+  })
+  </script>
+</head>
+<!--开启debug按钮-->  
+<? if(DEBUG):?>
+<div id="debug" style="position:fixed; top:50%; right:10px; width:50px; height:50px; color:red; border:1px solid #000; z-index:2001;">调试</div> 
+<? endif;?>
+<div id="mydebug" style="position:fixed; background:#fff; display:none; z-index: 2000;left: 0px;right: 0px;bottom: 0px; height: 235px; overflow:scroll;">
+       <table border="1" width="100%" cellpadding="0" cellspacing="0" class="grid-table tal">
+      <? foreach($db->query_arr as $v):?>
+        <tr>
+          <td><?=$v;?></td> 
+        </tr>
+        <? endforeach;?>
+      </table>
+</div>

@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>分隔线</title>
+<style type="text/css">
+body{margin:0px;padding:0;font-size:12px}
+</style>
+</head>
+
+<body>
+
+<script type="text/javascript">
+ function ShowHideLeft(objtd){
+ if (parent.pageframe.cols=="180,11,*"){
+	parent.pageframe.cols="0,11,*";
+	objtd.innerHTML = '<img style="margin-left:-1px;" src="theme/images/b02.jpg" border=0 alt="显示左菜单" />';
+ }
+ else{
+    parent.pageframe.cols="180,11,*";
+    objtd.innerHTML = '<img style="margin-left:-1px;" src="theme/images/b01.jpg" border=0 alt="隐藏左菜单" />';
+ }
+ }
+</script>
+<body bgcolor="376da4">
+
+<table border="0" cellpadding="0" cellpadding="0" height="500" align="center" >
+	<tr height="100%">
+		<td align="center" valign="middle" onMouseOver="" onClick="ShowHideLeft(this);">
+			<img style="margin-left:-1px;" src="theme/images/b01.jpg" border=0 alt="隐藏左菜单" />
+		</td>
+	</tr>
+</table>
+
+</body>
+</html>

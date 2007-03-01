@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同列表</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+    $(function() {
+    	$( "#contract-tab" ).tabs({
+    		collapsible: false
+    	});
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+        $( "#enterprise2-tab" ).tabs({
+            collapsible: false
+        });
+        $( "#enterprise1-tab" ).tabs({
+            collapsible: false
+        });
+        $( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+    });
+    function check_form(obj){
+       /* $("#check_tab").find();
+		if(Validator.Validate(obj,2)){
+			return true;
+		}else{
+			return false;
+		}*/
+    }
+    </script>
+</head>
+
+<body> 
+<?php echo ot_tabinfo(0, '750px');?>
+ 
+<div id="enterprise1-tab" style="margin: 0 auto; width: 750px;" class="tal">
+<form name="winput" method="post" action="" onsubmit="return check_form(this)">
+	<ul>
+		<li><a href="#tab-basic">收费明细<?=$str?></a></li>
+	</ul>
+	　
+<div id="tab-basic"> 
+	<ul class="main-form">
+		<li>
+			<label class="field">发票号码：</label><em></em>
+			<span><input type="text" name='invoice' value='<?=$financeInfo[invoice]?>' style="width: 160px;" dataType="Require" msg="发票号码不能为空！" /><font color="#FF0000">*</font></span> 
+			<label class="field2">发票金额：</label><em></em>
+			<span><input type="text" name='invoice_cost' value='<?=$financeInfo[invoice_cost]?>' style="width: 160px;" dataType="Require" msg="发票金额不能为空！"/><font color="#FF0000">*</font></span>
+		</li>
+		<li>
+			<label class="field">开票日期：</label><em></em>
+			<span><input type="text" name='invoice_date' class='input-date' value='<?=$financeInfo[invoice_date]?>' style="width: 160px;" dataType="Require" msg="开票日期不能为空！"/><font color="#FF0000">*</font></span> 
+			<label class="field2">币种：</label><em></em>
+			<span><select name="currency"  style="width: 166px;" dataType="Require" msg="币种不能为空！"><?=$currency_select?></select><font color="#FF0000">*</font></span>
+		</li>
+		<li>
+			<label class="field">备注：</label><em></em>
+			<span><textarea name="note" style="width: 540px; height: 100px;"><?=$financeInfo[note]?></textarea></span>
+		</li>
+		<li style=" text-align:center;"> 
+            <input type="checkbox" name="status" value="1" <? if($contractInfo['status']=='y'){ ?> checked="checked" <? } ?> />已交完
+			 <button class="btn btn-submit" type="submit">  保 存 </button> 
+		</li>
+	</ul>
+
+</div>
+</form>
+</div>
+</body>
+</html>

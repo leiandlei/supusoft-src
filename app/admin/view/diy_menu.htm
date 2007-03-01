@@ -1,0 +1,85 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>自定义菜单</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+</head> 
+<body> 
+<div style="margin:0 auto 12px;width:750px;">
+	<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+			<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">自定义菜单</a></li>
+		</ul>
+		<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<table width="100%" class="grid-table">
+	<tr>
+		<th width="100">添加顶级菜单：</th>
+		<td width="240">
+<form method="post" action="?c=diy_menu&a=add">
+<input type="hidden" name="step" value="1" />
+			<label>名称：<input type="text" name="name" value="" class="input" size="20" /></label>
+			<button type="submit" class="btn btn-submit"> 添加 </button>
+</form>
+		</td>
+		<th width="110">登录后跳转至：</td>
+		<td>
+<form method="post" action="?c=setting&a=jumpset">
+<input type="hidden" name="step" value="1" />
+			<label><input type="radio" name="jump" value="uc" <?=$jumptype_uc;?>/> 个人中心</label> &nbsp; 
+			<label><input type="radio" name="jump" value="default" <?=$jumptype_default;?>/> 认证业务</label> &nbsp; 
+			<button type="submit" class="btn btn-submit"> 保存 </button>
+</form>
+		</td>
+	</tr>
+</table>
+<br/>
+<table width="100%" class="form-table">
+	<tr>
+		<th align="center" width="40">排序</th>
+		<th align="center" width="120">名称</th>
+		<th>链接</th>
+		<th align="center" width="200">操作</th>
+	</tr>
+<?php
+if( $menus ){
+	foreach( $menus as $mid => $menu ){
+?>
+	<tr>
+		<td align="center"><input type="text" name="vieworder[<?=$mid;?>]" value="<?=$menu['vieworder'];?>" class="input" size="3" /></td>
+		<td><?=$menu['space'];?><?=$menu['name'];?></td>
+		<td></td>
+		<td align="right">
+			<a href="?c=diy_menu&a=add&parent_id=<?=$mid;?>">添加菜单项</a> &nbsp | &nbsp 
+			<a href="?c=diy_menu&a=edit&mid=<?=$mid;?>">编辑</a> &nbsp | &nbsp 
+			<a href="">删除</a> &nbsp;</td>
+	</tr>
+	<?php if( !$items[$mid] ){ echo 'aa'; continue;}?>
+	<tbody id="mid-<?=$mid;?>">
+	<?php foreach( $items[$mid] as $iid => $item ):?>
+	<tr>
+		<td align="center"><input type="text" name="vieworder[<?=$mid;?>]" value="<?=$item['vieworder'];?>" class="input" size="3" /></td>
+		<td> &nbsp; &nbsp; <?=$item['name'];?></td>
+		<td><?=$item['jump'];?></td>
+		<td align="right">
+			<a href="?c=diy_menu&a=edit&mid=<?=$iid;?>">编辑</a> &nbsp | &nbsp 
+			<a href="">删除 &nbsp;</a>
+		</td>
+	</tr>
+	<?php endforeach;?>
+	</tbody>
+<?php
+	}
+}
+?>
+</table> 
+		</div>
+	</div>
+</div>
+
+
+</body>
+</html>

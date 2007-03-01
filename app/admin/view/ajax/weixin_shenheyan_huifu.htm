@@ -1,0 +1,42 @@
+<? tpl('header')?>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript" src="theme/js/region.js"></script>
+</head>
+<body>
+	<form method="post" id="from" action="?c=training&a=infoEdit">
+		<div id="tab-basic">
+			<ul class="main-form">
+				<li style="margin-left:-62%;">
+					<label class="field">联系方式</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="tel" name="tel" value="" class="input" dataType="Require" msg="请输入联系方式"/>
+					</span> 
+			    </li>
+
+				<li style="margin-left:-20%;">
+					<label class="field">回复内容</label>
+					<em>*</em>
+					<span>
+						<textarea id="content" name="content" rows="3" cols="74" style="width:490px;" dataType="Require" msg="请输入回复内容"></textarea>
+					</span> 
+				</li>
+			</ul>
+		</div>
+		
+		<p>
+		<center style="margin-bottom: 10px;">
+			<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+		</center>
+	</form>
+</body>
+<script type="text/javascript" charset="utf-8">
+	$(function(){
+		$('.submit-btn').on('click', function(event) {
+			if( !Validator.Validate( document.forms[0], 2 ) ) return;
+			var data = {'tel':$('#tel').val(),'content':$('#content').val()}
+			window.parent.huifuAction(data);
+		});
+	})
+</script>
+</html>

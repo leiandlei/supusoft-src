@@ -1,0 +1,283 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员代码编辑</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script>
+$(function() {
+ 	//标签
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+ 	//日期
+        $( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+		});   
+	//添加业务代码
+		$('.add-audit-code-btn').on('click', select_code );
+ 	 //验证删除
+    	$('.c-del').click(function(){
+    		confirm_dialog('确定要删除吗！', $(this).attr( 'href' ), 'warning' );
+    		return false;
+     });
+	 $('#evaluater').on( 'click', select_pduser );
+	 
+	 
+	 
+ }); 
+//选择业务代码
+function select_code(){
+	var $this = $(this);
+	var iso = $this.attr( 'rel' );
+	var tbody = $this.parent().parent().find('.audit-codes');
+ 	var href = '?c=ajax&a=select_code&iso=' + iso;
+ 	$('<iframe border="0" frameborder="no" src="' + href + '" />').dialog({
+		title: '选择专业代码',
+		autoOpen: true,
+		width: 800,
+		height: 420,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		overlay: {opacity: 0.5,background: "black"},
+		close: function(ev,ui){$(this).remove();},
+		buttons: {
+			'取消'	: function(){$(this).dialog('close');},
+			'确定'	: function(){
+				var audit_code_arr = new Array();
+				var use_code_arr = new Array();
+				var audit_input = $this.parent().parent().find('input.audit-code');
+				var use_input = $this.parent().parent().find('input.use-code');
+				var old_audit_code = audit_input.val();
+				var old_use_code = use_input.val();
+				$(this).contents().find('input[name="code[]"]:checked').each(function(index){
+					var _this = $(this);
+					var audit_code = _this.val();
+					var use_code = _this.attr("i");
+					use_code_arr[index] = use_code;
+					audit_code_arr[index] = audit_code;
+					 
+				});
+				audit_input.val( ( old_audit_code ? old_audit_code+'；' : '' ) + audit_code_arr.join('；') );
+				use_input.val( ( old_use_code ? old_use_code+'；' : '' ) +use_code_arr.join('；') ); 
+				$(this).dialog('close');
+			}
+		},
+		open	: function(){
+			var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+			btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+		}
+	}).width(780);
+}
+ function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+var $this = null;
+function select_pduser(){ 
+	//var iso=$(this).attr("iso");
+	//var audit_code=$(this).attr("code");
+	//var href = '?c=ajax&a=select_zy_name&iso='+iso+'&audit_code='+audit_code;
+	iso=$("input[name=iso]").val();
+	var href = '?c=ajax&a=select_teacher&step=3&use_code='+$(".use-code").val()+"&iso="+iso;
+ 	$this = $(this).parent().find("input"); 
+	$('<iframe border="0" id="frame1" frameborder="no" src="' + href + '" />').dialog({
+		title: '选择专业管理人员',
+		autoOpen: true,
+		width: 600,
+		height: 380,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		overlay: {opacity: 0.5,background: "black"},
+		close: function(ev,ui){$(this).remove();}
+	}).width(600 - 30).height(380);
+}
+
+
+function update_user( uid, name ){
+	var val=$this.val();
+	if(val)
+	val+="；";
+	val+=name;
+	$this.val(val);
+
+	$('#frame1').dialog('close');
+}
+</script>
+</head>
+
+<body>
+<form method="post" action="?c=hr_code&a=edit" class="search-form tal" style='width:1050px;margin:0 auto;'>
+  <input type="hidden" name="uid" value="<?=$uid?>" />
+  <input type="hidden" name="id" value="<?=$id?>" />
+  <input type="hidden" name="iso" value="<?=$iso?>" />
+  <input type="hidden" name="paged" value="<?=$paged;?>" />
+  <table>
+    <tr>
+      <!--<td class="left">专业代码：</td>
+      <td class="right"><input type="text" name="audit_code" value="<?=$audit_code;?>"  class="input finput"/></td>-->
+       <td class="left">分组代码：</td>
+      <td class="right"><input type="text" name="use_code" value="<?=$use_code;?>"  class="input finput"/></td>
+      <td class="left"></td>
+      <td class="right"></td>
+    </tr>
+  </table>
+  <p class="button-panel">
+    <button class="btn btn-submit" type="submit"> 搜 索 </button>&nbsp;
+    <button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+    &nbsp; </p>
+</form>
+</br>
+<div style='width:1050px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top <?=$status_n_tab;?>"><a href="javascript:;">&lt;
+      <?=$user_info['name']?>
+      &gt;的业务代码
+      <?=$count?>
+      </a></li>
+    <li class="ui-state-default ui-corner-top"><a href="?c=hr_code&a=edit&uid=<?=$uid?>&iso=<?=$iso?>">登记业务代码</a></li>
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <table width='100%' class='grid-table'>
+      <tr>
+        <th align='center' width="30">编辑</th>
+        <th align='center'>体系</th>
+        <th align='center'>能力来源</th>
+        <th align='center'>专业</th>
+        <th align='center'>资格类型</th>
+        <th align='center'>通过日期</th>
+        <th align='center'>备注</th>
+        <th align='center'>是否认证决定</th>
+        <th align='center' width="30">删除</th>
+      </tr>
+      <?php
+if($hacs){
+	foreach($hacs as $row){
+?>
+      <tr>
+        <td align="center"><a href="?c=<?=$c?>&a=edit&uid=<?=$uid?>&iso=<?=$row['iso'];?>&id=<?=$row['id']?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+        <td align="center"><?=$row['iso_V'];?></td>
+        <td align="center"><?=$row['source'];?></td>
+        <td align="center"><?=$row['use_code'];?></td>
+        <td align="center"><?=read_cache("qualification",$row['qua_type']);?></td>
+        <td align="center"><?=$row['pass_date'];?></td>
+        <td align="center"><?php if($row['note']){?>
+          <font face="Arial"><a href="#"  title="<?=$row['note'];?>"><img src="theme/images/other.png" border=0 /></a></font>
+          <?php } ?></td>
+        <td align="center"><?=$row['is_assess'];?></td>
+        <td align="center"><a href="?c=<?=$c?>&a=edit&uid=<?=$uid?>&iso=<?=$row['iso'];?>&id=<?=$row['id']?>&action=1" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+      </tr>
+      <?php
+	}
+} else {
+?>
+      <tr>
+        <td align="center" colspan="10">没有找到数据</td>
+      </tr>
+      <?php
+}
+?>
+    </table>
+    <p>
+      <?=$pages['pages'];?>
+    </p>
+  </div>
+</div>
+<br/>
+<br/>
+<form method="post" name="winput" action="?c=hr_code&a=save"  onsubmit="return Validator.Validate(this,2);" >
+  <input type="hidden" name="id" value="<?=$rows[id]?>" />
+  <input type="hidden" name="uid" value="<?=$uid?>" />
+  <input type="hidden" name="iso" value="<?=$iso?>" />
+  <input type="hidden" name="qua_id" value="<?=$_GET['qua_id']?>" />
+  <div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal">
+    <ul>
+      <li><a href="#tab-basic">
+        <?=$tip_msg?>
+        </a></li>
+    </ul>
+    <div id="tab-basic">
+      <ul class="main-form">
+        <li>
+          <label class="field">体系:</label>
+          <em></em> <span>
+          <?=$iso_V?>
+          </span> </li>
+        <li>
+          <label class="field">专业代码：</label>
+          <em>*</em> <span>
+          <input type="hidden" size="45" class="use-code" name="use_code"  value="<?=$rows['use_code'];?>" readonly="readonly" />
+          <input type="text" size="45" class="audit-code" name="audit-code"  value="<?=$rows['audit-code'];?>" readonly="readonly" />
+          <?php if(!$id) {?>
+          <button type="button" class="btn btn-button add-audit-code-btn" rel="<?=$rows['iso'];?>">添加</button><?php }  ?>
+          </span> </li>
+        <li>
+          <label class="field">能力来源：</label>
+          <em></em> 
+          <!--          <select name="source" style="width:138px">
+            <?=$source_select?>
+          </select>-->
+          <?=$skill_source_checkbox ?>
+        </li>
+        <li>
+          <label class="field">评定人员：</label>
+          <em>*</em>
+          <input type="text" name="evaluater" value="<?=$rows[evaluater]?>" dataType="Require" msg="请添加评定人员！"/>
+                    <button class="btn" id="evaluater"  type="button">添加</button> 
+          
+        </li>
+    
+        <li>
+          <label class="field">通过日期：</label>
+          <em>*</em> <span>
+          <input type="text" name="pass_date" value="<?=$rows[pass_date]?>"  class='input-date' style='width:130px' dataType="Require" msg="通过日期不能为空！"/>
+          </span> </li>
+        
+        <li>
+          <label class="field">备注：</label>
+          <em></em> <span>
+          <textarea name="note" style="width:300px;height:40px;"><?=$rows[note]?>
+</textarea>
+          </span> </li>
+        <li>
+          <label class="field"></label>
+          <em></em> <span>
+          <p>
+            <center>
+              <button class="btn btn-submit" type="submit"> 保 存 </button>
+            </center>
+          </p>
+          </span> </li>
+        <li>
+          <label class="field">全部业务代码：</label>
+          <em></em>
+          <div style="width:655px; word-wrap:break-word; padding-left:30px;"><?=$ucode_str;?></div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</form>
+</body>
+</html>

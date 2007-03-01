@@ -1,0 +1,92 @@
+<?php tpl('header')?>
+<body>
+	<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+		<input type="hidden" name="c" value="<?=$c;?>" />
+		<input type="hidden" name="a" value="<?=$a;?>" />
+		<input type="hidden" name="status" value="<?=$status;?>" />
+		<table>
+		    <tr>
+		        <td class="left">月份:</td>
+		        <td class='right'>
+		            <input type='text' value="<?=$month?>" name="month" class="input-date" />
+		        </td>
+		    </tr>
+		</table>
+	  	<p class="button-panel">
+	    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+	    	&nbsp;
+	    	<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+		</p>
+	</form>
+	<br/>
+
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top <?=($type=='unlist')?'ui-state-active':''?>">
+		    	<a href="?c=development&a=feiyong&type=unlist<?php gettourl();?>">
+		    		未结算
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=($type=='list')?'ui-state-active':''?>">
+		    	<a href="?c=development&a=feiyong&type=list<?php gettourl();?>">
+		    		已结算
+		      	</a>
+		    </li>
+	  	</ul>
+  	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		    <table class="grid-table tal">
+		        <thead>
+		            <tr>
+		              	<th width="">企业名称</th>
+		              	<th width="">认证体系</th>
+		              	<th width="">审核类型</th>
+		              	<th width="">审核总人日</th>
+		              	<th width="">基础审核费用</th>
+		              	<th width="width:70px;">操作</th>
+		            </tr>
+		      	</thead>
+		        <tbody>
+			       	<?php if( $results ):foreach( $results as $k => $vo ):?>
+				        <tr align='center'  data-id="<?=$vo['eid']?>" style="height:27px">
+				      		<td><?=$vo['ep_name'];?></td>
+				      		<td><?=implode(',',array_unique($tixi[$k]));?></td>
+				      		<td><?=implode(',',array_unique($leixing[$k]));?></td>
+				            <td><?=$rentian[$k];?>天</td>
+				            <td><?=$feiyong[$k]?($feiyong[$k].'元'):'未结算'?></td>
+				            <td>
+				                <a href="?c=development&a=feiyonginfo&month=<?=$month;?>&eid=<?=$vo['eid'];?>&type=<?=($type=='unlist')?'feiyonginfo':'feiyongedit'?>"><img src="theme/images/b_edit.png" border=0 /></a>&nbsp;&nbsp;
+				            </td>
+				        </tr>
+			        <?php endforeach;else:?>
+			            <tr>
+			              	<td align="center" colspan="16">未找到相关记录</td>
+			            </tr>
+			       	<?php endif;?>
+		      	</tbody>
+		    </table>
+	  	</div>
+	</div>
+
+</body>
+<script type="text/javascript">
+	$(function(){
+	    $( ".input-date" ).datepicker({
+			changeMonth	: true,
+			changeYear	: true,
+			dateFormat	: "yy-mm"
+		});
+  	})
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</html>

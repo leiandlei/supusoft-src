@@ -1,0 +1,342 @@
+<? tpl('header')?>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript" src="theme/js/region.js"></script>
+</head>
+<body>
+
+
+<form method="post" id="from" action="?c=training&a=infoEdit">
+	<input id="id" type="hidden" name="id" value="<?=$id;?>" />
+	<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+		<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+		    <li>培训登记</li>
+		 </ul>
+		<div id="tab-basic">
+		<ul class="main-form">
+			<!-- 中幅 -->
+			<li>
+				<label class="field">学员姓名</label>
+				<em>*</em>
+				<span>
+					<input type="hidden" id="s_id" name="s_id" value="<?=$s_id;?>" class="input"/>
+					<input type="text" id="s_name" value="<?=$s_name;?>" class="input"/>
+				</span> 
+				<label class="field">工作单位</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="s_job" value="<?=$s_job;?>" class="input" />
+				</span>
+		    </li>
+			<li>
+				<label class="field">培训课程</label>
+				<em>*</em>
+				<span>
+					<input type="hidden" id="l_id" name="l_id" value="<?=$l_id;?>" class="input" />
+					<input type="text" id="l_name"  dataType="Require"  msg="请选择课程"  value="<?=$l_name;?>" class="input" />
+				</span> 
+				<label class="field">课程费用</label>
+				<em>*</em>
+				<span>
+					<input type="number" id="l_money" name="l_money" value="<?=$l_money;?>" dataType="Require" msg="请输入课程费用" class="input" />
+				</span>
+		    </li>
+		    <li>
+				<label class="field">证书体系</label>
+				<em>*</em>
+				<span>
+					<input type="checkbox" disabled class="l_iso" value="1" <?=(in_array(1,$iso))?'checked':'';?> />QMS
+					<input type="checkbox" disabled class="l_iso" value="2" <?=(in_array(2,$iso))?'checked':'';?> />EMS
+					<input type="checkbox" disabled class="l_iso" value="3" <?=(in_array(3,$iso))?'checked':'';?> />OHSMS
+					<input type="checkbox" disabled class="l_iso" value="4" <?=(in_array(4,$iso))?'checked':'';?> />服务
+					<br>
+					<input type="checkbox" disabled class="l_iso" value="5" <?=(in_array(5,$iso))?'checked':'';?> />建工
+				</span> 
+
+				<label class="field">单张证书</label>
+				<em>*</em>
+				<span>
+					<input type="radio" disabled class="l_iso_only" name="l_iso_only" value="1" <?=($l_iso_only==1)?'checked':'';?> />是
+					&nbsp;
+					<input type="radio" disabled class="l_iso_only" name="l_iso_only" value="0" <?=($l_iso_only==0)?'checked':'';?> />否
+				</span>
+		    </li>
+		    <li>
+				<label class="field">培训开始时间</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="l_st_time" value="<?=$l_st_time?>" class="input-date" />
+				</span> 
+				<label class="field">培训结束时间</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="l_en_time" value="<?=$l_en_time?>" class="input-date" />
+				</span>
+		    </li>
+		    <li>
+				<label class="field">缴费方式</label>
+				<em>*</em>
+				<span>
+					<select name="i_type" style="width:171px;">
+						<option value="1" <?=($i_type==1)?'selected':'';?>>现金</option>
+						<option value="2" <?=($i_type==2)?'selected':'';?>>转账公司</option>
+						<option value="3" <?=($i_type==3)?'selected':'';?>>转账个人</option>
+						<option value="4" <?=($i_type==4)?'selected':'';?>>转账+现金</option>
+					</select>
+				</span>
+
+				<label class="field">是否代办注册</label>
+				<em>*</em>
+				<span>
+					<input type="radio" id="i_zhuce" name="i_zhuce" value="1" <?php if($i_zhuce==1)echo 'checked';?> class="input" />是
+					&nbsp;&nbsp;&nbsp;
+					<input type="radio" id="i_zhuce" name="i_zhuce" value="0" <?php if($i_zhuce==0)echo 'checked';?> class="input" />否
+				</span> 
+		    </li>
+		    <li>
+				<label class="field">是否回执</label>
+				<em></em>
+				<span style="width:170px">
+					<input type="radio" id="i_huizhi" name="i_huizhi" value="1" <?php if($i_huizhi==1)echo 'checked';?> class="input" />是
+					&nbsp;&nbsp;&nbsp;
+					<input type="radio" id="i_huizhi" name="i_huizhi" value="0" <?php if($i_huizhi==0)echo 'checked';?> class="input" />否
+				</span>
+				<label class="field">意向确认</label>
+				<em></em>
+				<span>
+					<input type="radio" id="i_yixiang" name="i_yixiang" value="1" <?php if($i_yixiang==1)echo 'checked';?> class="input" />是
+					&nbsp;&nbsp;&nbsp;
+					<input type="radio" id="i_yixiang" name="i_yixiang" value="0" <?php if($i_yixiang==0)echo 'checked';?> class="input" />否
+				</span> 
+		    </li>
+		    <li>
+				<label class="field">是否通过</label>
+				<em></em>
+				<span style="width:170px">
+					<input type="radio" id="i_tongguo" name="i_tongguo" value="1" <?php if($i_tongguo==1)echo 'checked';?> class="input" />是
+					&nbsp;&nbsp;&nbsp;
+					<input type="radio" id="i_tongguo" name="i_tongguo" value="0" <?php if($i_tongguo==0)echo 'checked';?> class="input" />否
+				</span>
+				<label class="field">是否开发票</label>
+				<em></em>
+				<span>
+					<input type="radio" id="i_fapiao"  name="i_fapiao" value="1" <?php if($i_fapiao==1)echo 'checked';?> class="input" />是
+					&nbsp;&nbsp;&nbsp;
+					<input type="radio" id="i_fapiao"  name="i_fapiao" value="0" <?php if($i_fapiao==0)echo 'checked';?> class="input" />否
+				</span> 
+		    </li>
+		    <li>
+				<label class="field">本机构发证</label>
+				<em>*</em>
+				<span>
+					<input type="radio" id="i_self_issue" class="i_self_issue" name="i_self_issue" value="1" <?php if($i_self_issue==1)echo 'checked';?>  class="input" />是
+					&nbsp;&nbsp;&nbsp;
+					<input type="radio" id="i_self_issue" class="i_self_issue" name="i_self_issue" value="0" <?php if($i_self_issue==0)echo 'checked';?>  class="input" />否
+				</span>
+		    </li>
+		     
+		    <li>
+		    	<label class="field">考试成绩</label>
+				<em id="i_chengji_em">*</em>
+				<span>
+					<input type="text" id="i_chengji" name="i_chengji" value="<?=$i_chengji;?>"   class="input" />
+				</span>
+				<label class="field">证书类型</label>
+				<em id="i_zstype_em">*</em>
+				<span>
+					<select id="i_zstype" name="i_zstype"    style="width: 171px;">
+						<option value="3" <?=($i_zstype==3)?'selected':'';?>>无</option>
+						<option value="1" <?=($i_zstype==1)?'selected':'';?>>服务认证审查员培训证书</option>
+						<option value="2" <?=($i_zstype==2)?'selected':'';?>>内审员证书</option>
+					</select>
+				</span>
+		    </li>
+			<li>
+				<label class="field">证书号</label>
+				<em id="i_zsnum_em">*</em>
+				<span>
+					<input type="text" id="i_zsnum" name="i_zsnum" value="<?=$i_zsnum;?>"   class="input" />
+				</span> 
+				<label class="field">发证日期</label>
+				<em id="i_zstime_em">*</em>
+				<span>
+					<input type="text" id="i_zstime" name="i_zstime" value="<?=$i_zstime;?>"   class="input-date" />
+					<font color="#F00"></font>
+				</span> 
+			</li>
+
+			<li>
+				<label class="field">备注信息</label>
+				<em></em>
+				<span>
+					<textarea id="i_note" name="i_note" rows="3" cols="74" style="width:490px;"><?=$i_note;?></textarea>
+				</span> 
+			</li>
+			<?php if($a=='infoIssueEdit'):?>
+			<li>
+				<label class="field">证书下载</label>
+				<em></em>
+				<span>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-001&id=<?=$id;?>">体系内审证书--三标一体</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-001-B5&id=<?=$id;?>">体系内审证书--三标一体(B5)</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-004&id=<?=$id;?>">体系内审证书--质量</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-008&id=<?=$id;?>">体系内审证书--环境</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-003&id=<?=$id;?>">体系内审证书--健康</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-005&id=<?=$id;?>">体系内审证书--质量/环境</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-006&id=<?=$id;?>">体系内审证书--三标一体（旧版）</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-007&id=<?=$id;?>">体系内审证书--质量（旧版）</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-002&id=<?=$id;?>">体系内审证书--环境（旧版）</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-009&id=<?=$id;?>">体系内审证书--建工</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-010&id=<?=$id;?>">审查员培训证--SC09</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-010-B5&id=<?=$id;?>">审查员培训证--SC09(B5)</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-011&id=<?=$id;?>">审查员培训证--SC11</a></p>
+					<p style="margin-top: 5px;"><a href="?c=doc&a=PX-012&id=<?=$id;?>">A课程审查员培训证</a></p>
+				</span> 
+			</li>
+		<?php endif;?>
+		</ul>
+		<p>
+			<center style="margin-bottom: 10px;">
+				<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+				<a href="?c=<?=$c;?>&a=infoList" title="关闭窗口">返回列表</a>
+			</center>
+		</p>
+	</div>
+	</div>
+</form>
+</body>
+<script type="text/javascript">
+$(function(){
+
+	//本机构发证
+	$('.i_self_issue').on('click', function(event) {
+		issuefunction($(this).val());
+	});
+
+
+	$('button.submit-btn').on('click',function(){
+    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+    	$('#from').submit();
+  	});
+
+  	$(".i_zstype").on('change', function(event) {
+  		$.ajax({
+  			url: './app/admin/control/ajax/configAjax.php?event=getZhenShuNum',
+  			type: 'POST',
+  			dataType: 'json',
+  			async:false,
+  			data: {
+                data_params:{type:$(this).val()}
+  			},
+  			success:function(e){
+                 	$("#i_zsnum").val(e.data);
+                }
+  		})
+  	});
+
+	//选择学员
+	$("#s_name").on('click',selectStudent);
+	//选择课程
+	$("#l_name").on('click',selectLesson);
+
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+});
+
+//判断是否是本机构发证
+function issuefunction(issue){
+	if(issue != 1){
+		$("#i_zstime").attr({"dataType" : "","msg" : ""});
+		
+		$("#i_zsnum").attr({"dataType" : "","msg" : ""});
+		$("#i_chengji").attr({"dataType" : "","msg" : ""});
+
+		$("#i_chengji_em").html('');
+		$("#i_zsnum_em").html('');
+		$("#i_zstime_em").html('');
+		$("#i_zstype_em").html('');
+
+	}else{
+	
+		$("#i_zstime").attr({"dataType" : "Require","msg" : "请输入发证日期"});
+		$("#i_zsnum").attr({"dataType" : "Require", "msg"  : "请输入证书号"});
+		$("#i_chengji").attr({"dataType" : "Require","msg" : "请输入考试成绩"});
+		
+
+		$("#i_chengji_em").html('*');
+		$("#i_zsnum_em").html('*');
+		$("#i_zstime_em").html('*');
+		$("#i_zstype_em").html('*');
+	}
+}
+
+//选择学员
+function selectStudent(){
+	var href = '?c=ajax&a=select_training_student';
+	$('<iframe id="iframe_student" border="0" frameborder="no" src="' + href + '" />').dialog({
+		title: '选择学员',
+	    autoOpen: true,
+	    width: 800,
+	    height: 420,
+	    modal: true,
+	    resizable: false,
+	    autoResize: true,
+	}).width(780);
+}
+//写入学员
+function insertStudent(data){
+	$('#s_id').val(data.id);
+	$('#s_name').val(data.name);
+	$('#s_job').val(data.job);
+	$('#iframe_student').dialog('close');
+	$('#iframe_student').dialog('destroy');
+	$('#iframe_student').remove();
+}
+//选择课程
+function selectLesson(){
+	var href = '?c=ajax&a=select_training_lesson';
+	$('<iframe id="frame_lesson" border="0" frameborder="no" src="' + href + '" />').dialog({
+		title: '选择专业代码',
+	    autoOpen: true,
+	    width: 800,
+	    height: 420,
+	    modal: true,
+	    resizable: false,
+	    autoResize: true,
+	}).width(780);
+}
+
+//写入课程
+function insertLesson(data){
+	$('.l_iso').attr("checked",false);
+	$('.l_iso_only').attr("checked",false);
+
+	var iso = data.iso;
+	if( iso.length>0 ){
+		var arr_iso = iso.split(',');
+		console.log(arr_iso);
+		for (var i=0; i < arr_iso.length; i++) {
+			$('.l_iso').eq(i).attr("checked",true);
+		};
+	}else if(iso){
+		$('.l_iso').eq(iso-1).attr("checked",true);
+	}
+	
+	if( data.isoonly==1 ){
+		$('.l_iso_only').eq(0).attr("checked",true);
+	}else{
+		$('.l_iso_only').eq(1).attr("checked",true);
+	}
+	$('#l_id').val(data.id);
+	$('#l_name').val(data.name);
+	$('#l_money').val(data.money);
+	$('#l_st_time').val(data.sttime);
+	$('#l_en_time').val(data.entime);
+	$('#frame_lesson').dialog('close');
+	$('#frame_lesson').dialog('destroy');
+	$('#frame_lesson').remove();
+}
+</script>
+</html>

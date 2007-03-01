@@ -1,0 +1,284 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>财务收费明细</title>
+    <meta name="generator" content="editplus" />
+    <meta name="author" content="" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+    <link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="theme/js/jquery.js"></script>
+    <script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+    <style  type="text/css">
+</style>
+    <script type="text/javascript">
+    $(function(){
+        $('.totalMoney').on('change', function(event) {
+          var totalMoney = $(this).val();
+          var id         = $(this).parent().parent().data('id');
+          $.ajax({
+             type: "POST",
+             url: "./app/admin/control/ajax/configAjax.php?event=eidshytotalMoney",
+             data: {
+                 data_params:{
+                  id:id,
+                  totalMoney:totalMoney
+                 }
+              },
+             dataType: "json",
+             success: function(data){
+                          if( data.errorCode == 0 ){
+                            alert('修改成功');
+                          }else{
+                            alert(data.errorStr);
+                          }
+                      }
+          });
+        });
+
+        $('.is_todo-js').on('change', function(event) {
+          var is_todo = $(this).val();
+          var id      = $(this).parent().parent().data('id');
+          $.ajax({
+             type: "POST",
+             url: "./app/admin/control/ajax/configAjax.php?event=eidshyistodo",
+             data: {
+                 data_params:{
+                  id:id,
+                  is_todo:is_todo
+                 }
+              },
+             dataType: "json",
+             success: function(data){
+                          if( data.errorCode == 0 ){
+                            alert('修改成功');
+                          }else{
+                            alert(data.errorStr);
+                          }
+                      }
+          });
+        });
+    });
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+    </head>
+
+    <body>
+<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+      <input type="hidden" name="c" value="<?=$c;?>" />
+      <input type="hidden" name="a" value="<?=$a;?>" />
+      <input type="hidden" name="status" value="<?=$status;?>" />
+      <table >
+    <tr>
+        <td class="left">姓名：</td>
+        <td class='right'>
+            <input type="text" name="name" value="<?=$ep_name;?>" class="input finput"/>
+        </td>
+    </tr>
+       
+
+    
+
+  </table>
+      <p class="button-panel">
+    <button class="btn btn-submit" type="submit"> 搜 索 </button>
+    &nbsp;
+    <button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+  </p>
+    </form>
+<br/>
+<div id="toolTipLayer" style="position:absolute; visibility: hidden"></div>
+<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+      <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top <?=$status_n_tab;?>"><a href="javascript:;">财务收费明细 <span class="cnt-total">
+      <?=$total;?>
+      </span></a></li>
+  </ul>
+      <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <table class="grid-table tal">
+          <thead>
+        <tr>
+              <th width="">姓名</th>
+              <th width="">审核员身份</th>
+              <th width="">审核员类型</th>
+              <th width="">是否专业</th>
+              <th width="">见证关系</th>
+              <th width="">审核费用</th>
+              <th width="">文审报告费用</th>
+              <th width="">总费用</th>
+              <th width="">审核类别</th>
+              <th width="">审核阶段</th>
+              <th width="">开始时间</th>
+              <th width="">结束时间</th>
+              <th width="">工作人日</th>
+              <th width="">企业</th>
+              <th width="">合同项目</th>
+              <th width="">是否通过</th>
+            </tr>
+      </thead>
+          <tbody>
+        <?php
+if( $results ){
+	foreach( $results as $row ){
+?>
+        <tr align='center'  data-id="<?=$row['id']?>">
+              <td><?=$row['name'];?></td>
+              <td><?=($row['teamLeater']=='1001')?'组长':'组员';?></td>
+              <td>
+                  <?php
+                    switch ($row['leaterType']) {
+                      case '1':
+                        $leaterType = '高级审核员';
+                        break;
+
+                      case '2':
+                        $leaterType = '审核员';
+                        break;
+
+                      case '3':
+                        $leaterType = '实习审核员';
+                        break;
+
+                      case '4':
+                        $leaterType = '技术专家';
+                        break;
+                      
+                      default:
+                        $leaterType = '其他';
+                        break;
+                    }
+                    echo $leaterType;
+                  ?>
+              </td>
+              <td><?=($row['zhuanyeType']!=0)?'是':'否';?></td>
+              <td><?=$row['witness'];?></td>
+              <td><?=$row['auditMoney'];?></td>
+              <td><?=$row['typeMoney'];?></td>
+              <td>
+                  <input style="width:100px;text-align:center" class="totalMoney" type="test" name="totalMoney" value="<?=$row['totalMoney'];?>">
+              </td>
+              <td>
+                  <?php
+                    switch ($row['status']) {
+                      case '1':
+                        $status = '单标审核';
+                        break;
+
+                      case '2':
+                        $status = '双标审核';
+                        break;
+
+                      case '3':
+                        $status = '三标审核';
+                        break;
+
+                      case '4':
+                        $status = '四标审核';
+                        break;
+
+                      case '5':
+                        $status = '五标审核及以上';
+                        break;
+                      
+                      default:
+                        $status = '其他审核';
+                        break;
+                    }
+                    echo $status;
+                  ?>
+              </td>
+              <td>
+                  <?php
+                      switch ($row['type']) {
+                        case '1001':
+                          $type = '初审';
+                          break;
+
+                        case '1002':
+                          $type = '一阶段';
+                          break;
+
+                        case '1003':
+                          $type = '二阶段';
+                          break;
+
+                        case '1004':
+                          $type = '监一';
+                          break;
+
+                        case '1005':
+                          $type = '监二';
+                          break;
+
+                        case '1006':
+                          $type = '监三';
+                          break;
+
+                        case '1007':
+                          $type = '再认证';
+                          break;
+
+                        case '1008':
+                          $type = '专项审核';
+                          break;
+
+                        case '1009':
+                          $type = '特殊审核';
+                          break;
+
+                        case '1101':
+                          $type = '特殊审核';
+                          break;
+                        
+                        default:
+                          $type = '其他';
+                          break;
+                      }
+                      echo $type;
+                  ?>
+              </td>
+              <td><?=$row['startTime'];?></td>
+              <td><?=$row['endTime'];?></td>
+              <td><?=$row['days'];?></td>
+              <td><?=$row['ep_name'];?></td>
+              <td><?=$row['cti_code'];?></td>
+              <td>
+                  <select name="is_todo" class='fselect is_todo-js'>
+                      <option <?php echo ($row['is_todo']==1)?'selected':'';?> value="1">通过</option>
+                      <option <?php echo ($row['is_todo']==0)?'selected':'';?> value="0">不通过</option>
+                  </select>
+              </td>
+        </tr>
+        <?php
+	}
+} else {
+?>
+        <tr>
+              <td align="center" colspan="16">未找到相关记录</td>
+            </tr>
+        <?php
+}
+?>
+      </tbody>
+        </table>
+    <p>
+          <?=$pages['pages'];?>
+        </p>
+  </div>
+    </div>
+</body>
+</html>

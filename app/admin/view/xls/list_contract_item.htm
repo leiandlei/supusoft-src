@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>任务列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<tr>
+		
+			<th width="*">合同编号</th>
+			<th width="*">项目编号</th>
+			<th width="220">组织名称</th>
+			<th width="*">爱理日期</th>
+			<th width="*">类型</th>
+			<th width="*">标准</th>
+            <th width="*">分组代码</th>
+			<th width="*">专业代码</th>
+			<th width="*">合同来源</th>
+			<th width="*">受理人</th> 
+			<th width="*">状态</th>
+	</tr>
+	<tbody>
+<?php
+if( $contract_items ){
+	foreach( $contract_items as $cti_id => $row ){
+?>
+		<tr>
+			
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['cti_code'];?></td>
+			<td><?=$row['ep_name'];?></td>
+			<td align="center"><?=$row['accept_date'];?></td>
+			<td align="center"><?=$row['audit_type_V'];?></td>
+			<td align="center"><?=$row['audit_ver_V'];?></td>
+            <td align="center"><?=$row['use_code'];?></td>
+			<td align="center"><?=$row['audit_code'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td align="center"><?=$row['name'];?></td> 
+			<td align="center"><?=$cti_status[$row['status']];?></td>
+		</tr>
+<?php
+	}
+}
+?>
+	</tbody>
+</table>
+</body>
+</html>

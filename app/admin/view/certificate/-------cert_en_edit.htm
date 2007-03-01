@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>邮寄</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<style type="text/css">
+.ctxm-table{border-collapse: collapse;border-spacing: 0;}
+.ctxm-table .td{padding:5px;border:1px solid #ccc;}
+
+.txxm-table{border-collapse: collapse;border-spacing: 0;}
+.txxm-table td{padding:.4em .6em;border:1px solid #f2f6fb;}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+}); 
+</script>
+</head> 
+<body> 
+<?php echo einfo("width=750&ct_id=$ct_id");?>
+<br/>
+<form method="post" action="" onsubmit="return Validator.Validate(this,2)">
+<input type="hidden" name="step" value="1" />
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">编辑</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<input type="hidden" name="id" value="<?=$id;?>" />
+       
+		<table width="100%">
+			<tr>
+				<td>审核周期单位产品/产值能耗：</td>
+				<td colspan="3"><textarea name="fj_note1" style="width: 540px; height: 100px;"dataType="Require" msg="快递单号不能为空！"><?=$fj_note1?></textarea>
+                
+                </td>
+			</tr>
+			<tr>
+				<td>能耗核算边界：</td>
+				<td colspan="3"><textarea name="fj_note2" style="width: 540px; height: 100px;" dataType="Require" msg="快递单号不能为空！"><?=$fj_note2?></textarea> <em style='color:red'>*</em></td>
+			</tr>
+            
+		</table><br/>
+	</div>
+	<p><center><button class="btn btn-submit" type="submit"> 保 存 </button></center></p> 
+	<br/>
+</div>
+</form>
+</body>
+</html>

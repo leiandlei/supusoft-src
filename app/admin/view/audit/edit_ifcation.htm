@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>再认证维护</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<style type="text/css">
+.ctxm-table{border-collapse: collapse;border-spacing: 0;}
+.ctxm-table .td{padding:5px;border:1px solid #ccc;}
+
+.txxm-table{border-collapse: collapse;border-spacing: 0;}
+.txxm-table td{padding:.4em .6em;border:1px solid #f2f6fb;}
+</style>
+<script type="text/javascript">
+
+var self = null;
+var add_cnt = 0;
+$(document).ready(function(){
+	$('input.input-date').datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+});
+
+</script>
+</head>
+
+<body>
+<br/>
+<form method="post" action="<?=$REAUEST_URI;?>">
+<input type="hidden" name="step" value="1" />
+<input type="hidden" name="pid" value="<?=$pid;?>" />
+<div  style='width:1050px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">再认证信息登记</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<table  style='width:1050px;margin:0 auto;' class="grid-table">
+			<tr>
+				<td width="80px">再认证时间</td>
+				<td><input type="text" name="ifcation_date" value="<?=$ifcation_date?>" class="input input-date" /></td>
+			</tr>
+			<tr>
+				<td align="right">备注</td>
+				<td><textarea name="note" cols="80"><?=$note?></textarea></td>
+			</tr>
+		</table>
+	</div>
+	<p><center>
+		是否接受再认证：<select name="if_fuping">
+			<option value="1" <?=$che1?> >待定</option>
+			<option value="2" <?=$che2?> >接受</option>
+			<option value="3" <?=$che3?> >不接受</option>
+		</select><button class="btn btn-submit" type="submit"> 提 交 </button>
+	</center></p>
+</div>
+</form>
+</body>
+</html>

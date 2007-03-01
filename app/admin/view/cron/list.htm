@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>计划任务列表 </title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+</head> 
+<body> 
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1050px;margin:0 auto;'>
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top"><a href="javascript:;">计划任务列表</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<div>
+		<ol style="padding:0 0 0 20px;">
+			<li>计划任务是一项使系统在规定时间自动执行某些特定任务的功能。</li>
+			<li>合理设置执行时间，能有效地为服务器减轻负担。</li>
+			<li>触发任务除系统指定的时间外，用户行为也可触发。触发任务的任务周期只是初始值。</li>
+		</ol>
+	</div>
+	<p class="button-panel" style="margin:9px 0;">
+		<button type="button" class="btn btn-submit" onclick="window.location.href='?c=cron&a=add'"> 创建计划任务 </button>
+	</p>
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="*">计划标题</th>
+			<th width="160">任务周期</th>
+			<th width="60">状态</th>
+			<th width="130">上次执行时间</th>
+			<th width="130">下次执行时间</th>
+			<th width="50">操作</th>
+			<th width="50">执行</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $crons ){
+	foreach( $crons as $cron_id => $row ){
+?>
+		<tr align="center">
+			<td align="left"><?=$row['subject'];?></td>
+			<td><?=$row['desc'];?></td>
+			<td><?=$row['is_open_V'];?></td>
+			<td><?=$row['modifed_time'];?></td>
+			<td><?=$row['next_time'];?></td>
+			<td><a href="?c=cron&a=edit&cron_id=<?=$row['cron_id'];?>">编辑</a></td>
+			<td align="center"><a class="c-del" target="_blank" href="?c=cron&a=run&run_script=<?=$row['run_script'];?>"><img border="0" src="theme/images/button_sv.gif"></a></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="6">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+
+	<p><?=$pages['pages'];?></p>
+
+	</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,875 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员信息登记</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/region.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script> 
+    $(function() {
+		$( ".exp-tab" ).tabs({ //人员经历选项卡
+            collapsible: false
+        }); 
+		var tooltips = $( "[title]" ).tooltip({position:{my:"left bottom+37", at:"left bottom"}});
+        $( "#user-tab" ).tabs({
+            collapsible: false
+        });
+		//删除工作经历
+		$('.c-del').click(function(){
+    		confirm_dialog('确认删除个人经历吗！', $(this).attr( 'href' ) );
+    		return false;
+    	});
+        $( "input.input-date" ).datepicker({
+    		changeMonth	: true,
+    		changeYear	: true,
+    		dateFormat	: "yy-mm-dd",
+			yearRange	: '<?=$startYear;?>:<?=$endYear;?>'
+    	});
+        var region = Region.init('data/cache/region.json');
+        window.region = region;
+        $('#select-region').click( region_dlg );
+		$('#add-btn').click( addRecord );
+		addRecord();
+		$('button.form-submit').click(check_form);
+    });
+    function region_dlg(){
+    	$('#select-region-dialog').dialog({
+    		title	: '选择行政区',
+    		width	: 500,
+    		height	: 150,
+    		modal: true,
+    		resizable: false,
+    		autoResize: true,
+    		buttons	:{
+    			'取消'	: function(){
+    				 $(this).dialog("close");
+    			},
+    			'确定'	: function(){
+    				var code = $('#district-select').val();
+					if( !code )
+						code = $('#city-select').val();
+    				
+					if( code ){
+    					var text = $('#province-select').find('option:selected').text() + $('#city-select').find('option:selected').text() + $('#district-select').find('option:selected').text();
+    					text = text.replace('市辖区','');
+    					text = text.replace('--县','');
+    					$('#areacode_str').val(text);
+    					$('#areacode').val(code);
+    					$(this).dialog('close');
+    				} else {
+    					alert( '人员所在行政区划(精确到区/县)！' );
+    				}
+    			}
+    		},
+    		open	: function(){
+    			var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+    			btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+    		}
+    	});
+    }
+    function change_ftype(obj){
+		var ftype=$(obj).val();
+		var id=$(obj).attr('name');
+		$.getJSON('?c=ajax&a=change_ftype&id='+id+'&ftype='+ftype, function(json){
+		});
+    }
+    
+	function addRecord(){
+		tbody = $('#add-attachs');
+		tr = $('#add-attach');
+		new_tr = tr.clone();
+		new_tr.attr('id','');
+		new_tr.show();
+		tbody.append(new_tr);
+	}
+
+function check_form(){
+	if(!Validator.Validate($('#hr-form')[0],2)) return;
+	$('#hr-form').submit();
+}
+
+ 
+</script>
+</head>
+
+<body>
+<div id="select-region-dialog" class="tal" style="display:none;">
+  <p style="margin-bottom:8px;">请选择行政区(到区/县)，完成后点确定。</p>
+  <p> <span id="prov-span">
+    <select name="province" id="province-select" style="width:130px;">
+      <option value="000000">选择省</option>
+    </select>
+    </span> <span id="city-span">
+    <select name="city" id="city-select" style="width:160px;">
+      <option value="000000">选择市</option>
+    </select>
+    </span> <span id="dist-span">
+    <select name="district" id="district-select" style="width:150px;">
+      <option value="000000">选择区/县</option>
+    </select>
+    </span> </p>
+</div>
+<div id="user-tab" style="margin:0 auto;width:750px;" class="tal">
+  <ul>
+    <li><a href="#tab-basic">基本信息</a></li>
+    <!--li><a href="#tab-post">岗位信息</a></li-->
+    <li><a href="#tab-other">其他信息</a></li>
+    <?php if( $_GET['uid'] ):?>
+    <li><a href="#tab-edu">教育经历</a></li>
+    <li><a href="#tab-train">培训经历</a></li>
+    <li><a href="#tab-job">工作经历</a></li>
+    <li><a href="#tab-archive">文档信息</a></li>
+    <li><a href="#edit-hrphoto">编辑头像</a></li>
+    <?php endif;?>
+  </ul>
+  <form method="post" id="hr-form" action="?c=hr&a=edit&step=save" enctype="multipart/form-data">
+    <input type="hidden" name="a" value="<?=$a?>" />
+    <input type="hidden" name="uid" id="uid" value="<?=$uid?>" />
+    <input type="hidden" name="anchor" id="anchor" value="tab-basic" />
+    <div id="tab-basic" style="margin-top:30px">
+      <ul class="main-form">
+        <li>
+          <label class="field">人员编号：</label>
+          <span>
+          <input name="code" value="<?=$code;?>" style="width:180px" dataType="Require" msg="人员编号不能为空！"/>
+          <em>*</em></span> </li>
+        <li>
+          <label class="field">姓名：</label>
+          <span>
+          <input name="name" value="<?=$name;?>" style="width:180px" dataType="Require" msg="姓名不能为空！"/>
+          <em>*</em></span> </li>
+        <li>
+          <label class="field">英文名称：</label>
+          <span>
+          <input name="ename" value="<?=$ename;?>" style="width:180px" /></span> </li>
+        <div style="<?php if(empty($_GET['uid'])){?>display:none;<?php }?> position:absolute; left:363px; top:70px; padding-left:66px"><img id="hrphoto" src="<?=$upload_hr_photo_dir?>" width="95px" height="128px" /> </div>
+        <li>
+          <label class="field">性别：</label>
+          <span>
+          <input type="radio" name="sex" value="1" <?=$sex_M?> />
+          男
+          <input type="radio" name="sex" value="2" <?=$sex_F?> />
+          女<em>*</em></span> </li>
+        <li>
+          <label class="field">是否专职：</label>
+          <span>
+          <select name="audit_job" style="width:186px;"> 
+            <?=$audit_job_select?>
+          </select>
+          <em>*</em></span>
+          <!--label class="field2">聘用性质：</label>
+          <span>
+          <select name="employment_nature" style="width:186px;" >
+            <?=$employment_nature_select?>
+          </select>
+          <em></em></span--> </li>
+        <li>
+          <label class="field">是否退休：</label>
+          <span>
+			<select name="retire" style="width:186px;">
+				<option value="">请选择</option>
+				<option value="-1" <?php if($retire == '-1') echo "selected=selected";?> >是</option>
+				<option value="1" <?php if($retire == '1') echo "selected=selected";?> >否</option>
+			</select>
+	      <em></em>
+          </span> 
+          
+          <label class="field2">易记码：</label>
+          <span>
+          <input name="easycode" value="<?=$easycode;?>" style="width:180px" />
+          <em></em>
+          </span>
+        </li>
+        <li>
+          <label class="field">证件类型：</label>
+          <span>
+          <select name="card_type" style="width:186px;" dataType="Require" msg="证件类型不能为空！">
+            <option value="">-请选择-</option>
+            <?=$card_type_select?>
+          </select>
+          <em>*</em></span>
+          <label class="field2">证件号码：</label>
+          <span>
+          <input name="card_no" value="<?=$card_no;?>" style="width:180px" dataType="Require" msg="证件号码不能为空！"/>
+          <em>*</em></span> </li>
+          
+          
+          <li>
+          <label class="field">开户行：</label>
+          <span>
+          <input type="text" name="bank" value="<?=$bank;?>"  style="width:180px" />
+          <em></em></span>
+          <label class="field2">账号：</label>
+          <span>
+          <input name="account" value="<?=$account;?>" style="width:180px" />
+          <em></em></span> </li>
+        <li>
+          <label class="field">出生日期：</label>
+          <span>
+          <input name="birthday" value="<?=$birthday;?>" class='input-date' style="width:180px"  dataType="Require" msg="出生日期不能为空！"/>
+          <em>*</em></span>
+          <label class="field2">区划地址：</label>
+          <span>
+          <input type='hidden' id='areacode' name='areacode' value='<?=$areacode?>'>
+          <input type="text" id="areacode_str" dataType="Require" msg="请选择人员所在行政区!" name="areacode_str" value="<?=$areacode_str;?>"  style="height:18px;width:162px;border-style:solid;border-width:1px 0 1px 1px;border-color:#ccc;float:left;" readOnly/>
+          <i class="i-select" id="select-region"></i><em>*</em></span> </li>
+        <li>
+          <label class="field">联系手机：</label>
+          <span>
+          <input name="tel" style="width:180px;" value="<?=$tel?>"  />
+          <em></em></span>
+          <label class="field2">电子邮件：</label>
+          <span>
+          <input name="meta[mail]" style="width:180px;" value="<?=$mail?>"/>
+          <em></em></span> </li>
+        <li>
+          <label class="field">通讯电话：</label>
+          <span>
+          <input name="phone" style="width:180px;" value="<?=$phone?>" />
+          <em></em></span>
+           <label class="field2">联系传真：</label>
+          <span>
+          <input name="fax" style="width:180px;" value="<?=$fax?>" />
+          <em></em></span>
+          </li>
+        <li>
+         
+         </li>
+        <li>
+          <label class="field">紧急联系人：</label>
+          <span>
+          <input name="urgent_person" style="width:180px;" value="<?=$urgent_person?>" />
+          <em></em></span>
+          <label class="field2">紧急电话：</label>
+          <span>
+          <input name="urgent_tel" style="width:180px;" value="<?=$urgent_tel?>" />
+          <em></em></span> </li>
+        <li>
+         <label class="field">通讯邮编：</label>
+          <span>
+          <input name="meta[postcode]" style="width:180px;" value="<?=$postcode?>" />
+          <em></em></span> 
+          <label class="field2">人员来源：</label>
+          <span>
+          <select name="ctfrom" style="width:186px;" >
+            <?=$ctfrom_select?>
+          </select>
+          <em></em></span> 
+        </li>
+        <li>
+          <label class="field">通讯地址：</label>
+          <span>
+          <input name="meta[address]" style="width:480px;" value="<?=$address?>" />
+          <em></em></span> </li>
+          <li>
+          <label class="field">工作单位名称：</label>
+          <span>
+          <input name="unit" style="width:480px;" value="<?=$unit?>" />
+          <em></em></span> </li>
+        <li>
+          <label class="field">备注信息：</label>
+          <span>
+          <textarea name="meta[note]" style="width:480px;"><?=$note?></textarea>
+          <em></em></span> </li>
+      </ul>
+      <p>
+        <center>
+        <?php if($_GET[type]=='view') {?>
+         <a href="javascript:window.close();">关闭窗口</a>
+         <?php }else {?>
+          <button class="btn btn-submit form-submit" type="button" <?=$disabled_save;?> > 保 存 </button>
+          <?php }?>
+        </center>
+      </p>
+      <br/>
+    </div>
+    <div id="tab-other">
+      <ul class="main-form">
+        <li>
+          <label class="field">人员性质：</label>
+          <span style="width:70%; line-height:30px;">
+          <?=$job_type_checkbox?>
+          <em></em></span> </li>
+        
+      
+          <li>
+          <label class="field">人员职称：</label>
+          <span>
+          <select name="technical" style="width:186px; line-height:30px;">
+            <option value="">-请选择-</option>
+            <?=$technical_select?>
+          </select>
+          <em></em></span>
+          <label class="field2">办公人员：</label>
+          <span>
+          <input type='radio' name='is_office' value='1' <? if($is_office=='1'){?> checked="checked";<?}?>>
+          是
+          <input type='radio' name='is_office' value='-1' <? if($is_office=='-1'){?> checked="checked";<?}?>>
+          否 </span> </li>
+        <li>
+          <label class="field">合同开始日期：</label>
+          <span>
+          <input name="cts_date" style="width:180px;"  value="<?=$cts_date?>" class='input-date'/>
+          <em></em></span>
+          <label class="field2">合同结束：</label>
+          <span>
+          <input name="cte_date" style="width:180px;" value="<?=$cte_date?>" class='input-date'/>
+          <em></em></span> </li>
+        <li>
+        <li>
+          <label class="field">协议开始日期：</label>
+          <span>
+          <input name="agreement_s_date" style="width:180px;"  value="<?=$agreement_s_date?>" class='input-date'/>
+          <em></em></span>
+          <label class="field2">协议结束：</label>
+          <span>
+          <input name="agreement_e_date" style="width:180px;" value="<?=$agreement_e_date?>" class='input-date'/>
+          <em></em></span> </li>
+        <li>
+          <label class="field">入职时间：</label>
+          <span>
+          <input name="meta[in_date]" style="width:180px;" class='input-date' value="<?=$in_date?>"/>
+          <em></em></span>
+          <label class="field2">离职日期：</label>
+          <span>
+          <input name="meta[out_date]" style="width:180px;" class='input-date' value="<?=$out_date?>" />
+          <em></em></span> </li>
+        <li>
+          <label class="field">社保登记：</label>
+          <span>
+          <select name="meta[insurance]" style="width:186px;">
+            <option value="">-请选择-</option>
+            <?=$insurance_select?>
+          </select>
+          <em></em></span>
+          <label class="field2">在聘情况：</label>
+          <span>
+          <input type="radio" name="is_hire" value="1" <?=$is_hire_Y;?> <?=$disabled_save2;?>/>
+          在职 &nbsp;
+          <input type="radio" name="is_hire" value="2" <?=$is_hire_N;?> <?=$disabled_save2;?>/>
+          离职&nbsp;
+          <input type="radio" name="is_hire" value="3" <?=$is_hire_T;?> <?=$disabled_save2;?>/>
+          停用<em>*</em></span> </li>
+          
+         <li>
+         
+          <label class="field">人员分层：</label>
+          <span>
+          <select name="m_separate" style="width:186px;">
+            <option value="">请选择</option>
+            <option value="A" <?php if($m_separate == 'A')  echo "selected";?>>A</option>
+            <option value="B" <?php if($m_separate == 'B')  echo "selected";?>>B</option>
+            <option value="C" <?php if($m_separate == 'C')  echo "selected";?>>C</option>
+            <option value="D" <?php if($m_separate == 'D')  echo "selected";?>>D</option>
+          </select>
+          <em></em></span> 
+          
+          <label class="field2">合同负责人：</label>
+          <span >
+          <input type="radio" name="signe_name"  value="1" <?=$signe_name_y?>/>是 &nbsp;&nbsp;&nbsp;<input type="radio" name="signe_name"  value="0" <?=$signe_name_n?>/>否&nbsp;&nbsp;&nbsp;
+          <em></em></span> 
+          
+          
+          
+         </li>
+         
+        
+        
+         <li>
+          <label class="field">ccaa档案号：</label>
+          <span>
+          <input name="ccaa_code" style="width:180px;" value="<?=$ccaa_code?>"/>
+          <em></em>
+          </span>
+          <label class="field">网络平台账号：</label>
+          <span>
+          <input name="note_account" style="width:180px;" value="<?=$note_account?>"/>
+          <em></em>
+          </span>
+        
+         </li>
+           
+      </ul>
+      <p>
+        <center>
+        <?php if($_GET[type]=='view') {?>
+         <a href="javascript:window.close();">关闭窗口</a>
+         <?php }else {?>
+           <button class="btn btn-submit form-submit" onmouseover="$('#anchor').val('tab-other')" type="button" <?=$disabled_save;?> > 保 存 </button>
+          <?php }?>
+         
+        </center>
+      </p>
+      <br/>
+    </div>
+    <!-- 岗位信息-->
+    <!--div id="tab-post">
+    <ul class="main-form">
+      <li>
+        <label class="field">所在部门：</label>
+        <span>
+        <?=$department_checkbox?>
+        <em></em></span> </li>
+      <li>
+        <label class="field">所在岗位：</label>
+        <span>
+        <?=$post_checkbox?>
+        <em></em></span> </li>
+      <li>
+        <label class="field">业务类别：</label>
+        <span>
+        <?=$business_checkbox?>
+        <em></em></span> </li>
+      <li>
+        <label class="field">业务职能：</label>
+        <span>
+        <?=$functions_checkbox?>
+        <em></em></span> </li>
+    </ul>
+    <p>
+      <center>
+        <button class="btn btn-submit form-submit" onmouseover="$('#anchor').val('tab-post')" type="button" <?=$disabled_save;?> > 保 存 </button>
+      </center>
+  
+  </p>
+  <br/>
+</div>
+-->
+
+</form>
+<?php if( $uid ){ ?>
+<!-- 教育经历-->
+<div id="tab-edu">
+<ul class="main-form">
+<table class="grid-table">
+  <thead>
+    <tr>
+      <th width="30">编辑</th>
+      <th width="90">入学时间</th>
+      <th width="90">毕业时间</th>
+      <th width="*">毕业学校</th>
+      <th width="*">所学专业</th>
+      <th width="*">学历</th>
+      <th width="160">创建日期</th>
+      <th width="30">删除</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+if( $jlist ){
+	foreach( $jlist as $pid => $row ){
+?>
+    <tr>
+      <td align="center"><a href="?c=hr&uid=<?=$_GET['uid']?>&a=edit&jid=<?=$row['id'];?>&anchor=tab-edu#tab-edu"><img src="theme/images/b_edit.png" border=0 /></a></td>
+      <td align="center"><?=$row[s_date]?></td>
+      <td align="center"><?=$row[e_date]?></td>
+      <td align="center"><?=$row[area]?></td>
+      <td align="center"><?=$row['position'];?></td>
+      <td align="center"><?=$education_array[$row['department']]['name'];?></td>
+      <td align="center"><?=$row['add_date'];?></td>
+      <td align="center"><a title="删除" href="?c=hr&uid=<?=$_GET['uid']?>&a=delExp&id=<?=$row['id'];?>&anchor=tab-edu" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+    </tr>
+    <?php
+	} 
+} else {
+?>
+    <tr>
+      <td align="center" colspan="10">未找到相关记录</td>
+    </tr>
+    <?php
+}
+?>
+  </tbody>
+</table>
+<br />
+<br />
+
+<div  class="tal exp-tab">
+  <ul>
+    <li><a href="#tab-basic"><?=$j_tip_msg?></a></li>
+  </ul>
+  <br /><br />
+    <form method="post" action="?c=hr&a=addExp&expId=<?=$_GET['jid']?>&uid=<?=$_GET['uid']?>&anchor=tab-edu" onsubmit="return Validator.Validate(this,2)">
+      <input type="hidden" name="type" value="j" />
+      <ul class="main-form">
+        <li>
+          <label class="field">学历：</label>
+          <span>
+          <select name="department" class='fselect' style="width:186px">
+            <?=$xueli_select;?>
+          </select>
+          <em>*</em></span> </li>
+        <li>
+          <label class="field">毕业学校：</label>
+          <span>
+          <input name="area" value="<?=$jExpInfo[area];?>" style="width:180px"  />
+          </span> </li>
+        <li>
+          <label class="field">所学专业：</label>
+          <span>
+          <input name="position" value="<?=$jExpInfo[position];?>" style="width:180px" />
+          <em></em></span> </li>
+        <li>
+          <label class="field">入学时间：</label>
+          <span>
+          <input name="s_date" value="<?=$jExpInfo[s_date];?>" style="width:180px"  class="input-date" />
+          </span> </li>
+        <li>
+          <label class="field">毕业时间：</label>
+          <span>
+          <input name="e_date" value="<?=$jExpInfo[e_date];?>" style="width:180px"  class="input-date" />
+          </span> </li>
+      </ul>
+      <p>
+        <center>
+        <?php if($_GET[type]=='view') {?>
+         <a href="javascript:window.close();">关闭窗口</a>
+         <?php }else {?>
+          <button class="btn btn-submit " type="submit"  > 保 存 </button>
+          <?php }?>
+        </center>
+      </p>
+    </form>
+  
+</div>
+</div>
+<!-- 培训经历-->
+<div id="tab-train">
+<ul class="main-form">
+<table class="grid-table">
+  <thead>
+    <tr>
+      <th width="30">编辑</th>
+      <th width="100">开始时间</th>
+      <th width="100">结束时间</th>
+      <th width="*">培训小时</th>
+      <th width="*">培训地点</th>
+      <th width="*">举办单位</th>
+      <th width="*">培训内容</th>
+      <th width="160">创建日期</th>
+      <th width="30">删除</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+if( $plist ){
+	foreach( $plist as $pid => $row ){
+?>
+    <tr>
+      <td align="center"><a href="?c=hr&uid=<?=$_GET['uid']?>&a=edit&pid=<?=$row['id'];?>#tab-train"><img src="theme/images/b_edit.png" border=0 /></a></td>
+      <td align="center"><?=$row[s_date]?></td>
+      <td align="center"><?=$row[e_date]?></td>
+      <td align="center"><?=$row[date_long]?></td>
+      <td align="center"><?=$row[position]?></td>
+      <td align="center"><?=$row['area'];?></td>
+      <td align="center"><?php if($row['note']){ ?>
+        <a href='#' title='<?=$row['note'];?>'><img src="theme/images/other.png" border=0 /></a>
+        <?php } ?></td>
+      <td align="center"><?=$row['add_date'];?></td>
+      <td align="center"><a title="删除" href="?c=hr&uid=<?=$_GET['uid']?>&a=delExp&id=<?=$row['id'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+    </tr>
+    <?php
+	}  
+} else {
+?>
+    <tr>
+      <td align="center" colspan="11">未找到相关记录</td>
+    </tr>
+    <?php
+}
+?>
+  </tbody>
+</table>
+<br />
+<br />
+<div  class="tal exp-tab">
+  <ul>
+    <li><a href="#tab-basic"><?=$p_tip_msg?></a></li>
+  </ul>
+  <br /><br />
+<form method="post" action="?c=hr&a=addExp&expId=<?=$_GET['pid']?>&uid=<?=$_GET['uid']?>&anchor=tab-train" onsubmit="return Validator.Validate(this,2)">
+  <input type="hidden" name="type" value="p" />
+  <ul>
+    <li>
+      <label class="field">培训地点：</label>
+      <span>
+      <input name="position" value="<?=$pExpInfo[position];?>" style="width:180px" />
+      </span> </li>
+    <li>
+      <label class="field">举办单位：</label>
+      <span>
+      <input name="area" value="<?=$pExpInfo[area];?>" style="width:180px" />
+      <em></em></span> </li>
+    <li>
+      <label class="field">培训小时：</label>
+      <span>
+      <input name="date_long" value="<?=$pExpInfo[date_long];?>" style="width:180px" />
+      <em></em></span> </li>
+    <li>
+      <label class="field">开始日期：</label>
+      <span>
+      <input name="s_date" value="<?=$pExpInfo[s_date];?>" style="width:180px"  class="input-date"  />
+      </span> </li>
+    <li>
+      <label class="field">结束日期：</label>
+      <span>
+      <input name="e_date" value="<?=$pExpInfo[e_date];?>" style="width:180px"  class="input-date"  />
+      </span> </li>
+    <li>
+      <label class="field">培训内容：</label>
+      <span>
+      <textarea name="note" rows="2" cols="60"><?=$pExpInfo[note];?>
+</textarea>
+      <em></em></span> </li>
+  </ul>
+  <p>
+    <center>
+    <?php if($_GET[type]=='view') {?>
+         <a href="javascript:window.close();">关闭窗口</a>
+         <?php }else {?>
+          <button class="btn btn-submit" type="submit" id="submit"> 保存 </button>
+          <?php }?>
+      
+    </center>
+  </p>
+</form>
+<br/>
+</div>
+</div>
+<!-- 工作经历-->
+<div id="tab-job">
+<ul class="main-form">
+<table class="grid-table">
+  <thead>
+    <tr>
+      <th width="30">编辑</th>
+      <th width="*">开始时间</th>
+      <th width="*">结束时间</th>
+      <th width="*">工作单位</th>
+      <th width="*">部门</th>
+      <th width="*">职务</th>
+      <th width="*">证明人</th>
+      <th width="*">联系电话</th>
+      <th width="*">创建日期</th>
+      <th width="30">描述</th>
+      <th width="30">删除</th>
+    </tr>
+  </thead>
+  <tbody>
+    <?php
+if( $glist ){
+	foreach( $glist as $pid => $row ){
+?>
+    <tr>
+      <td align="center"><a href="?c=hr&uid=<?=$_GET['uid']?>&a=edit&gid=<?=$row['id'];?>#tab-job"><img src="theme/images/b_edit.png" border=0 /></a></td>
+      <td align="center"><?=$row[s_date]?></td>
+      <td align="center"><?=$row[e_date]?></td>
+      <td align="left"><?=$row[area]?></td>
+      <td align="center"><?=$row['department'];?></td>
+      <td align="center"><?=$row['position'];?></td>
+      <td align="center"><?=$row['name'];?></td>
+      <td align="center"><?=$row['telephone'];?></td>
+      <td align="center"><?=substr($row['add_date'],0,10);?></td>
+      <td align="center"><?php if($row['note']){ ?>
+        <a href='#' title='<?=$row['note'];?>'><img src="theme/images/other.png" border=0 /></a>
+        <?php } ?></td>
+      <td align="center"><a title="删除" href="?c=hr&uid=<?=$_GET['uid']?>&a=delExp&id=<?=$row['id'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+    </tr>
+    <?php
+	}  
+} else {
+?>
+    <tr>
+      <td align="center" colspan="13">未找到相关记录</td>
+    </tr>
+    <?php
+}
+?>
+  </tbody>
+</table>
+<br />
+<br />
+<div  class="tal exp-tab">
+  <ul>
+    <li><a href="#tab-basic"><?=$g_tip_msg?></a></li>
+  </ul>
+  <br /><br />
+<form method="post" action="?c=hr&a=addExp&expId=<?=$_GET['gid']?>&uid=<?=$_GET['uid']?>&anchor=tab-job" onsubmit="return Validator.Validate(this,2)">
+  <input type="hidden" name="type" value="g" />
+  <ul>
+    <li>
+      <label class="field">工作单位：</label>
+      <span>
+      <input name="area" value="<?=$gExpInfo[area];?>" style="width:180px"  />
+      <em>*</em></span> </li>
+    <li>
+      <label class="field">部门：</label>
+      <span>
+      <input name="department" value="<?=$gExpInfo[department];?>" style="width:180px" />
+      <em></em></span> </li>
+    <li>
+      <label class="field">职务：</label>
+      <span>
+      <input name="position" value="<?=$gExpInfo[position];?>" style="width:180px" />
+      <em></em></span> </li>
+    <li>
+      <label class="field">证明人：</label>
+      <span>
+      <input name="name" value="<?=$gExpInfo[name];?>" style="width:180px"  />
+      <em></em></span> </li>
+    <li>
+      <label class="field">证明人电话：</label>
+      <span>
+      <input name="telephone" value="<?=$gExpInfo[telephone];?>" style="width:180px" />
+      <em></em></span> </li>
+    <li>
+      <label class="field">开始日期：</label>
+      <span>
+      <input name="s_date" value="<?=$gExpInfo[s_date];?>" style="width:180px"  class="input-date"  />
+      </span> </li>
+    <li>
+      <label class="field">结束日期：</label>
+      <span>
+      <input name="e_date" value="<?=$gExpInfo[e_date];?>" style="width:180px"  class="input-date"  />
+      </span> </li>
+    <li>
+      <label class="field">工作描述：</label>
+      <span>
+      <textarea name="note" rows="2" cols="60"><?=$gExpInfo[note];?>
+</textarea>
+      <em></em></span> </li>
+  </ul>
+  <p>
+    <center>
+      <?php if($_GET[type]=='view') {?>
+         <a href="javascript:window.close();">关闭窗口</a>
+         <?php }else {?>
+          <button class="btn btn-submit" type="submit" id="submit"> 保存 </button>
+          <?php }?>
+    </center>
+  </p>
+  <br/>
+  </div>
+</form>
+</div>
+<?php if(!$_GET[type]) {?>
+        
+<div id="tab-archive">
+  <form method="post" action="?c=attachment&a=batdown&class=hr" onsubmit="return Validator.Validate(this,2)">
+    <table class="grid-table">
+      <tr>
+        <th width="30">选择</th>
+        <th width="180">文档名</th>
+        <th width="100">文档类型</th>
+        <th width="30">备注</th>
+        <th width="100">上传时间</th>
+        <th width="50">上传人</th>
+        <th width="30">下载</th>
+        <th width="30">删除</th>
+      </tr>
+      <tbody id="attach-list">
+        <?php
+if( $hr_archives ){
+	foreach( $hr_archives as $row ){
+		$attachtype_select_t = $attachtype_select;
+		$attachtype_select_t = str_replace( "value=\"$row[ftype]\">", "value=\"$row[ftype]\" selected>" , $attachtype_select_t );
+?>
+        <tr>
+          <td align="center"><input type="checkbox" name="aid[]" value="<?=$row['id'];?>" /></td>
+          <td align="center"><?=$row['name'];?></td>
+          <td align="center"><select name="<?=$row['id']?>" onblur='change_ftype(this)'>
+              <option value=""></option>
+              <?=$attachtype_select_t;?>
+            </select></td>
+          <td align="center"><?php
+if( $row['description'] ){
+?>
+            <a href="javascript:;" title="<?=$row['description'];?>"><img src="theme/images/other.png" border="0" /></a>
+            <?php
+}
+?></td>
+          <td align="center"><?=$row['create_date'];?></td>
+          <td align="center"><?=f_username($row['create_uid']);?></td>
+          <td align="center"><a href="?c=attachment&a=down&aid=<?=$row['id'];?>&class=hr"><img src="theme/images/down.gif" width="16" height="16" border=0 /></a></td>
+          <td align="center"><a href="?c=attachment&a=del&aid=<?=$row['id'];?>&class=hr"><img src="theme/images/b_drop.png" border=0 /></a></td>
+        </tr>
+        <?php
+	}
+}
+?>
+      </tbody>
+      <tr>
+        <td></td>
+        <td colspan="8"><button type="submit" class="btn btn-submit"> 批量打包下载 </button></td>
+      </tr>
+    </table>
+  </form>
+  <br/>
+  <form method="post" action="?c=hr&a=upattach" enctype="multipart/form-data">
+    <input type="hidden" name="uid" value="<?=$uid;?>" />
+    <table width="100%" class="form-table">
+      <tr>
+        <td width="200">文档类型</td>
+        <td width="230">上传</td>
+        <td width="*">备注</td>
+      </tr>
+      <tbody id="add-attachs">
+      </tbody>
+      <tr id="add-attach" style="display:none;">
+        <td><select name="ftype[]">
+            <option value="">=请选择=</option>
+            <?=$attachtype_select;?>
+          </select></td>
+        <td><input type="file" name="archive[]" /></td>
+        <td><input type="text" class="input" name="description[]" size="40" /></td>
+      </tr>
+    </table>
+    <p class="note-msg">提示：最大支持10MB</p>
+    <p>
+      <center>
+        <button class="btn btn-button" type="button" id="add-btn"> 添加 </button>
+        &nbsp;
+        <button class="btn btn-submit" type="submit"> 上传 </button>
+      </center>
+    </p>
+  </form>
+</div>
+<div id="edit-hrphoto">
+  <form method="post" action="?c=hr&a=uphrphoto" enctype="multipart/form-data">
+    <input type="hidden" name="uid" value="<?=$uid;?>" />
+    <table width="100%" class="form-table">
+      <tr>
+        <td width="200">文档类型</td>
+        <td width="230">上传</td>
+        <td width="*"></td>
+      </tr>
+      <tbody id="add-attachs">
+      </tbody>
+      <tr id="add-attach">
+        <td>头像</td>
+        <td><input type="file" name="archive" /></td>
+        <td></td>
+      </tr>
+    </table>
+    <p class="note-msg">提示：请上传jpg格式图像，推荐尺寸95px*128px，最大支持10MB</p>
+    <p>
+      <center>
+        <button class="btn btn-submit" type="submit"> 上传 </button>
+      </center>
+    </p>
+  </form>
+</div>
+<?php
+}}
+?>
+</div>
+<br/>
+<br/>
+</body>
+</html>

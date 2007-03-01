@@ -1,0 +1,209 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>注册资格登记</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" /> 
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script> 
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script>
+    $(function() {
+
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+        $( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+        $('.status_changes').on('change', function(event) {
+			var id      = $(this).parent().parent().data('id');
+			var uid=$('#uid').val();
+			var results = ajax({'id':id,'status':$(this).val()},'zhcestatus');
+            // console.log(results.errorCode);
+			// alert( results );exit;
+			if(results.errorCode==0){
+				alert('成功');
+				 window.location.href="?c=hr_qualification&a=edit&uid="+uid+'&id='+id; 
+			}else{
+				alert('失败');
+			}
+		});
+    });
+    function get_edate(){
+    	$.getJSON('?c=ajax&a=get_addday&s_date='+$('#s_date').val()+'&month=36&day=-1', function(json){
+			$("#e_date").val(json.day);
+		});
+    }
+
+
+//@HBJ 2013年9月12日 09:21:38 检测是否资格重复
+function check_form(){
+	var iso=$('#iso').val();
+	var qua_type=$('#qua_type').val();
+	var s_date=$('#s_date').val();
+	var e_date=$('#e_date').val();
+	var uid=$('#uid').val();
+ 	$.ajax({
+			url		: '?c=hr_qualification&a=save&ajax=1&uid='+uid,
+			data	: {	'qua_type':qua_type,
+						'iso':iso,
+						's_date':s_date,
+						'e_date':e_date,
+						'id':<?php if($_GET['id']){echo $_GET['id'];}else {echo "''";}; ?>,
+					  },
+			type	: 'POST',
+			dataType: 'json',
+			success	: function(j){
+				if( 'ok' == j.state ){ 
+					$('#checkform').submit();
+ 				}else{
+					alert( '资格重复，已经存在有效的资格！' );
+				}
+			}
+	}) 
+}
+
+function isoonchange(value){
+	if(value=='OTHER'){
+		$("#qua_type").html('<?php echo sys_cache_select("data_for");?>');
+	}
+	else{
+		$("#qua_type").html('<?=$qualification_select?>');
+	}
+}
+</script>
+</head>
+
+<body>
+
+
+
+<div style='width:1050px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>"><a href="javascript:;"><<?=$user_info['name']?>>的注册资格</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<table width='100%' class='grid-table'>
+<tr>
+	<th align='center'>编辑</th>
+	<!-- <th align='center'>状态</th> -->
+	<th align='center'>体系</th>
+	<th align='center'>资格</th>
+	<th align='center'>资格证编号</th>
+	<th align='center'>组长与否</th>
+	 
+	<th align='center'>开始时间</th>
+	<th align='center'>结束时间</th>
+	<th align='center'>是否有效</th>
+	<th align='center'>备注</th>
+</tr>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+	<tr data-id="<?=$row['id']?>">
+		<td align="center"><a href="?c=<?=$c;?>&a=edit&uid=<?=$row['uid'];?>&id=<?=$row['id'];?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+	<!-- 	<td align="center"><?=$row['status'];?></td> -->
+		<td align="center"><?=read_cache('iso',$row['iso']);?></td> 
+		<td align="center"><? if($row['iso']=='OTHER'){ echo r_sys_cache('data_for',$row['qua_type']);}else{echo $row['qua_type_V'];}?></td> 
+		<td align="center"><?=$row['qua_no'];?></td>
+		<td align="center"><?=$is_leader_arr[$row['is_leader']];?></td>
+		 
+		<td align="center"><?=$row['s_date'];?></td>
+		<td align="center"><?=$row['e_date'];?></td>
+		<td align="center">
+		    <select class="status_changes">
+        		<option value="0" <?=($row['status']=='0')?'selected':'';?>>失效</option>
+        		<option value="1" <?=($row['status']=='1')?'selected':'';?>>有效</option>
+        	</select>
+		</td>
+		<td align="center"><?php
+if( $row['note'] ){
+?>
+<a href="javascript:;" title="<?=$row['note'];?>"><img src="theme/images/other.png" border="0" /></a> 
+<?php
+}
+?></td>
+	</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="10">没有找到数据</td>
+		</tr>
+<?php
+}
+?>
+</table>
+<p><?=$pages['pages'];?></p>
+
+</div>
+</div>
+<br/>
+<br/>
+<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal">
+	<ul>
+		<li><a href="#tab-basic"><?=$tip_msg?></a></li>
+	</ul>
+		<div id="tab-basic">
+			<form method="post" id="checkform" name="winput" action="?c=hr_qualification&a=save" enctype="multipart/form-data" onsubmit="return Validator.Validate(this,2);" >
+			<input type="hidden" name="a" value="save" />
+			<input type="hidden" name="id" value="<?=$id?>" />
+			<input type="hidden" name="uid" id="uid" value="<?=$uid?>" />
+			<ul class="main-form">
+				<li>
+					<label class="field">体系：</label><em></em>
+					<span><select name="iso" id="iso" onchange="isoonchange(this.value)" ><?=f_select('iso',$iso)?></select></span>
+				</li>
+				<li>
+					<label class="field">资格：</label><em></em>
+					<span><select name="qua_type" id="qua_type" ><? if($iso=='OTHER'){echo sys_cache_select('data_for',$qua_type);}else{echo f_select('qualification',$qua_type);}?></select>&nbsp;&nbsp;&nbsp;</span><span style=" color:#999">注：当资格升级时，直接修改该资格即可</span>
+				</li>
+				<li>
+					<label class="field">资格证号码：</label><em></em>
+					<span><input type="text" name="qua_no" value="<?=$qua_no?>" style="width:205px"  msg="资格证书号码不能为空！"/></span>
+				</li>
+				<li>
+					<label class="field">开始时间：</label><em></em>
+					<span><input type="text" name="s_date" id="s_date" value="<?=$s_date?>" class='input-date' dataType="Require" msg="开始时间不能为空！"/><em>*</em></span>
+				</li>
+				<li>
+					<label class="field">结束时间：</label><em></em>
+					<span><input type="text" name="e_date" id="e_date" value="<?=$e_date?>" class='input-date' dataType="Require" msg="结束时间不能为空！"/><em>*</em><a onclick="get_edate();" href="javascript:;">(默认)</a></span>
+				</li>
+				<li>
+					<label class="field">组长与否</label><em></em>
+					<span><input type="radio" name="is_leader" <?=$disabled_save2;?> value="1" <?=$is_leader_check1?>/>组长&nbsp;&nbsp;<input type="radio" name="is_leader" <?=$disabled_save2;?> value="2" <?=$is_leader_check2?>/>见习组长&nbsp;&nbsp;<input type="radio" name="is_leader" <?=$disabled_save2;?> value="3" <?=$is_leader_check3?>/>否<em>*</em></span>
+				</li>
+				 
+				
+				<!-- <li>
+					<label class="field">评定日期：</label><em></em>
+					<span><input type="text" name="pd_date" id="pd_date" value="<?=$pd_date?>" class='input-date' /></span>
+				</li> -->
+				<li>
+					<label class="field">备注：</label><em></em>
+					<span><textarea name='note' style="width:500px;height:40px"><?=$note?></textarea></span>
+				</li>
+				<li>
+					<label class="field"></label><em></em>
+					<span><p><center><button class="btn btn-submit" type="button" onclick="check_form();"> 保 存 </button></center></p></span>
+				</li>
+			</ul>
+			</form>
+		</div>
+</div>
+
+</body>
+</html>

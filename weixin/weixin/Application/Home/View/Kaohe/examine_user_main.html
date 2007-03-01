@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<include file='./Public/mui/common/html/head.html' />
+	</head>
+	<body>
+		<!--下拉刷新容器-->
+		
+		<div id="pullrefresh" class="mui-content mui-scroll-wrapper">
+			<div class="mui-scroll">
+				<!--数据列表-->
+				<div class="mui-card">
+					<ul id="list" class="mui-table-view jump"></ul>
+				</div>
+			</div>
+		</div>
+		
+		<script id="list-tpl" type="text/html">
+			{{# d.forEach(function(item){ }}
+				<li class="mui-table-view-cell">
+					<a class="mui-navigate-right url" data-exuid="{{item.id}}">{{item.date}}月　(总分:{{item.day}})</a>
+				</li>
+			{{# }) }}
+		</script>
+		<script type="text/javascript">
+			var search = {};search.page=1;
+			mui.init({
+				pullRefresh: {
+					container: "#pullrefresh", //下拉刷新容器标识，querySelector能定位的css选择器均可，比如：id、.class等
+					down: {
+						height: 50, //可选,默认50.触发下拉刷新拖动距离,
+						auto: true, //可选,默认false.首次加载自动下拉刷新一次
+						contentdown: "下拉可以刷新", //可选，在下拉可刷新状态时，下拉刷新控件上显示的标题内容
+						contentover: "释放立即刷新", //可选，在释放可刷新状态时，下拉刷新控件上显示的标题内容
+						contentrefresh: "正在刷新...", //可选，正在刷新状态时，下拉刷新控件上显示的标题内容
+						callback: function() {createFragment(this);}
+					}
+				}
+			});
+			
+			mui('.jump').on('tap','.url',function()
+			{
+				var exuid = this.getAttribute('data-exuid');
+				var url   = '{:U("Kaohe/examine_user_info",array("exuid"=>"getexuid"))}';
+				    url   = url.replace(/getexuid/, exuid);
+				mui.openWindow(url,'examine_user_info');
+			});
+
+			function createFragment(self)
+			{
+				mui.ajax("{:U('Kaohe/getexamine_user')}",
+				{
+					data    :{page:search.page},
+					dataType:'json',//服务器返回json格式数据
+					type    :'post',//HTTP请求类型
+					timeout:10000,//超时时间设置为10秒；
+					success:function(data)
+					{
+						data = data.results;
+						if(data.length<1){return self.endPulldownToRefresh(true);}search.page++;
+						var item = document.getElementById('list');
+						laytpl(document.getElementById('list-tpl').innerHTML).render(data, function(html)
+						{
+							setTimeout(function()
+							{
+								item.innerHTML = html+item.innerHTML;
+								self.endPulldownToRefresh(false);
+							}, 500);
+						});
+					}
+				});		
+			}
+		</script>
+	</body>
+
+</html>

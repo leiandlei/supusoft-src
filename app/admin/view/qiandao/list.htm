@@ -1,0 +1,97 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>签到列表</title>
+	<meta name="generator" content="editplus" />
+	<meta name="author" content="" />
+	<meta name="keywords" content="" />
+	<meta name="description" content="" />
+	<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+	<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+	<script type="text/javascript" src="theme/js/jquery.js"></script>
+	<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+	<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+	<script type="text/javascript" src="theme/js/common.js"></script>
+	</head>
+
+	<body>
+		<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+			<input type="hidden" name="c" value="<?=$c;?>" />
+			<input type="hidden" name="a" value="<?=$a;?>" />
+			<table >
+				<tr>
+					<td class="left">企业名称:</td>
+					<td class='right'>
+						<input type="text" name="seach_ep_name" value="<?=$ep_name;?>" class="input finput"/>
+					</td>
+
+					<td class="left">审人员名称:</td>
+					<td class='right'>
+						<input type="text" name="seach_name" value="<?=$name;?>" class="input finput"/>
+					</td>
+				</tr>
+			</table>
+			<p class="button-panel">
+				<button class="btn btn-submit" type="submit"> 搜 索 </button>
+				&nbsp;
+				<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+				</p>
+		</form>
+		<br/>
+
+		<div id="toolTipLayer" style="position:absolute; visibility: hidden"></div>
+		<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+			<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+				<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>">
+					<a href="javascript:;">
+						签到列表
+						<span class="cnt-total">
+							<?=$total;?>
+						</span>
+					</a>
+				</li>
+			</ul>
+			<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+				<table class="grid-table tal">
+					<thead>
+						<tr>
+							<th width="">审核员名称</th>
+							<th width="">企业名称</th>
+							<th width="">审核开始时间</th>
+							<th width="">审核结束时间</th>
+							<th width="">签到类型</th>
+							<th width="">签到时间</th>
+							<th width="">签到地址</th>
+							<th width="">签到位置</th>
+						</tr>
+					</thead>
+					<tbody>
+					<?php if( $results ):foreach( $results as $row ):?>
+						<tr align='center'  data-id="<?=$row['id']?>" style="height:27px">
+							<td><?=$row['name'];?></td>
+							<td><?=$row['ep_name'];?></td>
+							<td><?=$row['tb_date'];?></td>
+							<td><?=$row['te_date'];?></td>
+							<td><?=$qdtype[$row['qd_type']];?></td>
+							<td><?=$row['qd_dateTime'];?></td>
+							<td><?=$row['qd_addr'];?></td>
+							<td>
+								<a href="?c=qiandao&a=info&lat=<?=$row['qd_lat'];?>&lng=<?=$row['qd_lng'];?>" target="_black" ><img style="-webkit-user-select: none" src="http://restapi.amap.com/v3/staticmap?location=<?=$row['qd_lng'];?>,<?=$row['qd_lat'];?>&amp;zoom=13&amp;size=300*100&amp;markers=mid,,A:<?=$row['qd_lng'];?>,<?=$row['qd_lat'];?>&amp;key=f6995bd5740b1a7a55795c9accc3c5c8"></a>
+							</td>
+							<td>
+								<span id="result"></span>
+							</td>
+						</tr>
+					<?php endforeach;else:?>
+						<tr>
+							<td align="center" colspan="16">未找到相关记录</td>
+						</tr>
+					<?php endif;?>
+					</tbody>
+				</table>
+				<p><?=$pages['pages'];?></p>
+			</div>
+		</div>
+	</body>
+</html>

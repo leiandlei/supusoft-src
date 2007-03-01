@@ -1,0 +1,105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>结算单</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr>
+			<th>项目名称</th>
+			<th>企业规模</th>
+			<th>结算单价</th>
+			<th>体系</th>
+			<th>结算价</th>
+			<th>其他费用</th>
+			<th>结算总金额</th>
+			<th>审核成本</th>
+			<th>合同金额</th>
+			<th>实收金额</th>
+			<th>额定税收</th>
+			<th>返款金额</th>
+			<th>金额结算</th>
+		</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td style="text-align: center;">上月结转</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;"><?=$value['enterprises']['jiezhuan'];?></td>
+			</tr>
+			<tr>
+				<td style="text-align: center;">预付款</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;"><?=$value['enterprises']['yufukuan'];?></td>
+			</tr>
+			<tr>
+				<td style="text-align: center;">开票扣税（5%）</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;">-</td>
+				<td style="text-align: center;"><?=$value['enterprises']['koushui'];?></td>
+			</tr>
+<?php foreach ($results as $value):?>
+		<tr>
+			<td style="text-align: center;"><?=$value['ep_name'];?></td>
+			<td style="text-align: center;"><?=$value['ep_amount'];?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['jiesuandian']=='0.00')?'-':($value['enterprises']['jiesuandian']);?></td>
+			<td style="text-align: center;"><?= $value['countisos'];?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['jiesuanjia']=='0.00')?'-':($value['enterprises']['jiesuanjia']);?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['qitafeiyong']=='0.00')?'-':($value['enterprises']['qitafeiyong']);?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['jiesuanzongjine']=='0.00')?'-':($value['enterprises']['jiesuanzongjine']);?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['shenhechengben']=='0.00')?'-':($value['enterprises']['shenhechengben']);?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['hetongjine']=='0.00')?'-':($value['enterprises']['hetongjine']);?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['shishoujine']=='0.00')?'-':($value['enterprises']['shishoujine']);?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['edingshuishou']=='0.00')?'-':($value['enterprises']['edingshuishou']);?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['fankuanjine']=='0.00')?'-':($value['enterprises']['fankuanjine']);?></td>
+			<td style="text-align: center;"><?= ($value['enterprises']['jiesuanjine']=='0.00')?'-':($value['enterprises']['jiesuanjine']);?></td>
+		</tr>
+<?php endforeach;?>
+		<tr>
+			<td colspan="12">月末余额</td>
+			<td></td>
+		</tr>
+		<tr>
+			<td colspan="13">备注：</td>
+		</tr>
+		</tbody>
+	</table>
+</body>
+</html>

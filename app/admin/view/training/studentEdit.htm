@@ -1,0 +1,243 @@
+<? tpl('header')?>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript" src="theme/js/region.js"></script>
+<script type="text/javascript" src="theme/js/common.js"></script>
+</head>
+<body>
+
+
+<form method="post" id="from" action="?c=training&a=studentEdit">
+	<input id="id" type="hidden" name="id" value="<?=$id;?>" />
+	<input id="id" type="hidden" name="save" value="1" />
+	<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+		<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+		    <li>学员登记</li>
+		 </ul>
+		<div id="tab-basic">
+			<ul class="main-form">
+				<!-- 中幅 -->
+				<li>
+					<label class="field">学员编号</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_code" dataType="Require" msg="请输入学员编号！"  name="s_code" value="<?=$s_code;?>" class="input"/>
+					</span> 
+			    </li>
+				<li>
+					<label class="field">学员名称</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_name" dataType="Require" msg="请输入学员名称！"  name="s_name" value="<?=$s_name;?>" class="input"/>
+					</span> 
+					<label class="field">性别</label>
+					<em>*</em>
+					<span>
+						<select name="s_sex" class='fselect is_todo-js' style="width:171px;">
+		                    <option value="1" <?php if($s_sex==1)echo 'selected';?>>男</option>
+		                    <option value="2" <?php if($s_sex==2)echo 'selected';?>>女</option>
+	                  	</select>
+					</span>
+			    </li>
+				<li>
+					<label class="field">身份证号</label>
+					<em></em>
+					<span>
+						<input type="text" id="s_card" name="s_card" value="<?=$s_card;?>" class="input" />
+					</span> 
+					<label class="field">年龄</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_age"  name="s_age" value="<?=$s_age;?>" class="input" />
+					</span>
+			    </li>
+			    <li>
+			    	<label class="field">联系方式</label>
+					<em></em>
+					<span>
+						<input type="text" id="s_tel" name="s_tel" value="<?=$s_tel;?>" class="input" />
+					</span> 
+					<label class="field">通讯地址</label>
+					<em></em>
+					<span>
+						<input type="text" id="s_address" name="s_address" value="<?=$s_address;?>" class="input" />
+					</span>
+				</li>
+				<li>
+			    	<label class="field">邮政编码</label>
+					<em></em>
+					<span>
+						<input type="text" id="s_youbian" name="s_youbian" value="<?=$s_youbian;?>" class="input" />
+					</span> 
+					<label class="field">Email</label>
+					<em></em>
+					<span>
+						<input type="text" id="s_email" name="s_email" value="<?=$s_email;?>" class="input" />
+					</span>
+				</li>
+				<li>
+					<label class="field">QQ</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_qq" name="s_qq" value="<?=$s_qq;?>" class="input" />
+					</span>
+					<label class="field">工作单位</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_job" name="s_job" value="<?=$s_job;?>" class="input" />
+					</span>
+			    </li>
+			    <li>
+					<label class="field">附属联系人</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_flianxiren" name="s_flianxiren" value="<?=$s_flianxiren;?>" class="input" />
+					</span>
+					<label class="field">附属联系方式</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_ftel" name="s_ftel" value="<?=$s_ftel;?>" class="input" />
+					</span>
+			    </li>
+			    <li>
+					<label class="field">学历</label>
+					<em>*</em>
+					<span>
+						<select name="s_xueli" class='fselect is_todo-js' style="width:171px;">
+		                    <option value="1" <?php if($s_xueli==1)echo 'selected';?>>专科以下</option>
+		                    <option value="2" <?php if($s_xueli==2)echo 'selected';?>>专科</option>
+		                    <option value="3" <?php if($s_xueli==3)echo 'selected';?>>本科</option>
+		                    <option value="4" <?php if($s_xueli==4)echo 'selected';?>>研究生</option>
+		                    <option value="5" <?php if($s_xueli==5)echo 'selected';?>>博士生</option>
+	                  	</select>
+					</span>
+					<label class="field">学位</label>
+					<em>*</em>
+					<span>
+						<select name="s_xuewei" class='fselect is_todo-js' style="width:171px;">
+		                    <option value="1" <?php if($s_xuewei==1)echo 'selected';?>>无</option>
+		                    <option value="2" <?php if($s_xuewei==2)echo 'selected';?>>学士</option>
+		                    <option value="3" <?php if($s_xuewei==3)echo 'selected';?>>硕士</option>
+		                    <option value="4" <?php if($s_xuewei==4)echo 'selected';?>>博士</option>
+	                  	</select>
+					</span>
+			    </li>
+				<li>
+					<label class="field">毕业院校</label>
+					<em></em>
+					<span>
+						<input type="text" id="s_school" name="s_school" value="<?=$s_school;?>" class="input" />
+					</span>
+					<label class="field">专业</label>
+					<em></em>
+					<span>
+						<input type="text" id="s_zhuanye" name="s_zhuanye" value="<?=$s_zhuanye;?>" class="input" />
+					</span> 
+				</li>
+				<li>
+					<label class="field">本机构注册</label>
+					<em>*</em>
+					<span style="width:170px;">
+						<input type="radio" id="s_self" name="s_self" value="1" <?php if($s_self==1)echo 'checked';?> class="input" />是
+						&nbsp;&nbsp;&nbsp;
+						<input type="radio" id="s_self" name="s_self" value="0" <?php if($s_self==0)echo 'checked';?> class="input" />否
+					</span>
+
+					<!-- <label class="field">本机构发证</label>
+					<em>*</em>
+					<span>
+						<input type="radio" id="s_self_issue" name="s_self_issue" value="1" <?php if($s_self_issue==1)echo 'checked';?> class="input" />是
+						&nbsp;&nbsp;&nbsp;
+						<input type="radio" id="s_self_issue" name="s_self_issue" value="0" <?php if($s_self_issue==0)echo 'checked';?> class="input" />否
+					</span>  -->
+			    </li>
+					
+			    <li>
+			    	<label class="field">继续教育账号</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_jxjy_act" name="s_jxjy_act" value="<?=$s_jxjy_act;?>" class="input" />
+					</span>
+					<label class="field">继续教育密码</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_jxjy_pwd" name="s_jxjy_pwd" value="<?=$s_jxjy_pwd;?>" class="input" />
+					</span>
+			    </li>
+
+			    <li>
+			    	<label class="field">CCAA3.0 账号</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_ccaa_act" name="s_ccaa_act" value="<?=$s_ccaa_act;?>" class="input" />
+					</span>
+					<label class="field">CCAA3.0 密码</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="s_ccaa_pwd" name="s_ccaa_pwd" value="<?=$s_ccaa_pwd;?>" class="input" />
+					</span>
+			    </li>
+
+				<li>
+					<label class="field">备注信息</label>
+					<em></em>
+					<span>
+						<textarea cols="74" id="s_note" rows="3" name="s_note" style="width:490px;"><?=$s_note;?></textarea>
+					</span> 
+				</li>
+			</ul>
+			<p>
+				<center style="margin-bottom: 10px;">
+					<button class="btn btn-submit submit-btn" type="button"> 保 存 </button>&nbsp;&nbsp;&nbsp;
+					<a href="?c=<?=$c;?>&a=studentList" title="关闭窗口">返回列表</a>
+				</center>
+			</p>
+		</div>
+	</div>
+
+</form>
+</body>
+<script type="text/javascript">
+$(function(){
+	$('button.submit-btn').on('click',function(){
+    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+    	$('#from').submit();
+  	});
+
+	//查找学员
+	$("#s_name").on('blur',selectStudent);
+	//查找学员
+
+	$("#s_card").on('change', function(event) {
+		var data    = {'card':$(this).val()};
+		var results = ajax(data,'getcardInfo');
+		if(results.errorCode==0){
+			///alert(results.data.id);
+			window.location.href="?c=training&a=studentEdit&id="+results.data.id; 
+		}else if(results.errorCode==1){
+			$("#s_age").val(results.data.age);
+		}else{
+			alert(results.errorStr);
+		}
+	});
+});
+function selectStudent(){
+		var name = $(this).val();
+		var href = '?c=ajax&a=select_training_student&seach_s_name='+name;
+		$('<iframe id="iframe_student" border="0" frameborder="no" src="' + href + '" />').dialog({
+			title: '选择专业代码',
+		    autoOpen: true,
+		    width: 800,
+		    height: 420,
+		    modal: true,
+		    resizable: false,
+		    autoResize: true,
+		}).width(780);
+	}
+	//写入学员
+	function insertStudent(data){
+		if(data.id!=''){
+			window.location.href="?c=training&a=studentEdit&id="+data.id;
+		}
+	}
+</script>
+</html>

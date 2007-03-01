@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>业务代码申请管理</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css"
+rel="stylesheet" />
+<link href="theme/css/jquery-ui.css"
+type="text/css" rel="stylesheet" /> <script type="text/javascript" src="theme/js/jquery.js"></script> <script type="text/javascript"
+	src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script> <script>
+    $(function() {
+		$('.c-del').click(function(){
+			confirm_dialog('确认要删除该小类申请？', $(this).attr( 'href' ), 'warning' );
+			return false;
+		});
+		//var tooltips = $( "[title]" ).tooltip({position:{my:"left+6 center", at:"right center"}});
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+        $('#export-xls-btn').click( do_export_xls );
+		$('#explode_list').click(explode_list);
+        $("#all_check").click(function(){
+        	$(".hac_isd").each(function(){
+    			if($(this).attr("checked")){
+    			  $(this).removeAttr("checked");
+    			}else{
+    			 $(this).attr("checked",'true');
+    			}
+    		})
+    	});
+    });
+    function do_export_xls(){
+    	var form = $('#search-form');
+
+    	//var export_xls_url = '?c=xls&a=list_enterprise';
+    	var export_xls_url = '?c=doc&a=hr02';
+    	var param = '';
+    	$('.hac_isd').each(function(){
+    		if($(this).attr("checked")) {
+    			param += $(this).val()+'|';
+    	    }
+    	});    
+    	if(!param){
+    		alert('至少选择一项');
+    		return;
+    	}else{
+    		param = '&aca_ids='+param;
+    	}
+
+    	window.location.href= export_xls_url + param;
+    }
+	function explode_list(){
+	 
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove(); 
+		
+	}
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+
+    </script>
+</head>
+
+<body>
+
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+<input type="hidden" name="is_hire" value="<?=$is_hire;?>" />	
+<input type="hidden" name="status" value="<?=$status;?>" />	
+	<table>
+		<tr>
+			<td class="left">姓名：</td>
+			<td class="right"><input type="text" name="name" value="<?=$name;?>" class="input finput"/></td>
+			<td class="left">人员编号：</td>
+			<td class="right"><input type="text" name="code" value="<?=$code;?>" class="input finput"/></td>
+			<td class="left">易记码：</td>
+			<td class="right"><input type="text" name="easycode" value="<?=$easycode;?>" class="input finput"/></td>
+			<td class="left">小类代码：</td>
+			<td class="right"><input type="text" name="audit_code" value="<?=$audit_code;?>" class="input finput"/></td>
+		</tr>
+		<tr>
+			<td class="left">人员来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value="">--请选择--</option><?=$ctfrom_select;?></select></td>
+			<td class="left">专兼职：</td>
+			<td class="right"><select name="audit_job" class='fselect'><option value="">--请选择--</option><?=$audit_job_select;?></select></td>
+			<td class="left">体系：</td>
+			<td class="right"><select name="iso" class='fselect'><option value="">--请选择--</option><?=$iso_select;?></select></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button class="btn btn-button" type="button" id="explode_list"> 批量导出 </button>
+	</p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1050px;margin:0 auto;'>
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_1_tab;?>"><a href="?c=hr_code&a=clist&status=1<?php gettourl();?>">申请中 <span class="cnt-total"><?=$state_total[1];?></span></a></li>
+		<li class="ui-state-default ui-corner-top <?=$status_2_tab;?>"><a href="?c=hr_code&a=clist&status=2<?php gettourl();?>">未通过 <span class="cnt-total"><?=$state_total[2];?></span></a></li>
+		<li class="ui-state-default ui-corner-top <?=$status_3_tab;?>"><a href="?c=hr_code&a=clist&status=3<?php gettourl();?>">已通过 <span class="cnt-total"><?=$state_total[3];?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<table class="grid-table">
+	<thead>
+		<tr>
+			<th align='center'>
+<?php
+	if($status=='1'){
+		echo '操作';
+	}else if($status=='2'){
+		echo '编辑';
+	}else if($status=='3'){
+		echo '查看';
+	}
+?></th>
+			<?php if( 1 == $status ):?><th align='center'><a href='javascript:void(0)' id='all_check'>全选</a></th><?php endif;?>
+			<th align='center'>编号</th>
+			<th align='center'>姓名</th>
+			<th align='center'>合同来源</th>
+			<th align='center'>专兼职</th>
+			<th align='center'>体系</th>
+            <th align='center'>专业</th>
+			<!--<th align='center'>申请代码</th>-->
+			<th align='center'>申请时间</th>
+			<th align='center'>删除</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr>
+			<td align="center"><a href="?c=<?=$c;?>&a=app_edit&uid=<?=$row[uid]?>&iso=<?=$row['iso'];?>&acaid=<?=$row['id']?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+			<?php if( 1 == $status ):?><td align="center"><input type="checkbox" class='hac_isd' name="hac_id[<?=$row['uid'];?>][]" value="<?=$row['id'];?>" /></td><?php endif;?>
+			
+			<td align="center"><?=$row['code'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['ctfrom'];?></td>
+			<td align="center"><?=$row['audit_job'];?></td>
+			<td align="center"><?=$row['iso_v'];?></td>
+            <td align="center"><?=$row['app_use_code'];?></td>
+			<!--<td align="center"><?=$row['app_audit_code'];?></td>-->
+			<td align="center"><?=$row['create_date'];?></td>
+			<td align="center"><a href="?c=auditor&a=app_del&uid=<?=$row[uid]?>&qid=<?=$row['qid'];?>&acaid=<?=$row['id']?>&status=<?=$status?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+		</tr>
+		<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="1<?php if( 1 == $status ):?>2<?php else:?>1<?php endif;?>">没有找到数据</td>
+		</tr>
+		<?php
+}
+?>
+<!--<?php if( 1 == $status ):?>
+	<tr>
+	<td>&nbsp;</td>
+	<td align="left" colspan="1<?php if( 1 == $status ):?>1<?php else:?>0<?php endif;?>" ><button id='export-xls-btn' class="btn btn-submit" type="button"> 导出能力申请表 </button></td>
+	</tr>
+	<?php endif;?>-->
+	</tbody>
+</table>
+<p><?=$pages['pages'];?></p>
+
+	</div>
+</div>
+</body>
+</html>

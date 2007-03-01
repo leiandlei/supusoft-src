@@ -1,0 +1,65 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>资料回收列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="*">合同编号</th>
+            <th width="*">项目编号</th>
+            <th width="200">企业名称</th>
+            <th width="*">合同来源</th>
+            <th width="*">组长</th>
+            <th width="*">审核类型</th>
+            <th width="*">标准</th>
+            <th width="*">一评人员</th>
+            <th width="*">二评人员</th>
+            <th width="*">一评通过</th>
+            <th width="*">二评通过</th>
+            <th width="*"><!--资料收回-->整改</th>
+            <th width="*"><!--转技委会-->总经理审批</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $resdb ){
+	foreach( $resdb as $row ){
+?>
+		<tr>
+			 <td align="center"><?=$row['ct_code'];?></td>
+            <td align="center"><?=$row['cti_code'];?></td>
+            <td><?=$row['ep_name'];?></td>
+            <td align="center"><?=$row['ctfrom_V'];?></td>
+            <td align="center"><?=$row['leader'];?></td>
+            <td align="center"><?=$row['audit_type_V'];?></td>
+            <td align="center"><?=$row['audit_ver_V'];?></td>
+            <td align="center"><?=$row['comment_a_name'];?></td>
+            <td align="center"><?=$row['comment_b_name'];?></td>
+            <td align="center"><span title="<?=$row['comment_a'];?>">
+              <?=$row['comment_a_date'];?>
+              </span>
+              <?=$row['comment_a_pass_V'];?></td>
+            <td align="center"><span title="<?=$row['comment_b'];?>">
+              <?=$row['comment_b_date'];?>
+              </span>
+              <?=$row['comment_b_pass_V'];?></td>
+            <td align="center"><?=$row['rect_finish_V'];?></td>
+            <td align="center"><?=$row['sp_date'];?></td>
+		</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

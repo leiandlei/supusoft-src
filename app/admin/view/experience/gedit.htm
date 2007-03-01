@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员工作经历登记</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script>
+    $(function() {
+         $( "#user-tab" ).tabs({
+            collapsible: false
+        });
+        $( ".input-date" ).datepicker({
+    		changeMonth	: true,
+    		changeYear	: true,
+    		dateFormat	: "yy-mm-dd"
+    	});
+    });
+</script>
+</head> 
+<body> 
+<div id="user-tab" style="margin:0 auto;width:750px;" class="tal">
+	<ul>
+		<li><a href="#tab-basic">工作经历</a></li>
+	</ul>
+	<div id="tab-basic">
+		<form method="post" action="?c=experience&a=gsave" onsubmit="return Validator.Validate(this,2)">
+		<input name="id" type='hidden' value="<?=$id;?>" />
+		<ul class="main-form">
+			<li>
+				<label class="field">工作单位：</label><span><input name="area" value="<?=$area;?>" style="width:180px" dataType="Require" msg="工作单位不能为空！"/><em>*</em></span>
+			</li>
+			<li>
+				<label class="field">部门：</label><span><input name="department" value="<?=$department;?>" style="width:180px" /><em></em></span>
+			</li>
+			<li>
+				<label class="field">职务：</label><span><input name="position" value="<?=$position;?>" style="width:180px" /><em></em></span>
+			</li>
+			<li>
+				<label class="field">证明人：</label><span><input name="name" value="<?=$name;?>" style="width:180px"  /><em></em></span>
+			</li>
+			<li>
+				<label class="field">证明人电话：</label><span><input name="telephone" value="<?=$telephone;?>" style="width:180px" /><em></em></span>
+			</li>
+			<li>
+				<label class="field">开始日期：</label><span><input name="s_date" value="<?=$s_date;?>" style="width:180px"  class="input-date" dataType="Require" msg="开始日期不能为空！"/><em>*</em></span>
+			</li>
+			<li>
+				<label class="field">结束日期：</label><span><input name="e_date" value="<?=$e_date;?>" style="width:180px"  class="input-date" dataType="Require" msg="结束日期不能为空！"/><em>*</em></span>
+			</li>
+			<li>
+				<label class="field">工作描述：</label><span><textarea name="note" rows="2" cols="60"><?=$note;?></textarea><em></em></span>
+			</li>
+			
+		</ul>
+		<p>
+			<center><button class="btn btn-submit" type="submit" id="submit"> 添加 </button> </center>
+		</p>
+		</form>
+	</div>
+
+</div>  
+</body>
+</html>

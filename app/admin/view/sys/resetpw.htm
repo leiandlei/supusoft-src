@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员信息登记</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script>
+    $(function() {
+		var tooltips = $( "[title]" ).tooltip({position:{my:"left bottom+37", at:"left bottom"}});
+        $( "#user-tab" ).tabs({
+            collapsible: false
+        });
+        $(".quan").click(function(){
+            $(this).parent().parent().next().find('input').attr("checked",true);
+            $(this).parent().find('input').attr("checked",true);
+    	});
+    	$(".fan").click(function(){
+    		$($(this).parent().parent().next().find('input')).each(function(){
+    			if($(this).attr("checked")){
+    			  $(this).removeAttr("checked");
+    			}else{
+    			 $(this).attr("checked",'true');
+    			}
+    		})
+    	});
+    	$(".qu").click(function(){
+    		$(this).parent().parent().next().find('input').attr("checked",false);
+            $(this).parent().find('input').attr("checked",false);
+    	});
+    });
+    function check_data(){
+    	var pw1 = $("#pw1").val();
+		var pw2 = $("#pw2").val();
+		var pw3 = $("#pw3").val();
+		if(!pw1){
+			alert('请输入原始密码');
+			return false
+		}else{
+			if(!pw2 || !pw3){
+				alert('请输入修改密码');
+				return false;
+			}
+		}
+		if(pw2 != pw3){
+			alert('新密码两次输入错误');
+			return false;
+		}
+    }
+</script>
+</head>
+
+<body>
+
+
+<form method="post" action="?c=sys&a=resetpw_save" onsubmit="return check_data()">
+<input type="hidden" id='uid' name="uid" value="<?=$uid?>" />
+<input type="hidden" id='isgo' name="isgo" value="" />
+<div id="user-tab" style="margin:0 auto;width:750px;" class="tal">
+	<ul>
+		<li><a href="#tab-basic">密码修改</a></li>
+	</ul>
+	<div id="tab-basic">
+		<ul class="main-form">
+			<li>
+				<label class="field">姓 名：</label><span><input name="code" value="<?=$hr_info['name'];?>" style="width:180px"  disabled='disabled' /></span>
+			</li>
+			<li>
+				<label class="field">用 户 名：</label><span><input name="name" value="<?=$hr_info['username'];?>" style="width:180px"  disabled='disabled' /></span>
+			</li>
+			<li>
+				<label class="field">原 密 码：</label><span><input id='pw1' type='password' name="password1" value="" style="width:180px"  /></span>
+			</li>
+			<li>
+				<label class="field">新 密 码：</label><span><input id='pw2' type='password' name="password2" value="" style="width:180px"  /></span>
+			</li>
+			<li>
+				<label class="field">重新输入：</label><span><input id='pw3' type='password' name="password3" value="" style="width:180px"  /></span>
+			</li>
+		</ul>
+	</div>
+<p><center><button class="btn btn-submit" type="submit" style='margin-bottom:50px'> 保 存 </button></center></p>
+</div>
+</form>
+<br/><br/>
+</body>
+</html>

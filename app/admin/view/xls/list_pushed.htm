@@ -1,0 +1,55 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>监督维护列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="80">合同编号</th>
+			<th width="80">项目编号</th>
+			<th width="80">证书编号</th>
+			<th width="200">组织名称</th>
+			<th width="*">合同来源</th>
+			<th width="*">审核类型</th>
+			<th width="*">审核阶段</th>
+			<th width="*">计划开始</th>
+			<th width="*">监督最后日</th>
+			<th width="*">证书到期</th>
+			<th width="60">状态</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $pid => $row ){
+?>
+		<tr>
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['cti_code'];?></td>
+			<td align="center"><?=$row['certno'];?></td>
+			<td> <?=$row['ep_name'];?> </td>
+			<td align="center"><?=f_ctfrom($row['ctfrom']);?></td>
+			<td align="center"><?=f_iso($row['iso']);?></td>
+			<td align="center"><?=f_audit_type($row['audit_type']);?></td>
+			<td align="center"><?=$row['pre_date'];?></td>
+			<td align="center"><?=$row['final_date'];?></td>
+			<td align="center"><?=$row['e_date'];?></td>
+			<td align="center"><?=r_sys_cache('project_status',$row['status']);?></td>
+		</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>选择人员</title>
+
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script>
+    $(function() {
+		//var tooltips = $( "[title]" ).tooltip({position:{my:"left+6 center", at:"right center"}});
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+
+        
+    });
+	function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+
+    </script>
+</head>
+
+<body>
+<form method="get" action="?">
+	<input type="hidden" name="c" value="<?=$c;?>" />
+	<input type="hidden" name="a" value="<?=$a;?>" />
+	<input type="hidden" name="use_code" value="<?=$use_code?>" />
+	<input type="hidden" name="iso" value="<?=$iso;?>" />
+    <input type="hidden" name="step" value="<?=$step;?>" />
+	<!--<input type="hidden" name="taskBeginDate" value="<?=$taskBeginDate;?>" />
+	<input type="hidden" name="taskEndDate" value="<?=$taskEndDate;?>" />
+	<input type="hidden" name="audit_ver" value="<?=$audit_ver;?>" />
+	<input type="hidden" name="tid" value="<?=$tid;?>" />-->
+	<table>
+		<tr>
+			
+			<td>姓名：</td>
+			<td ><input type="text" name="name" value="<?=$name;?>"  class="input input-search-basic" /></td>
+		</tr>
+		<tr>
+			<td colspan="8" align="left">
+				<button type="submit" class="btn btn-submit"> 搜索 </button>
+                 &nbsp;
+    <button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+			</td>
+		</tr>
+	</table>
+</form>
+
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="30">选择</th>
+			<th width="60">编号</th>
+			<th width="80">姓名</th>
+			<th width="60">性别</th>
+			<th width="*">易记码</th>
+            <!-- <th width="40">代码</th> -->
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $hrs ){
+	foreach( $hrs as $id => $row ){
+?>
+		<tr align="cneter">
+			<td><a href="javascript:window.parent.update_user( '<?=$row['uid'];?>', '<?=$row['name'];?>' );"><img src="theme/images/b_edit.png" border="0" /></a></td>
+			<td><?=$row['code'];?></td>
+			<td><?=$row['name'];?></td>
+			<td><?=$row['sex'];?></td>
+			<td><?=$row['easycode'];?></td>
+            <!-- <td><?=$row['use_code'];?></td> -->
+            
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td colspan="5">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+	<?=$pages['pages'];?>
+
+
+</body>
+</html>

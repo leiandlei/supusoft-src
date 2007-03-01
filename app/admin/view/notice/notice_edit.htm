@@ -1,0 +1,118 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>人员信息登记</title>
+		<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+		<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="theme/js/jquery.js"></script>
+		<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+		<script type="text/javascript" charset="utf-8" src="theme/ueditor/ueditor.config.js"></script>
+		<script type="text/javascript" charset="utf-8" src="theme/ueditor/ueditor.all.min.js">
+		</script>
+		<script type="text/javascript" charset="utf-8" src="theme/ueditor/lang/zh-cn/zh-cn.js"></script>
+		<script>
+			$(function()
+			{
+
+				$("#user-tab").tabs({
+					collapsible: false
+				});
+				$("#enterprise-tab").tabs({
+					collapsible: false
+				});
+				
+				$('select[name=type]').on('change',function()
+				{
+					$('#receiveusername-li')[0].style.display= $(this).val()=='11'?'':'none';
+				})
+				$('#select-toUserID').click( toUserID );
+			});
+		function toUserID()
+		{
+			var href = '?c=ajax&a=select_toUserIDs';
+	        $('<iframe id="iframe_yjperson" border="0" frameborder="no" src="' + href + '" />').dialog({
+				title: '选择人员',
+			    autoOpen: true,
+			    width: 610,
+			    height: 600,
+			    modal: true,
+			    resizable: false,
+			    autoResize: true,
+			}).width(602);
+		}
+		function insertStudent(data)
+		{
+			if(data.id)$('#toUserID').val($('#toUserID').val()+','+data.id);
+			if(data.name)$('#toUserIDname').val($('#toUserIDname').val()+','+data.name);
+			$('#iframe_yjperson').dialog('close');
+			$('#iframe_yjperson').dialog('destroy');
+			$('#iframe_yjperson').remove();
+		}
+
+		</script>
+	</head>
+
+	<body>
+		<form method="post" action="?c=notice" enctype="multipart/form-data">
+			<input type="hidden" name="a" value="save" />
+			<input type="hidden" name="id" value="<?=$id?>" />
+
+			<div id="enterprise-tab" style="margin:0 auto;width:750px;margin-top:50px" class="tal">
+				<ul>
+					<li>
+						<a href="#tab-basic">
+							<?=$tip_msg?>
+						</a>
+					</li>
+				</ul>
+				<div id="tab-basic">
+					<ul class="main-form">
+						<li>
+							<label class="field">标题：</label><em></em>
+							<span><input type="text" name="title" value="<?=$title?>" size="60" /></span>
+						</li>
+						<li>
+							<label class="field">内容：</label><em></em>
+							<span>
+								<textarea id="editor" name="content" style="width: 435px;"><?=htmlspecialchars_decode($content)?></textarea>
+							</span>
+						</li>
+						<li>
+							<label class="field">附件：</label><em></em>
+							<span><input type="file" size="30" name="fileurl"/></span>
+							<label class="field" style="margin-left:-40px;">公告类型：</label><em></em>
+							<span>
+								<select name="type">
+									<option value="1" <?=($type==1)?'selected':'';?>>公司公告</option>
+									<option value="2" <?=($type==2)?'selected':'';?>>审核员公告</option>
+									<option value="3" <?=($type==3)?'selected':'';?>>客户公告</option>
+									<option value="11" <?=($type==11)?'selected':'';?>>指定用户</option>
+								</select>
+							</span>
+						</li>
+						<li id="receiveusername-li" style="display: none;">
+							<label class="field">选择用户：</label><em></em>
+							<span>
+								<input type="hidden" id="toUserID"  name="receiveuser">
+								<input type="text" id="toUserIDname"  name="receiveusername" readonly size="60" />
+								<i id="select-toUserID" class="i-select" style="vertical-align: bottom;" ></i>
+							</span>
+						</li>
+						<li>
+							<label class="field"></label><em></em>
+							<span><input class="btn btn-submit" type='submit' value='提交' /></span>
+						</li>
+					</ul>
+				</div>
+			</div>
+
+		</form>
+		<br/><br/>
+	</body>
+	<script type="text/javascript">
+		var ue = UE.getEditor('editor');
+	</script>
+
+</html>

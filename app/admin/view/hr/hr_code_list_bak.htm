@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员专业代码列表</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css"
+type="text/css" rel="stylesheet" /> <script type="text/javascript" src="theme/js/jquery.js"></script> <script type="text/javascript"
+	src="theme/js/jquery-ui.js"></script> 
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+$(function() {
+	$('.c-del').click(function(){ 
+		confirm_dialog('确认要删除该专业能力？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+	$('#export-xls-btn').click( do_export_xls );
+	$('#export-xls-btn2').click( do_export_xls2 );
+	 $("#all_check").click(function(){
+     	$(".hac_isd").each(function(){
+ 			if($(this).attr("checked")){
+ 			  $(this).removeAttr("checked");
+ 			}else{
+ 			 $(this).attr("checked",'true');
+ 			}
+ 		})
+ 	});
+	 $( "input.input-date" ).datepicker({
+			changeMonth	: true,
+			changeYear	: true,
+			dateFormat	: "yy-mm-dd"
+		});
+});
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+function do_export_xls2(){
+	var form = $('#search-form');
+
+	//var export_xls_url = '?c=xls&a=list_enterprise';
+	var export_xls_url = '?c=doc&a=hr01';
+	var param = '';
+	$('.hac_isd').each(function(){
+		if($(this).attr("checked")) {
+			param += $(this).val()+'|';
+	    }
+	});    
+	if(!param){
+		alert('至少选择一项');
+		return;
+	}else{
+		param = '&hac_ids='+param;
+	}
+	window.location.href= export_xls_url + param;
+}
+</script>
+</head>
+
+<body>
+
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="is_hire" value="<?=$is_hire;?>" />	
+	<table>
+		<tr>
+			<td class="left">姓名：</td>
+			<td class="right"><input type="text" name="name" value="<?=$name;?>" class="input finput"/></td>
+			<td class="left">易记码：</td>
+			<td class="right"><input type="text" name="easycode" value="<?=$easycode;?>" class="input finput"/></td>
+			<td class="left">合同来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value="">--请选择--</option><?=$ctfrom_select;?></select></td>
+			<td class="left">状态：</td>
+			<td class="right"><select name="is_hire" class='fselect'><option value="">--请选择--</option><?=$f_is_hire;?></select></td>
+		</tr>
+		<tr>
+			<td class="left">分组代码：</td>
+			<td class="right"><input type="text" name="use_code" value="<?=$use_code;?>" class="input finput"/></td>
+            <!--td class="left">专业代码：</td>
+			<td class="right"><input type="text" name="audit_code" value="<?=$audit_code;?>" class="input finput"/></td-->
+			<td class="left">体系：</td>
+			<td class="right"><select name="iso" class='fselect'><option value="">--请选择--</option><?=$iso_select;?></select></td>
+			<td class="left">通过时间：</td>
+			<td class="right"><input type="text" name="pass_date_s" value="<?=$pass_date_s;?>" class="input input-date finput" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="pass_date_e" value="<?=$pass_date_e;?>" class="input input-date finput"/></td>
+			
+		</tr>
+        
+		<tr>
+			<td class="left">注册资格：</td>
+			<td class="right"><select  name="qualification" class='fselect'><option value="">--请选择--</option><?=$qualification_select;?></select></td>
+            </tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>
+       <span> <a href="?c=hr_code&a=zj_code">技术专家代码导出</a></span>
+	</p>
+</form>
+<br/>
+
+<div style='width:1050px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>"><a href="javascript:;">业务代码查询 <span class="cnt-total"><?=$total;?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	
+	<form method="post" action="" >
+	
+	<input type="hidden" name="c" value="<?=$c;?>" />
+	<input type="hidden" name="a" value="<?=$a;?>" />
+	<table class="grid-table tal">
+	<thead>
+		<tr>
+			<th align='center'>编辑</th>
+            <th align="center">状态</th>
+			<!--<th align='center'><a href='javascript:void(0)' id='all_check'>全选</a></th>-->
+			<th align='center'>编号</th>
+			<th align='center'>姓名</th>
+			<th align='center'>合同来源</th>
+			<th align='center'>专兼职</th>
+			<th align='center'>体系</th>
+			<th align='center'>能力来源</th>
+            <th align='center'>专业</th>
+			<!--<th align='center'>代码</th>-->
+			<th align='center'>评定</th>
+			<th align='center'>通过时间</th>
+			<th align='center'>评定人员</th>
+			<th align='center'>备注</th>
+			<th align='center'>删除</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+if( $hacs ){
+	foreach( $hacs as $row ){
+?>
+		<tr>
+			<td align="center"><a href="?c=<?=$c;?>&a=edit&uid=<?=$row[uid]?>&iso=<?=$row['iso']?>&id=<?=$row['id']?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+            <td align="center"><?=$row['is_hire_V'];?></td>
+			<!--<td align="center"><input type="checkbox" class='hac_isd' name="hac_id[<?=$row['uid'];?>][]" value="<?=$row['id'];?>" /></td>-->
+			<td align="center"><?=$row['code'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td align="center"><?=$row['audit_job'];?></td>
+			<td align="center"><?=$row['iso_V'];?></td>
+			<td align="center"><?=$row['source'];?></td>
+			<td align="center"><?=$row['use_code'];?></td>
+           <!-- <td align="center"><?=$row['audit_code'];?></td>-->
+			<td align="center"><?=$row['is_assess_V'];?></td>
+			<td align="center"><?=$row['pass_date'];?></td>
+			<td align="center"><?=$row['evaluater'];?></td>
+			<td align="center"><?php if($row['note']){?><font face="Arial"><a href="#"  title="<?=$row['note'];?>"><img src="theme/images/other.png" border=0 /></a></font><?php } ?></td>
+			<td align="center"><a href="?c=<?=$c;?>&a=del&uid=<?=$row[uid]?>&id=<?=$row['id']?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+		</tr>
+		<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="16">没有找到数据</td>
+		</tr>
+		<?php
+}
+?>
+		 
+	</tbody>
+</table>
+	</form>
+<p><?=$pages['pages'];?></p>
+	</div>
+</div>
+
+
+</body>
+</html>

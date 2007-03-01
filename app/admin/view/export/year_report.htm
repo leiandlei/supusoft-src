@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>获证组织信息分类统计报表</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+	
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#report1-xls-btn').click( do_export_xls1 );
+	$('#report2-xls-btn').click( do_export_xls2 );
+});
+function do_export_xls1(){
+	var export_xls_url = '?c=xls&a=report1';
+	var param = '';
+	param += '&s_date='+$('#s_date').val();
+	param += '&e_date='+$('#e_date').val();
+	var s_date = $('#s_date').val();
+	var e_date = $('#e_date').val();
+	if(s_date>e_date){
+		alert('开始时间不能大于结束时间');
+		return;
+	}else if(!s_date || !e_date){
+		alert('请输入时间');
+		return;
+	}
+	window.location.href= export_xls_url + param;
+}
+function do_export_xls2(){
+
+	var export_xls_url = '?c=xls&a=report2';
+	var param = '';
+	param += '&s_date='+$('#s_date').val();
+	param += '&e_date='+$('#e_date').val();
+	var s_date = $('#s_date').val();
+	var e_date = $('#e_date').val();
+	if(s_date>e_date){
+		alert('开始时间不能大于结束时间');
+		return;
+	}else if(!s_date || !e_date){
+		alert('请输入时间');
+		return;
+	}
+	window.location.href= export_xls_url + param;
+}
+</script>
+</head>
+<body>
+
+<div id="contract-tab" style="margin: 0 auto; width: 1000px;" class="tal">
+	<ul>
+		<li><a href="#tab-basic">证书年报</a></li>
+	</ul>
+<div id="tab-basic" style="100%">
+	<FORM METHOD=POST ACTION="">
+	<table style="100%" class='grid-table'>
+		<tr align='center'>
+			<td colspan='10' >
+				代码版本：
+				<select NAME="banben">
+						<option value="1" <?php if($banben==1)echo 'selected';?>>--GC--</option>
+						<option value="2" <?php if($banben==2)echo 'selected';?>>--TRC--</option>
+				</select >
+				证书截止时间：<input type='text' id='date_e' name='date_e' value='<?=$date_e?>' class=" input-date"/>
+				&nbsp;
+				认可标志：<select NAME="mark">
+							<option></option>
+							
+								<option value="01" <?php if($mark==01)echo 'selected';?>>CNAS</option>
+								<option value="99" <?php if($mark==99)echo 'selected';?>>其他</option>
+						</select >
+				<!--SELECT NAME="s_zizheng" style='height:22px'>
+					<OPTION VALUE="0" <?php if($s_zizheng=='0'){echo 'selected';}?>>全部 </OPTION>
+					<OPTION VALUE="1" <?php if($s_zizheng=='1'){echo 'selected';}?>>不含子证</OPTION>
+				</SELECT>
+				&nbsp;
+				<SELECT NAME="s_kind" style='height:22px'>
+					<OPTION VALUE="0" <?php if($s_kind=='0'){echo 'selected';}?>>全部</OPTION>
+					<OPTION VALUE="1" <?php if($s_kind=='1'){echo 'selected';}?>>CNAS证书</OPTION>
+				</SELECT-->	
+				
+				<button class="btn btn-submit" type="submit"> 搜 索 </button>
+			</td>
+		</tr>
+<?php
+	$sql = "select * from sp_settings where type='iso' and is_stop = '0' order by vieworder asc";
+	$res = $db->query($sql);
+	while($row = $db->fetch_array($res))
+	{
+		
+		$sql = "select * from sp_settings_audit_vers where iso = '$row[code]' ";
+		$in_res = $db->query($sql);
+		while($row2 = $db->fetch_array($in_res))
+		{
+			
+			echo "<tr align='center'>";
+			echo "<td>".$row[name]."</td>";
+			echo "<td>".$row2[audit_basis]."</td>";
+			echo "<td>有效证书：".$datas[$row2['audit_ver']][1]."</td>";
+			echo "<td>暂停证书：".$datas[$row2['audit_ver']][2]."</td>";
+			echo "<td>撤销证书：".$datas[$row2['audit_ver']][3]."</td>";
+			echo "<td>注销证书：".$datas[$row2['audit_ver']][4]."</td>";
+			echo "<td>初审：".$datas[$row2['audit_ver']][1001]."</td>";
+			echo "<td>监督：".$datas[$row2['audit_ver']][1004]."</td>";
+			echo "<td>再认证：".$datas[$row2['audit_ver']][1007]."</td>";
+			
+			
+			echo "</tr>";
+		}
+	}
+?>
+	</table>
+	</FORM>
+	<br/>
+	<table style="100%" class='grid-table'>
+	<tr>
+		<td width='50%'>
+			<table style="100%" width='100%'>
+			<tr align='center'>
+				<td>分类</td>
+				<?php
+					$sql = "select * from sp_settings where type='iso' and is_stop = '0' order by vieworder asc";
+					$in_res = $db->query($sql);
+					while($row2 = $db->fetch_array($in_res)){
+						echo "<td>".$row2[name]."</td>";
+						
+					}
+				?>
+			</tr>
+			<?php
+				$sql = "SELECT  dalei FROM `sp_settings_audit_code` WHERE 1 and dalei !='' group by dalei ";
+				
+				$res = $db->query($sql);
+				while($row = $db->fetch_array($res)){
+					echo "<tr align='center'>";
+					echo "<td>".$row[dalei]."</td>";
+					$sql = "select * from sp_settings where type='iso' and is_stop = '0' order by vieworder asc";
+					$in_res = $db->query($sql);
+					while($row2 = $db->fetch_array($in_res))
+					{
+						if($datas[$row['dalei']][$row2['code']])
+						{
+							echo "<td>".$datas[$row['dalei']][$row2['code']]."</td>";
+						}else{
+							echo "<td>&nbsp;</td>";
+						}
+					}
+					echo "</tr>";
+				}
+			?>
+			</table>
+		</td>
+		<td width='50%' style='vertical-align:top'>
+			<table  width='100%' >
+			<tr align='center'>
+				<td>分类</td>
+				<?php
+					$sql = "select * from sp_settings where type='iso' and is_stop = '0' order by vieworder asc";
+					$in_res = $db->query($sql);
+					while($row2 = $db->fetch_array($in_res)){
+						echo "<td>".$row2[name]."</td>";
+						
+					}
+				?>
+			</tr>
+			<?php
+				$sql = "select * from sp_settings_region where code like '%0000' and is_stop ='0' order by code asc";
+				$res = $db->query($sql);
+				while($row = $db->fetch_array($res)){
+					echo "<tr align='center'>";
+					echo "<td>".$row[name]."</td>";
+					$sql = "select * from sp_settings where type='iso' and is_stop = '0' order by vieworder asc";
+					$in_res = $db->query($sql);
+					while($row2 = $db->fetch_array($in_res))
+					{
+						if($datas[$row['code']][$row2['code']]){
+							echo "<td>".$datas[$row['code']][$row2['code']]."</td>";
+						}else{
+							echo "<td>&nbsp;</td>";
+						}
+					}
+					echo "</tr>";
+				}
+			?>
+			<tr>
+				
+			</tr>
+			</table>
+		</td>
+	</tr>
+	</table>
+</div></div>
+
+</body>
+</html>

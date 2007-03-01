@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>财务收费明细</title>
+    <meta name="generator" content="editplus" />
+    <meta name="author" content="" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+    <link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+    <link href="theme/css/date.man.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="theme/js/jquery.js"></script>
+    <script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+    <script type="text/javascript" src="theme/js/date.man.js"></script>
+    <style  type="text/css">
+</style>
+    <script type="text/javascript">
+    $(function(){
+      show(".date_input");
+    });
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+    </head>
+
+    <body>
+<div id="toolTipLayer" style="position:absolute; visibility: hidden"></div>
+<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+      <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top <?=$status_n_tab;?>"><a href="javascript:;">财务收费明细 <span class="cnt-total">
+      <?=$total;?>
+      </span></a></li>
+  </ul>
+      <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <table class="grid-table tal">
+          <thead>
+        <tr>
+              <th width="">姓名</th>
+              <th width="">审核员类型</th>
+              <th width="">工作总人日</th>
+              <th width="">审核费用</th>
+              <th width="">补贴</th>
+              <th width="">总费用</th>
+            </tr>
+      </thead>
+          <tbody>
+        <?php
+if( $results ){
+	foreach( $results as $row ){
+?>
+        <tr align='center'  data-id="<?=$row['id']?>">
+              <td><?=$row['name'];?></td>
+              <td>
+                  <?php
+                    switch ($row['leaterType']) {
+                      case '1':
+                        $leaterType = '高级审核员';
+                        break;
+
+                      case '2':
+                        $leaterType = '审核员';
+                        break;
+
+                      case '3':
+                        $leaterType = '实习审核员';
+                        break;
+
+                      case '4':
+                        $leaterType = '技术专家';
+                        break;
+                      
+                      default:
+                        $leaterType = '其他';
+                        break;
+                    }
+                    echo $leaterType;
+                  ?>
+              </td>
+              <td><?=$row['dateArrayCount'];?></td>
+              <td>
+                  <?=$row['totalMoney'];?>
+              </td>
+              <td>
+                <?=$row['butie'];?>
+              </td>
+              <td>
+                <?=$row['butie']+$row['totalMoney'];?>
+              </td>
+              
+        </tr>
+        <?php
+	}
+} else {
+?>
+        <tr>
+              <td align="center" colspan="16">未找到相关记录</td>
+            </tr>
+        <?php
+}
+?>
+      </tbody>
+        </table>
+    <p>
+          <?=$pages['pages'];?>
+        </p>
+  </div>
+    </div>
+</body>
+</html>

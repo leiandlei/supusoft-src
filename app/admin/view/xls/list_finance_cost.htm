@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>合同费用列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<thead>
+		<tr>
+			
+			<th width="40">状态</th>
+			<th width="100">合同编号</th>
+			<th width="*">企业名称</th>
+			<th width="80">合同总金额</th>
+			<th width="230">合同收费金额</th>
+            <th width="230">欠费金额</th>
+		</tr>
+	</thead>
+	<tbody>
+	<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr>
+			
+			
+			
+			
+			<td align="center"><?=$row['status'];?></td>
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="left"><?=$row['ep_name'];?></td>
+			<td align="center"><?=$row['cost'];?></td>
+			<td align="center"><?=$row['finace'];?></td>
+            <td align="center"><?=$row['qianfei'];?></td>
+		</tr>
+<?php }}
+?>
+	</tbody>
+</table>
+</body>
+</html>

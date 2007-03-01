@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title></title>
+
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+
+</head>
+<body>
+<div style="margin: 9px auto 0; width: 1050px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+	<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">检测最后审核日期计划时间 <span class="cnt-total"></span></a></li>
+	</ul>
+<table class="grid-table" style="width:1050px;">
+	<thead>
+		<tr>
+        	<th>项目主键</th>
+ 			<th>项目编号</th>
+            <th>企业名称</th>
+		</tr>
+	</thead>
+	<tbody>
+ 	<? foreach($row as $v){?>
+		<tr>
+        	<td><?=$v['id']?></td>
+			<td align="center"><?=$v[cti_code]?></td>
+            <td><?=$v[ep_name]?></td>
+  		</tr>
+    <? }?>
+ </tbody>
+</table>
+</div>
+
+</body>
+</html>

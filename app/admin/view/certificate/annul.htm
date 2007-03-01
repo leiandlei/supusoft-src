@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>应注销证书</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('.c-del').click(function(){
+		confirm_dialog('确认要删除该项目？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#export-xls-btn').click( do_export_xls );
+});
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1000px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="status" value="<?=$status;?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+            <td class="left">项目编号：</td>
+			<td class="right"><input type="text" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+			<td class="left">合同编号：</td>
+			<td class="right"><input type="text" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+			
+			<td class="left">省份：</td>
+      <td class="right"><select id="areacode" name="areacode"
+			class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$province_select;?>
+        </select></td>
+		</tr>
+		<tr>
+			<td class="left">认证体系：</td>
+			<td class="right"><select name="iso" class='fselect'><option value=""></option><?=$iso_select;?></select></td>
+			
+			<td class="left">审核类型：</td>
+			<td class="right"><select name="audit_type" class='fselect'><option value=""></option><?=$audit_type_select;?></select></td>
+            <td class="left">合同来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value=""></option><?=$ctfrom_select;?></select></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出 </button>
+	</p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1000px;margin:0 auto;'>
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top "><a href="#">应注销证书 <span class="cnt-total"><?=$total?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<div style='width:100%;margin:0 auto;'>
+<form method="post" action="?c=audit&a=approval" id="audit-form">
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="30">变更</th>
+			<th width="80">合同编号</th>
+			<th width="80">项目编号</th>
+			<th width="80">证书编号</th>
+			<th width="250">组织名称</th>
+			<th width="100">合同来源</th>
+			<th width="60">审核类型</th>
+			<th width="80">审核阶段</th>
+			<th width="90">证书到期</th>
+            <th width="*">暂停时间</th>
+            <th width="*">暂停到期</th>
+            <th width="50">审批</th>
+			<th width="60">状态</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $pid => $row ){
+?>
+		<tr>
+			<td align="center"><a href="?c=change&a=add&zsid=<?=$row['id'];?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['cti_code'];?></td>
+			<td align="center"><?=$row['certno'];?></td>
+			<td> <?=$row['ep_name'];?></td>
+			<td align="center"><?=f_ctfrom($row['ctfrom']);?></td>
+			<td align="center"><?=f_audit_ver($row['audit_ver']);?></td>
+			<td align="center"><?=f_audit_type($row['audit_type']);?></td>
+			<td align="center"><?=$row['e_date'];?></td>
+            <td align="center"><?=$row['time1'];?></td> <!--暂停时间-->
+            <td align="center"><?=$row['time2'];?></td> <!--暂停到期-->
+            <td align="center"><?=($row['c_status']==1)?"是":"否";?></td> <!--是否审批-->
+			<td align="center"><?php if($row['status']=='1'){echo '有效';}elseif($row['status']=='2'){echo '暂停';}elseif($row['status']=='3'){echo '撤销';}elseif($row['status']=='4'){echo '注销';}elseif($row['status']=='5'){echo '过期失效';}?></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="16">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+</form>
+	<p><?=$pages['pages'];?></p>
+</div>
+
+	</div>
+</div>
+</body>
+</html>

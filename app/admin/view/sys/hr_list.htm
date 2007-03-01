@@ -1,0 +1,188 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员列表</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script>
+    $(function() {
+		//var tooltips = $( "[title]" ).tooltip({position:{my:"left+6 center", at:"right center"}});
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+        
+    });
+	$(function(){
+
+
+	$('#export-xls-btn').click( function(){
+		var form = $('.search-form');
+		form.append($('<input type="hidden" name="export" value="1" />'));
+		form.submit();
+		form.find('input[name=export]').remove();
+	} );
+	$("#ok-btn").click(function(){
+		$("#type").val(2);
+		
+		
+		})
+	$("#stop-btn").click(function(){
+		$("#type").val(1);
+		
+		
+		})
+})
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+function checkform(){
+	var f=1;
+	$(".uid").each(function(){
+		if($(this).attr("checked")=="checked"){
+		f=0;
+		
+		}
+		
+	})
+	if(f){
+		alert("请选择项目！！");
+		return false;
+		
+		}
+	
+	}
+function checkall(){
+	$(".uid").each(function(){
+		if($(this).attr("checked")!="checked")
+			$(this).attr("checked","checked");
+		
+		
+		
+		})
+	
+	
+	
+	}
+    </script>
+</head>
+
+<body>
+<form method="get" action="?" class="search-form tal" style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+<input type="hidden" name="is_hire" value="<?=$is_hire;?>" />	
+	<table>
+		<tr>
+			<td class="left">姓名：</td>
+			<td class="right"><input type="text" name="name" value="<?=$name;?>" class="input finput"/></td>
+			<td class="left">人员编号：</td>
+			<td class="right"><input type="text" name="code" value="<?=$code;?>" class="input finput"/></td>
+			<td class="left">易记码：</td>
+			<td class="right"><input type="text" name="easycode" value="<?=$easycode;?>" class="input finput"/></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			<td class="left">人员来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value="">--请选择--</option><?=$ctfrom_select;?></select></td>
+			<td class="left">专兼职：</td>
+			<td class="right"><select name="audit_job" class='fselect'><option value="">--请选择--</option><?=$audit_job_select;?></select></td>
+			<td class="left">帐号是否有效</td>
+			<td class="right"><input type="radio" name="is_stop" <?=$is_stop?"checked":""?> value="1" />是<input type="radio" name="is_stop" <?=$is_stop=="0"?"checked":""?> value="0"/>否</td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			<td colspan="8" class="right">
+				<button type="submit" class="btn btn-submit"> 搜 索 </button>
+                <button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+                <button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出</button>
+			</td>
+		</tr>
+	</table>
+</form>
+
+
+<br/>
+<div style='width:1050px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>"><a href="javascript:;">权限管理<span class="cnt-total"><?=$total;?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<table width='100%' class='grid-table'>
+		<thead>
+		<tr>
+			<th width="50">操作</th>
+			<th>人员编号</th>
+			<th>姓名</th>
+            <th>帐号</th>
+			<th>性别</th>
+			<th>联系手机</th>
+			<th>人员来源</th>
+            <th width="40">帐号是否有效</th>
+            <th width="30"><a href="javascript:checkall();">全选</a></th>
+			 
+		</tr>
+		</thead>
+		<tbody>
+        <form action="?c=ajax&a=sys_list" method="post" id="form_action" onsubmit="return checkform();">
+        <input type="hidden" name="type" value="1" id="type" />
+<?php
+if( $users ){
+	foreach( $users as $row ){
+?>
+		<tr>
+			<td align="center"><a href="?c=<?=$c;?>&a=edit&uid=<?=$row['id'];?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+			<td align="center"><?=$row['code'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+            <td align="center"><?=$row['username'];?></td>
+			<td align="center"><?=$row['sex'];?></td>
+			<td align="center"><?=$row['tel'];?></td>
+			<td align="center"><?=$row['ctfrom'];?></td> 
+            <td align="center"><?=$row['is_stop']?"是":"否";?></td> 
+            <td align="center"><input type="checkbox" name="uid[]" value="<?=$row[id]?>"  class="uid"/></td> 
+		</tr>
+        
+<?php
+	}?><tr>
+			<td colspan="2"></td>
+			<td colspan="6">
+				<button class="btn btn-submit" type="submit" id="stop-btn" >冻结用户</button>&nbsp;
+				<button class="btn btn-submit" type="submit" id="ok-btn">解除冻结</button>&nbsp;
+				
+			</td>
+           
+		</tr>
+        <?php 
+    
+} else {
+?>
+		<tr>
+			<td align="center" colspan="10">没有找到数据</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+    </form>
+<?=$pages['pages'];?>
+</div>
+</div>
+<br/><br/>
+
+</body>
+</html>

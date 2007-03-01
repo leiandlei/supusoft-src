@@ -1,0 +1,154 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>客户文档列表</title>
+
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+$(function() {
+	$('.c-del').click(function(){
+		confirm_dialog('确认要删除该文档？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+});
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+$(function(){
+	
+	
+	$('#export-xls-btn').click( function(){
+		
+		var form = $('#search-form');
+		form.append($('<input type="hidden" name="export" value="1" />'));
+		form.submit();
+		form.find('input[name=export]').remove();
+	} );
+})
+
+</script>
+</head>
+
+<body>
+<?php if( !$eid ):?>
+<form method="get" action="" class="search-form tal" id="search-form" style='margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+
+	<table>
+		<tr>
+			<td class='left'>组织名称：</td>
+			<td class='right'><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+			<td class='left'>组织编号：</td>
+			<td class='right'><input type="text" name="code" value="<?=$code;?>" class="input finput" /></td>
+			<td class='left'>文件类型：</td>
+			<td class='right'><select name="arctype" class='fselect'><option value="">--请选择--</option><?=$arctype_select;?></select></td>
+			<td class='left'>上传人：</td>
+			<td class='right'><input type="text" name="up_name" value="<?=$up_name;?>" class="input finput" /></td>
+		</tr>
+		<tr>
+			<td class="left">合同来源：</td>
+			<td class='right'><select name="ctfrom" class='fselect' <?=($hezuofang=='1')?'disabled':'';?>><option value="">--请选择--</option><?=$ctfrom_select;?></select></td>
+			<td class="left">上传时间：</td>
+			<td class="right"><input type="text" name="s_dates" value="<?=$s_dates;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="s_datee" value="<?=$s_datee;?>" class="input input-date finput"/></td>
+			<td class='left'></td>
+			<td class='right'></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button id="reset-btn" class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+		&nbsp;
+    <button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出</button>
+	</p>
+
+</form>
+<br/>
+<?php endif;?>
+
+<div style="margin:0 auto;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">客户文档查询 <span class="cnt-total"><?=$total;?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="30">下载</th>
+			<th width="200">组织名称</th>
+			<th width="*">合同来源</th>
+			<th width="*">文件名</th>
+			<th width="*">文件类型</th>
+			<th width="*30">上传时间</th>
+			<th width="*">上传人</th>
+			<th width="30">备注</th>
+			<th width="30">删除</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $attachs ){
+	foreach( $attachs as $row ){
+?>
+		<tr>
+			<td align="center"><a href="?c=attachment&a=down&aid=<?=$row['id'];?>&class=enterprise"><img src="theme/images/down.gif" width="16" height="16" border=0 /></a></td>
+			<td><a href="?c=<?=$c;?>&a=edit&eid=<?=$row['eid'];?>"><?=$row['ep_name'];?></a></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td><?=$row['name'];?></td>
+			<td align="center"><?=$row['ftype_V'];?></td>
+			<td align="center"><?=$row['create_date'];?></td>
+			<td align="center" ><?=f_username($row['create_uid']);?></td>
+			<td align="center">
+<?php
+if( $row['description'] ){
+?>
+<a href="javascript:;" title="<?=$row['description'];?>"><img src="theme/images/other.png" border="0" /></a> 
+<?php
+}
+?>
+			</td>
+			<td align="center"><a href="?c=enterprise&a=delattach&eid=<?=$row['eid'];?>&aid=<?=$row['id'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+		</tr>
+
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td colspan="14">没有找到相关文档</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+	<p><?=$pages['pages'];?></p>
+</div>
+</div>
+
+</body>
+</html>

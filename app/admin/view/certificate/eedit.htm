@@ -1,0 +1,86 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>邮寄</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<style type="text/css">
+.ctxm-table{border-collapse: collapse;border-spacing: 0;}
+.ctxm-table .td{padding:5px;border:1px solid #ccc;}
+
+.txxm-table{border-collapse: collapse;border-spacing: 0;}
+.txxm-table td{padding:.4em .6em;border:1px solid #f2f6fb;}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+}); 
+</script>
+</head> 
+<body> 
+<form method="post" action="?c=certificate&a=esave" onsubmit="return Validator.Validate(this,2)">
+
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">邮寄</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<input type="hidden" name="id" value="<?=$id;?>" />
+        <input type="hidden" name="flag" value="<?=$_GET['flag'];?>" />
+       
+		<table width="100%">
+			<tr>
+				<td>快递公司：</td>
+				<td colspan="3"><select name="sms_name"><?=f_select("send_company",$sms_name)?></select>
+                
+                </td>
+			</tr>
+			<tr>
+				<td>快递单号：</td>
+				<td colspan="3"><input type="text" name="sms_no" value="<?=$sms_no;?>" size="40" dataType="Require" msg="快递单号不能为空！"/><em style='color:red'>*</em></td>
+			</tr>
+            <tr>
+				<td>联系人：</td>
+				<td colspan="3"><input type="text" name="sms_person" value="<?=$sms_person;?>" size="40" dataType="Require" msg="联系人不能为空！"/><em style='color:red'>*</em></td>
+			</tr>
+            <tr>
+				<td>电话：</td>
+				<td colspan="3"><input type="text" name="sms_tel" value="<?=$sms_tel;?>" size="40" dataType="Require" msg="电话不能为空！"/><em style='color:red'>*</em></td>
+			</tr>
+			<tr>
+				<td>邮寄日期：</td>
+				<td colspan="3"><input type="text" name="sms_date" value="<?=$sms_date;?>"  class="input input-date" dataType="Require" msg="邮政日期不能为空！"/><em style='color:red'>*</em></td>
+			</tr>
+			<tr>
+				<td>邮寄地址：</td>
+				<td colspan="3"><textarea name="sms_addr" cols="60" rows="3"><?=$sms_addr;?></textarea></td>
+			</tr>
+            <tr>
+				<td>邮寄备注：</td>
+				<td colspan="3"><textarea name="sms_note" cols="60" rows="3"><?=$sms_note?></textarea></td>
+			</tr>
+		</table><br/>
+	</div>
+	<p><center><button class="btn btn-submit" type="submit"> 保 存 </button></center></p> 
+	<br/>
+</div>
+</form>
+</body>
+</html>

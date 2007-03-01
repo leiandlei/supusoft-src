@@ -1,0 +1,48 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>客户文档列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<thead>
+		<tr>
+			<td>编号</td>
+			<td>企业注册名称</td>
+			
+			<td>合同来源</td>
+			<td>上传人</td>
+			<td>文件名</td>
+			<td>文件类型</td>
+			<td>上传时间</td>
+			<td>备注</td>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+if( $attachs ){
+	foreach( $attachs as $row ){
+	$i++;
+?>
+		<tr>
+			<td align="center"><?=$i;?></td>
+			<td><?=$row['ep_name'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td><?=$row['name'];?></td>
+			<td align="center"><?=$row['ftype_V'];?></td>
+			<td align="center"><?=$row['create_date'];?></td>
+			<td align="center" ><?=f_username($row['create_uid']);?></td>
+			<td><?=$row['description']?></td>
+		</tr>
+<?php }}?>
+	</tbody>
+</table>
+</body>
+</html>

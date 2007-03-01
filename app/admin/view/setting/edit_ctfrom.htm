@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>标准版本</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+
+<style type="text/css">
+.edit-table{border-collapse: collapse;border-spacing: 0;}
+.edit-table td{padding:5px;border:1px solid #ccc;}
+</style>
+</head>
+
+<body>
+
+
+<div style="margin:0 auto 12px;width:750px;">
+	<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+			<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">编辑来源设置</a></li>
+		</ul>
+		<div style="min-height:200px;" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<form method="post" action="?c=setting_ctfrom&a=<?=$a;?>">
+<input type="hidden" name="step" value="1" />
+<input type="hidden" name="upcode" value="<?=$upcode;?>" />
+<input type="hidden" name="code" value="<?=$code;?>" />
+
+<table style="margin-top:12px;" width="100%" class="grid-table">
+	<tr>
+		<th>名称</th>
+		<td><input type="text" name="name" value="<?=$name;?>" class="input" /></td>
+	</tr>
+	<tr>
+		<th width="120">上级</th>
+		<td><?=$upfrom;?></td>
+	</tr>
+	<!--<tr>
+		<th width="120">显示顺序</th>
+		<td><input type="text" name="vieworder" value="<?=$vieworder;?>" class="input" /></td>
+	</tr>-->
+	<tr>
+		<th>状态</th>
+		<td>
+			<label><input type="radio" name="is_stop" value="0" <?=$is_stop_N;?>/> 启用</label> &nbsp; 
+			<label><input type="radio" name="is_stop" value="1" <?=$is_stop_Y;?>/> 停用</label>
+		</td>
+	</tr>
+</table>
+	<p style="margin:20px 0;"><center><button class="btn btn-submit" type="submit"> 保 存 </button></center></p>
+
+</form>
+	</div>
+</div>
+</body>
+</html>

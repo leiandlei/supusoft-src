@@ -1,0 +1,226 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>未登记证书列表</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+$(function() {
+	//删除提醒
+	$('.c-del').click(function(){
+		confirm_dialog('确认要删除该证书？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+	//日期格式
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	//导出EXCEL
+	$('#export-xls-btn').click( do_export_xls );
+	
+});
+//清空搜索条件
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+//导出excel函数
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function sms(id){
+	
+	$.get("?c=ajax&a=sms&ajax=ajax&is_sms=<?=$is_sms?>&id="+id,function(data){
+		location.reload();
+		
+		})
+	
+	}
+function delsms(id){
+	
+	$.get("?c=ajax&a=sms&ajax=ajax&step=del&is_sms=<?=$is_sms?>&id="+id,function(data){
+		location.reload();
+		
+		})
+	
+	}
+</script>
+
+</head>
+
+<body>
+<form method="get"  id="search-form" action="" class="search-form tal" style=' margin:0 auto;width:1150px;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="is_sms" value="<?=$is_sms;?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput"/></td>
+			<td class="left">企业编号：</td>
+			<td class="right"><input type="text" name="ep_code" value="<?=$ep_code;?>" class="input finput"/></td>
+			<td class="left">合同编号：</td>
+			<td class="right"><input type="text" name="ct_code" value="<?=$ct_code;?>" class="input finput"/></td>
+			<td class="left">项目编号：</td>
+			<td class="right"><input type="text" name="cti_code" value="<?=$cti_code;?>" class="input finput"/></td>
+		</tr>
+		<tr>
+			<td class="left">证书编号：</td>
+			<td class="right"><input type="text" name="certno" value="<?=$certno;?>" class="input finput"/></td>
+            <td class="left">邮寄日期：</td>
+			<td class="right"><input type="text" name="s_dates" value="<?=$s_dates;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="s_datee" value="<?=$s_datee;?>" class="input input-date finput"/></td>
+			<!--td class="left">合同来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value="">--请选择--</option><?=$ctfrom_select;?></select></td>
+			<td class="left">认证体系：</td>
+			<td class="right"><select name="iso" class='fselect'><option value="">--请选择--</option><?=$iso_select;?></select></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			<td class="left">专业代码：</td>
+			<td class="right"><input type='text' name="audit_code"value="<?=$audit_code;?>" class="input finput"/></td>
+			<td class="left">认可标志：</td>
+			<td class="right"><select name="mark" class='fselect'><option value="">--请选择--</option><?=$mark_select;?></select></td>
+			<td class="left">证书状态：</td>
+			<td class="right"><select name="certstate" class='fselect'><option value="">--请选择--</option><?=$certstate_select;?></select></td>
+			
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			<td class="left">注册时间：</td>
+			<td class="right"><input type="text" name="s_dates" value="<?=$s_dates;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="s_datee" value="<?=$s_datee;?>" class="input input-date finput"/></td>
+			<td class="left">到期时间：</td>
+			<td class="right"><input type="text" name="e_dates" value="<?=$e_dates;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="e_datee" value="<?=$e_datee;?>" class="input input-date finput"/></td-->
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>
+	</p>
+</form>
+<br/>
+<div style=' margin:0 auto;width:1150px;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_0_tab;?>"><a href="?c=task&a=task_elist&is_sms=0<?php gettourl();?>">未邮寄 <span class="cnt-total"><?=$sms_total[0];?></span></a></li>
+        <li class="ui-state-default ui-corner-top <?=$status_1_tab;?>"><a href="?c=task&a=task_elist&is_sms=1<?php gettourl();?>">需邮寄 <span class="cnt-total"><?=$sms_total[1];?></span></a></li>
+		<li class="ui-state-default ui-corner-top <?=$status_2_tab;?>"><a href="?c=task&a=task_elist&is_sms=2<?php gettourl();?>">已邮寄 <span class="cnt-total"><?=$sms_total[2];?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<table class="grid-table">
+		<thead>
+		<tr align='center'>
+			
+			<th width="60">操作</th>
+			<?php if($is_sms!='0') {?>
+			<th width="40">查看</th>
+			<?php }?>
+			<?php if($is_sms!=2) {?>
+			<th width="40" colspan=''>删除</th>
+			<?php }?>
+			<th width="200">组织名称</th>
+			<?php if($is_sms=='2'){?>
+			<th width="80">邮寄日期</th>
+			<th width="100">快递公司</th>
+			<th width="100">快递单号</th>
+			<?php } ?>
+			
+            <?php if($is_sms=='2') {?>
+			<th width="40">邮寄备注</th>
+            <th width="60">联系人</th>
+            <th width="60">电话</th>
+            <?php }?>
+            <th width="50">邮寄邮编</th>
+            <th width="200">邮寄地址</th>
+            
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr><?php if($row[is_sms]==0) {?>
+        	<td align="center"><a href="javascript:sms(<?=$row[id]?>);" style="color:#00f" title="添加到需邮寄">需邮寄</a></td>
+			
+            <?php }
+			if($row[is_sms]!=0) {?>
+			<td align="center"><a href="?c=certificate&a=eedit&id=<?=$row['id'];?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+		 	<td align="center"><a href="?c=enterprise&a=edit&flag=view&eid=<?=$row[eid]?>#tab-contract" target="_blank" style="color:#00f">查看</a></td>		
+            <?php }
+            if($row[is_sms]!=2) {?>
+			<td align="center"><a href="javascript:delsms(<?=$row[id]?>);"  title="删除"><img src="theme/images/b_drop.png" border=0 /></a></td>
+            
+			<?php } ?>
+			<td align="center"> <?=$row['ep_name'];?> </td>
+            <?php if($row[is_sms]=='2'){?>
+			<td align="center"><?=$row['sms_date'];?></td>
+			<td align="center"><?=read_cache("send_company",$row['sms_name']);?></td>
+			<td align="center"><?=$row[sms_no];?></td>
+			<?php } ?>
+            <?php if($is_sms=='2') {?>
+			<td align="center">
+            <?php
+if( $row['sms_note'] ){
+?>
+<a href="javascript:;" title="备注：<?=$row['sms_note'];?>"><img src="theme/images/other.png" border="0" /></a> 
+<?php
+}
+?></td>
+            <td align="center"><?=$row['sms_person'];?></td>
+            <td align="center"><?=$row['sms_tel'];?></td>
+            <?php }?>
+            <td align="center"><?=$row['sms_code'];?></td>
+            <td align="center"><?=$row['sms_addr'];?></td>
+             
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="14">没有找到数据 </td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+	<p><?=$pages['pages'];?></p>
+
+	</div>
+</div>
+
+
+
+</body>
+</html>

@@ -1,0 +1,120 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同同期比较</title>
+
+<link href="theme/js/flot/examples/examples.css" rel="stylesheet" type="text/css">
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+
+<link rel="stylesheet" type="text/css" href="theme/js/w2ui-1.2/w2ui-1.2.min.css" />
+<script type="text/javascript" src="theme/js/w2ui-1.2/w2ui-1.2.min.js"></script>
+
+<!--[if lte IE 8]><script language="javascript" type="text/javascript" src="theme/js/flot/excanvas.min.js"></script><![endif]-->
+<script language="javascript" type="text/javascript" src="theme/js/flot/jquery.flot.js"></script>
+  
+<script type="text/javascript">
+	$(function() {
+
+		var datasets = {
+<?php echo $datasets;?>
+		};
+
+		// hard-code color indices to prevent them from shifting as
+		// countries are turned on/off
+
+		var i = 0;
+		$.each(datasets, function(key, val) {
+			val.color = i;
+			++i;
+		});
+
+		// insert checkboxes 
+		var choiceContainer = $("#choices");
+		$.each(datasets, function(key, val) {
+			choiceContainer.prepend("<br/><input type='checkbox' name='" + key +
+				"' checked='checked' id='id" + key + "'></input>" +
+				"<label for='id" + key + "'>"
+				+ val.label + "</label>");
+		});
+		
+		choiceContainer.prepend("<label style='margin-left:5px'>合同同期比较</label><br />");
+
+		choiceContainer.find("input").click(plotAccordingToChoices);
+
+		function plotAccordingToChoices() {
+
+			var data = [];
+
+			choiceContainer.find("input:checked").each(function () {
+				var key = $(this).attr("name");
+				if (key && datasets[key]) {
+					data.push(datasets[key]);
+				}
+			});
+
+			if (data.length > 0) {
+			 
+				$.plot("#placeholder", data, {
+					yaxis: {
+						min: 0
+					},
+					xaxis: {
+						tickDecimals: 0
+					},
+					series: {
+						lines: {
+							show: true
+						},
+						points: {
+							show: true
+						}
+					},
+				});
+			}
+		}
+
+		plotAccordingToChoices();
+	});
+</script>
+</head>
+<body>
+<!--线型图-->
+<div id="contract-tab" style="margin: 0 auto; width: 850px;" class="tal">
+	<div class="demo-container">
+		<div id="placeholder" class="demo-placeholder" style="float:left; width:675px;"></div>
+		<p id="choices" style="float:right; width:135px;"></p>
+	</div>
+	<div id="grid" style="width: 100%; height: 150px; margin-left:0px"></div><br /><br />
+</div>
+<!--底部表格-->
+<script type="text/javascript">
+$('#grid').w2grid({ 
+	name: 'grid', 
+	columns: [				
+		{ field: 'year', caption: '年度', size: '60px', sortable: true },
+		{ field: 'm01', caption: '01', size: '50px', sortable: false },
+		{ field: 'm02', caption: '02', size: '50px', sortable: false },
+		{ field: 'm03', caption: '03', size: '50px', sortable: false },
+		{ field: 'm04', caption: '04', size: '50px', sortable: false },
+		{ field: 'm05', caption: '05', size: '50px', sortable: false },
+		{ field: 'm06', caption: '06', size: '50px', sortable: false },
+		{ field: 'm07', caption: '07', size: '50px', sortable: false },
+		{ field: 'm08', caption: '08', size: '50px', sortable: false },
+		{ field: 'm09', caption: '09', size: '50px', sortable: false },
+		{ field: 'm10', caption: '10', size: '50px', sortable: false },
+		{ field: 'm11', caption: '11', size: '50px', sortable: false },
+		{ field: 'm12', caption: '12', size: '50px', sortable: false },
+		{ field: 'total', caption: 'total', size: '60px', sortable: false },
+	],
+	records: [
+<?php echo $records;?>
+	]
+});
+</script>
+</body>
+</html>
+ 

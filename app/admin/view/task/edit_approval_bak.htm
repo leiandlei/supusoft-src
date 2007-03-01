@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>审批</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+
+<script type="text/javascript">
+
+var self = null;
+
+$(document).ready(function(){
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#approval-btn').click( approval );
+	$('#unapproval-btn').click( unapproval );
+});
+
+function approval(){
+	var tid = $('#tid').val();
+	var appr_date = $('#approval-date').val();
+	var approval_note = $('#approval_note').val();
+	$.getJSON('?c=ajax&a=task_approval&tid='+tid+'&approval_date='+appr_date+'&approval_note='+approval_note, function(json){
+		if( 'ok' == json.state ){
+			alert( '审批成功' );
+			$('#approval-btn').attr( {'disabled':'disabled'} );
+			$('#approval-date').attr( {'disabled':'disabled'} );
+			window.location.href = '?c=task&a=list&status=3';
+		} else {
+			alert( '审批失败！原因：' + json.msg );
+		}
+		
+	});
+}
+
+function unapproval(){
+	var tid = $('#tid').val();
+	var appr_date = $('#approval-date').val();
+	$.getJSON('?c=ajax&a=task_unapproval&tid='+tid, function(json){
+		if( 'ok' == json.state ){
+			alert( '撤销审批成功' );
+			$('#approval-btn').attr( {'disabled':'disabled'} );
+			$('#approval-date').attr( {'disabled':'disabled'} );
+			window.location.href = '?c=task&a=list&status=2';
+		} else {
+			alert( '撤销审批失败！原因：' + json.msg );
+		}
+		
+	});
+}
+function check_from(){
+	var f = 0;
+	$('input[type=checkbox][name="co_cid[]"]').each(function(){
+		
+		var $this = $(this);
+		if( $this.attr('checked')=='checked' )
+			f=1;
+	});
+	if(f<1 ){
+		message_dialog( '请选择项目！', 'error' );
+		return false;
+	}
+	}
+</script>
+<style type="text/css">
+body{margin:0;padding:0;}
+</style>
+</head>
+
+<body>
+
+<div id="msg-dialog" style="display:none;">
+	<p class="tal note-msg" style="padding-left:60px;height:48px;">
+	</p>
+</div>
+
+<?php echo einfo("tid=$tid");?>
+<br/>
+
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">审核计划审批</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	
+	<!--table class="grid-table">
+		<thead>
+		<tr align='center'>
+        	<th width="20%">选择</th>
+            <th>合同号</th>
+			<th width="40%">收费体系</th>
+			<th width="40%">收费类型</th>
+		</tr>
+		</thead>
+		<tbody>
+        <form action="?c=doc&a=c02&tid=<?=$tid?>" id="" method="post" >
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr align='center'>
+        	<td ><input type="checkbox" name="co_cid[]" class="co" value="<?=$row[id]?>" /></td>
+            <td><?=$row[ct_code]?></td>
+			<td><?=$row[ct_code]?>--<?=$row['iso']?></td>
+			<td><?=$row['cost_type']?></td>
+		</tr>
+<?php
+	}
+    ?>
+    <tr><td></td><td colspan="2"><button class="btn btn-submit" onclick="return check_from();">下载交费通知</button></td></tr>
+    </form>
+    
+ <?php
+} else {
+?>
+		<tr>
+			<td align="center" colspan="3">没有找到数据 </td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+		</table--></br>
+	<table class="grid-table">
+		<tr>
+			<th width="70" valign="top" style="text-align:right;">文档下载：</th>
+			<td height="100" class="tal">
+				<ul class="doc-list">
+					<li><a href="?c=doc&a=SH-004&tid=<?=$task['id'];?>&ct_id=<?=$ct_id;?>">[审核通知书]</a></li>
+                    <li>&nbsp;</li>
+                    <li><a href="?c=doc&a=SH-001&tid=<?=$task['id'];?>&ct_id=<?=$ct_id;?>">[审核任务下达书]</a></li>
+                    <li>&nbsp;</li>
+                    <li><a href="?c=doc&a=SH-005&tid=<?=$task['id'];?>&ct_id=<?=$ct_id;?>">[缴纳认证费用通知单]</a></li>
+				</ul>
+			</td>
+		</tr>
+	</table><br/>
+	<table class="grid-table">
+		<tr>
+			<th width="70" valign="top" style="text-align:right;">文档上传：</th>
+			<td class="tal">
+				<ul class="doc-list">
+					<li><a title="上传文档" target='_blank' href="?c=contract&a=upload&eid=<?=$task['eid'];?>&ct_id=<?=$ct_id;?>"><img src="theme/images/up.gif" border=0 />文档上传</a></li>
+				</ul>
+			</td>
+		</tr>
+	</table><br/>
+	<table class="grid-table">
+		<tr>
+			<th width="70" style="text-align:right;">审批日期：</th>
+			<td class="tal">
+				<input type="hidden" id="tid" name="tid" value="<?=$tid;?>" />
+				审批日期：<input type="text" id="approval-date" name="approval_date" value="<?=$curr_date;?>" class="input input-date"<?=$disabled;?>/>
+			</td>
+		</tr>
+		<tr>
+			<th width="70" style="text-align:right;">审批意见：</th>
+			<td class="tal">
+				<textarea id="approval_note" name="approval_note" cols="80" rows="3"<?=$disabled;?>><?=$approval_note;?></textarea>
+			</td>
+		</tr>
+		<tr>
+			<th  style="text-align:right;">操作：</th>
+			<td class="tal">
+				<button class="btn btn-submit" id="approval-btn" type="submit"<?=$disabled;?>> 审批通过 </button>
+				<button class="btn btn-button" id="unapproval-btn" type="button"<?=$disabled_unapproval;?>> 撤销审批 </button>
+			</td>
+		</tr>
+	</table>
+
+	</div>
+</div>
+
+
+</body>
+</html>

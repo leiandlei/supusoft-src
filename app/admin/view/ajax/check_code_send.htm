@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>验证</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+});
+</script>
+</head>
+
+<body>
+
+<table class="grid-table">
+	<tr>
+		<th width="100px">体系:代码</th>
+		<th width="100px">审核员</th>
+		<th width="100px">评定人员</th>
+		<th width="100px">技术专家</th>
+	</tr>
+	
+	<?php if(!empty($results)):foreach($results as $code => $val):?>
+		<tr align="left">
+			<td align="center"><?=$arr_iso_name[$iso].':'.$code?></td>
+			<td align="center"><?=empty($val['shenheyuan'])?$error:$success;?></td>
+			<td align="center"><?=empty($val['zhuanjia'])?$error:$success;?></td>
+			<td align="center"><?=empty($val['pingding'])?$error:$success;?></td>
+		</tr>
+	<?php endforeach;else:?>
+		<tr align="left">
+			<td align="center" colspan="4">没有专业代码</td>
+		</tr>
+	<?php endif;?>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,841 @@
+<?php tpl('header')?>
+<script type="text/javascript" src="theme/js/region.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript">
+
+$(function() { 
+	var tooltips = $( "[title]" ).tooltip({position:{my:"left bottom+37", at:"left bottom"}});
+	$( "#enterprise-tab" ).tabs({
+		collapsible: false
+	});
+	$("#x-y-value").click(select_xy);
+	$('#upload-dialog').dialog({
+		autoOpen: false,
+		height: 300,
+		width: 530,
+		modal: true,
+		resizable: false
+	});
+	$('#org').click(function(){
+		if($('#work-code').val()){
+			if(checkdaima()){
+			$('#step').val('org');
+			$('#entry-form').submit();
+			}else{
+				$('#work-code').focus();
+				return false;
+			}
+		}
+		else{
+			alert("请填写组织机构代码！！");
+			$('#work-code').focus();
+			return false;
+		}
+		
+		
+		
+		});
+	$('#chk-org').click(function(){
+		if(!$('#work-code').val()){
+			alert("请填写组织机构代码！！");
+			$('#work-code').focus();
+			return false;
+		}
+		if(!checkdaima()){
+			$('#work-code').focus();
+			return false;
+		}
+		var href='?c=ajax&a=check_org&work_code='+$('#work-code').val()+'&eid=<?=$eid;?>';
+		$('<iframe border="0" name="frame1" frameborder="no" src="' + href + '" />').dialog({
+			title: '组织信息验证',
+			autoOpen: true,
+			width: 650,
+			height: 300,
+			modal: true,
+			resizable: false,
+			autoResize: false,
+			overlay: {opacity: 0.5,background: "black"},
+			close: function(ev,ui){$(this).remove();},
+			buttons : {
+				'确定' :function(){
+					$(this).dialog('close');
+				}
+			},
+			open :function(){
+				var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+				btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+			}
+			}).width(630).height(280);		
+		});
+	$('#add-btn').click( addRecord );
+	addRecord();
+	var anchor = $.url.attr('anchor');
+	if( anchor ) $( "#enterprise-tab" ).tabs( 'enable', 'tab-archive' );
+
+	$('button.submit-btn').click(function(){
+		if( !Validator.Validate( $('#entry-form')[0], 2 ) ) return;
+		//var r1 = checkdaima();
+		//var r2 = check_ep_name(); 
+		//@HBJ注册地址必须包含行政区划
+		var ep_addr = $("#ep_addr").val();
+		var meta_areaaddr = $("#meta_areaaddr").val();
+		/*if(ep_addr.indexOf(meta_areaaddr) == -1 ){ 
+			alert('注册地址必须包含行政区划');
+			return;
+		}
+		*/
+		//if( r2 )
+			$('#entry-form').submit();
+		//else
+			//alert( '未通过验证！' );
+		
+	});
+
+	var region = Region.init('data/cache/region.json');
+	window.region = region;
+	
+ 	$('#select-region').click( region_dlg );
+	$('#select-industry').click( industry_dlg );
+	$(":checkbox").click(function(){
+		var val=$(this).val();
+		 
+		if($(this).attr("checked")){
+		 
+			$("#"+val).show();
+			
+			}
+		else
+			{
+				$("#"+val).hide();
+				$("#"+val).find(':input').each(function(){
+				
+				$(this).val('');
+				});
+		
+			}
+		})
+});
+
+
+function addRecord(){
+	tbody = $('#add-attachs');
+	tr = $('#add-attach');
+	new_tr = tr.clone();
+	new_tr.attr('id','');
+	new_tr.show();
+	tbody.append(new_tr);
+}
+
+function checkdaima() {
+	daima = $('#work-code').val();
+	if(daima == '**********')return;
+	if(daima == '')return;
+	var errormsg='';
+	if(daima.length!=10&&daima.length!=9&&daima.length!=18){
+		errormsg = '组织组织代码为9、10或者18位 \n';
+	}
+
+	var ck=/[^0-9A-Z-]/;
+	if(daima.match(ck)){
+		errormsg= errormsg + '必须是数字和大写字母组成 \n';
+	}
+
+	/*var yinzi=new Array(3,7,9,10,5,8,4,2);
+	var v;
+	var n=0;
+	var xiaoyanma;
+	var lastv;
+	for (i = 0; i < daima.length; i++){
+		v = daima.substring(i,i+1);
+
+		//if(i==8)
+		//{
+		//	if(v!='-')
+		//	{
+		//		errormsg= errormsg + '第9位必须为横杠\'-\' \n';
+		//	}
+		//}
+		if(i==(daima.length-1))
+		{
+			lastv = v;
+		}
+		if(i<(daima.length-2))
+		{
+			switch(v)
+			{
+			case 'A' : v=10;break;
+			case 'B' : v=11;break;
+			case 'C' : v=12;break;
+			case 'D' : v=13;break;
+			case 'E' : v=14;break;
+			case 'F' : v=15;break;
+			case 'G' : v=16;break;
+			case 'H' : v=17;break;
+			case 'I' : v=18;break;
+			case 'J' : v=19;break;
+			case 'K' : v=20;break;
+			case 'L' : v=21;break;
+			case 'M' : v=22;break;
+			case 'N' : v=23;break;
+			case 'O' : v=24;break;
+			case 'P' : v=25;break;
+			case 'Q' : v=26;break;
+			case 'R' : v=27;break;
+			case 'S' : v=28;break;
+			case 'T' : v=29;break;
+			case 'U' : v=30;break;
+			case 'V' : v=31;break;
+			case 'W' : v=32;break;
+			case 'X' : v=33;break;
+			case 'Y' : v=34;break;
+			case 'Z' : v=35;break;
+			default : v=v;
+			}
+			n = v * yinzi[i] + n;
+		}
+
+	}
+	xiaoyanma = 11 - n%11;
+	if(xiaoyanma == 10)
+	{
+		xiaoyanma = 'X';
+	}
+	if(xiaoyanma == 11)
+	{
+		xiaoyanma = 0;
+	}
+	if(lastv != xiaoyanma)
+	{
+		errormsg= errormsg + '最后一位效验码不对 \n';
+	}*/
+	if(errormsg != '')
+	{
+		alert(errormsg);
+		return false;
+	}
+	return check_work_code(daima);
+}
+
+function check_work_code(daima) {
+	//是否为新增企业
+	var r = 1;
+	if( $('#eid').val() == undefined && daima != '' ) {
+		$.post(
+			'?c=ajax&a=check_daima',
+			{'work_code':daima},
+			function(result) {
+				var state = parseInt( result );
+				if( result > 0 ) {
+					alert('组织组织代码系统中已存在');
+					r = 0;
+				}
+			}
+		);
+	}
+	return r;
+}
+
+//检测组织名称是否重复
+function check_ep_name() {
+	name = $('#ep-name').val();
+	var r = 1;
+	//@HBJ 2013-09-26 修复修改时不检测的问题
+	if( name != '<?=$ep_name;?>' && name != '' ){
+		$.post(
+			'?c=ajax&a=check_name',
+			{ep_name:name},
+			function(result) {
+				var state = parseInt( result );
+				if( state > 0 ) {
+					alert('组织名称系统中已存在');
+					r = 0;
+				}
+			}
+		);
+	}
+	return r;
+}
+
+function copy0(){
+	$('#ep_addr').val( $('#meta_areaaddr').val() );
+}
+function copy1(){
+	$('#cta_addr').val( $('#ep_addr').val() );
+	$('#cta_addr_e').val( $('#ep_addr_e').val() );
+	$('#cta_addrcode').val( $('#ep_addrcode').val() );
+}
+function copy2(){
+	$('#prod_addr').val( $('#cta_addr').val() );
+	$('#prod_addr_e').val( $('#cta_addr_e').val() );
+	$('#prod_addrcode').val( $('#cta_addrcode').val() );
+}
+function copy3(){
+	$('#cert_addr').val( $('#prod_addr').val() );
+	$('#cert_addr_e').val( $('#prod_addr_e').val() );
+	$('#cert_addrcode').val( $('#prod_addrcode').val() );
+}
+function copy4(){
+	$('#bg_addr').val( $('#cta_addr').val() );
+	$('#bg_addr_e').val( $('#cta_addr_e').val() );
+	$('#bg_addrcode').val( $('#cta_addrcode').val() );
+}
+
+
+
+function region_dlg(){
+	$('#select-region-dialog').dialog({
+		title	: '选择行政区',
+		width	: 500,
+		height	: 150,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		buttons	:{
+			'取消'	: function(){
+				 $(this).dialog("close");
+			},
+			'确定'	: function(){
+				var r = false;
+				var country = parseInt($('#statecode').val());
+				
+				var code_city = $('#city-select').val();
+				var code_district = $('#district-select').val();
+				
+				var code = $('#district-select').val();
+				if( !code )
+					code = $('#city-select').val();
+
+				//if( (code && code.substring(4,6) != '00') || 156 != country ){
+				if( (DistrictNum==0 && code_city) || (DistrictNum!=0 && code_district) ){
+					var text = $('#province-select').find('option:selected').text() + $('#city-select').find('option:selected').text() + $('#district-select').find('option:selected').text();
+					text = text.replace('市辖区','');
+					text = text.replace('--县','');
+					text = text.replace('请选择市','');
+					text = text.replace('请选择区/县','');
+					$('#meta_areaaddr').val(text);
+					$('#areacode').val(code);
+					$(this).dialog('close');
+				} else {
+					alert( '请选择行政区！' );
+				}
+			}
+		},
+		open	: function(){
+			var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+			btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+		}
+	});
+}
+
+
+function industry_dlg(){
+	$('<iframe src=?c=ajax&a=select-industry></iframe>').dialog({
+		title	: '选择所属行业',
+		width	: 800,
+		height	: 420,
+		cache:false,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		buttons	:{
+			'取消'	: function(){
+				 $(this).dialog("close");
+			},
+			'确定'	: function(){
+				var s_str = '';
+				var old_str=$('#industry').val(); 
+				$(this).contents().find('input.s-industry').each(function(index){
+					if( $(this).attr( 'checked' ) && $(this).val() )
+						s_str += $(this).val() + '；';
+				});  
+				 
+				if(old_str!=0){//如果原数据不为0的情况下追加
+				s_str = s_str+old_str;
+				}
+				 
+				$('#industry').val( s_str );
+				$(this).dialog('close');
+			}
+		},
+		open	: function(){
+			var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+			btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+		}
+	}).width(780);
+}
+
+function select_xy(){
+	$('<iframe src=?c=ajax&a=select_x_y&eid=<?=$eid?>></iframe>').dialog({
+		title	: '选择经纬度',
+		width: 600,
+		height: 400,
+		cache:false,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		buttons	:{
+			'取消'	: function(){
+				 $(this).dialog("close");
+			},
+			'确定'	: function(){
+				xval=$(this).contents().find('input.x-val').val();
+				yval=$(this).contents().find('input.y-val').val();
+				 
+				$("#xvalue").val(xval)
+				$("#yvalue").val(yval)
+				$(this).dialog('close');
+			}
+		},
+		open	: function(){
+			var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+			btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+		}
+	}).width(600).height(400);
+}
+
+</script>
+</head>
+
+
+
+<body>
+<div id="select-region-dialog" class="tal" style="display:none;">
+  <p style="margin-bottom:8px;">请选择行政区(到区/县)，完成后点确定。</p>
+  <p> <span id="prov-span">
+    <select name="province" id="province-select" style="width:130px;">
+      <option value="">选择省</option>
+    </select>
+    </span> <span id="city-span">
+    <select name="city" id="city-select" style="width:160px;">
+      <option value="">请选择市</option>
+    </select>
+    </span> <span id="dist-span">
+    <select name="district" id="district-select" style="width:150px;">
+      <option value="">请选择区/县</option>
+    </select>
+    </span> </p>
+</div>
+
+
+<form method="post" id="entry-form" action="<?=$REAUEST_URI;?>">
+  <?if(array_key_exists('is_customer',$_SESSION['userinfo'])){?>
+   <input type="hidden" name="cu_id" value="<?=$cu_id?>" />
+  <?}?>
+  <input type="hidden" name="step" id="step" value="1" />
+  <input id="eid" type="hidden" name="eid" value="<?=$eid;?>" />
+  <input id="parent_id" type="hidden" name="parent_id" value="<?=$parent_id;?>" />
+
+  <div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal">
+  <ul>
+    <li><a href="#tab-basic">基本信息</a></li>
+    <li><a href="#tab-contract">联系信息</a></li>
+    <li><a href="#tab-fapiao">开票资料</a></li>
+    <?php if( $eid ){ ?>
+    <!--	<li><a href="#tab-archive">组织文档</a></li>-->
+    <?php } ?>
+  </ul>
+  <div id="tab-basic">
+    <ul class="main-form">
+    	<li>
+	     	<label class="field">组织机构代码</label>
+	        	<em>*</em>
+	        <span>
+		        <input type="text" id="work-code" dataType="Require" msg="请输入组织组织代码！"  name="work_code" value="<?=$work_code;?>" class="input" style="width:91px" />
+		        <?php 
+		        if(!$eid){
+		        	?>
+		    <button type="button" id="org" class="btn btn-submit">获取信息</button>
+		        <?php }
+		        else{
+		        	?>
+		     <button type="button" id="chk-org" class="btn btn-submit">验证信息</button>
+			     <?php 
+			     }
+			     ?>
+	        </span> 
+	        <label class="field2">合同来源</label>
+	        	<em>*</em>
+	        <span>
+				<select id="ctfrom" name="ctfrom" dataType="Require" msg="请选择合同来源！" style="width:178px" <?=($ctfrom!='01000000')?'disabled':'';?>>
+		          <?=$ctfrom_select;?>
+		        </select> 
+	        </span>
+    	</li>
+
+      <li>
+        <label class="field">组织名称</label>
+        <em>*</em><span>
+        <input type="text" id="ep-name" dataType="Require" msg="请输入组织名称！" name="ep_name" value="<?=$ep_name;?>" class="input" title="如果组织已经登记，则无需再登记"  style="width:465px" />
+        </span> </li>
+<li>
+        <label class="field">英文名称</label>
+        <em></em><span>
+        <input type="text" name="ep_name_e" value="<?=$ep_name_e;?>" class="input" title="企业的英文名称，上报CNAS和发证书用"  style="width:465px" />
+        </span> </li>
+      <li <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>
+        <label class="field">组织原名</label>
+        <em></em><span>
+        <input type="text" id="ep_oldname" name="ep_oldname" value="<?=$ep_oldname;?>" class="input"  style="width:465px" />
+        </span> </li>
+      <li>
+        	<label class="field">组织性质</label>
+        		<em>*</em>
+        	<span>
+		        <select name="nature" dataType="Require" msg="请选择企业性质！" style="width:256px">
+		          <option value="">请选择</option>
+		          <?=$nature_select;?>
+		        </select>
+        	</span>
+	        <label  <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?> class="field3">客户级别</label>
+	        <em></em>
+	        <span  <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>
+		        <select name="ep_level" id="ep_level" style="width:130px">
+		          <option value="">请选择</option>
+		          <?=f_select('ep_level',$ep_level)?>
+		        </select>
+	        </span>
+        </li>
+      <!--li>
+        <label class="field">客户类别</label>
+        <em></em><span>
+        <select name="ep_type" id="ep_type" style="width:130px">
+          <option value="">请选择</option>
+          <?=$ep_type_select;?>
+        </select>
+        </span> </li-->
+      <li>
+        <label class="field">国家代码</label>
+        	<em>*</em>
+        <span>
+	        <select id="statecode" name="statecode" dataType="Require" msg="请选择国家代码！" style="width:171px;">
+	          <option value="">请选择</option>
+	          <?=$statecode_select;?>
+	        </select>
+        </span>
+        <label <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?> class="field2">行业代码</label>
+        	<em>*</em>
+        <span <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>
+	        <input type="text" <?php  if(current_user('usertype')==1)echo 'dataType="Require" msg="请选择行业代码！"';?>  id="industry" name="industry" class="input" value="<?=$industry;?>" style="width:160px; float:left;height:18px;border-width:1px 0 1px 1px;border-color:#ddd;border-style:solid; "/>
+	        <i id="select-industry" class="i-select" ></i>
+        </span> 
+      </li>
+      <li>
+        <label class="field">法人代表</label>
+        <em>*</em><span>
+        <input type="text" dataType="Require" msg="请输入法人代表！" name="delegate" value="<?=$delegate;?>" class="input" style="width:171px" />
+        </span>
+        <label class="field2">企业总人数</label>
+        <em>*</em><span>
+        <input type="text" dataType="Require" msg="请输入企业人数！" name="ep_amount" value="<?=$ep_amount;?>" class="input" style="width:175px" />
+        </span> </li>
+     <!-- <li>
+        <label class="field">最高管理者</label>
+        <em></em><span>
+        <input type="text" id="meta_topmanager" name="meta[topmanager]" value="<?=$topmanager;?>" class="input" style="width:171px" />
+        </span>
+       <label class="field2">手机</label>
+	        <em></em><span>
+	        <input type="text" id="meta_top_tel" name="meta[top_tel]" value="<?=$top_tel;?>" class="input" style="width:171px" />
+	        </span></li>
+        <li>
+	        <label class="field">邮箱</label>
+	        <em></em><span>
+	        <input type="text" id="meta_top_mail" name="meta[top_mail]" value="<?=$top_mail;?>" class="input" style="width:171px" />
+	        </span> 
+            <label class="field2">职务</label>
+	        <em></em><span>
+	        <input type="text" id="" name="meta[top_job]" value="<?=$top_job;?>" class="input" style="width:171px" />
+	        </span>
+      </li>-->
+       <li>
+        <label class="field">管理者代表</label>
+        <em></em><span>
+        <input type="text" id="" name="manager_daibiao" value="<?=$manager_daibiao;?>" class="input" style="width:171px" />
+        </span>
+       <label class="field2">组织编号</label>
+	        <em>*</em><span>
+	        <input type="text" id="" name="code" value="<?=$code;?>" class="input" style="width:171px" />
+	        </span>
+	    </li>
+        
+        <!-- <li>
+        <label class="field">体系覆盖职能部门数</label>
+        <em>*</em><span>
+        <input type="text" dataType="Require" msg="体系覆盖职能部门数!" id="" name="zxfgznbms" value="<?=$zxfgznbms;?>" class="input" style="width:171px" />
+        </span>
+		</li> -->
+        <li>
+        <label class="field">手机</label>
+        <em></em><span>
+        <input type="text" id="" name="meta[phone_daibiao]" value="<?=$phone_daibiao;?>" class="input" style="width:171px" />
+        </span>
+       <label class="field2">邮箱</label>
+	        <em></em><span>
+	        <input type="text" id="" name="meta[email_job]" value="<?=$email_job;?>" class="input" style="width:171px" />
+	        </span></li>
+      <li>
+        <label class="field">注册资本</label>
+        <em>*</em><span>
+        <input type="text" dataType="Require" msg="请输入注册资本！" name="capital" value="<?=$capital;?>" class="input" style="width:145px" />
+        万元</span>
+        <label class="field2">货币单位</label>
+        <em>*</em><span>
+        <select name="currency" dataType="Require" msg="请选择注册资本货币种类！" style="width:178px">
+          <?=$currency_select;?>
+        </select>
+        </span> </li>
+       <li>
+        <label class="field">客户账号</label>
+        <em></em><span>
+        <input type="text" id="" name="username" value="<?=$username;?>" class="input" style="width:171px" />
+        </span>
+       <label class="field2">账户密码</label>
+	        <em></em><span>
+	        <input type="text" id="" name="password" value="<?=$password;?>" class="input" style="width:171px" />
+	        </span></li>
+<!-- 		<li>
+		<label class="field">经度</label>
+		<em></em><span>
+        <input type="text" id="xvalue"  name="xvalue" value="<?=$xvalue;?>" style="width:120px"/>
+       
+        <label class="field3" >纬度</label>
+		<em></em><span>
+        <input type="text" id="yvalue"  name="yvalue" value="<?=$yvalue;?>"  style="width:120px"/>
+        </span> &nbsp;&nbsp;&nbsp;&nbsp;<button class="btn btn-submit" type="button" id="x-y-value">搜索</button> </li> -->
+      <li>
+        <label class="field">组织网站</label>
+        <em></em><span>
+        <input type="text" id="meta_website" name="meta[website]" value="<?=$website;?>" class="input"  style="width:465px" />
+        </span> </li>
+     
+      <li>
+        <label class="field">备注信息</label>
+        <em></em><span>
+        <textarea cols="74" id="note" rows="3" name="note"><?=$note;?>
+</textarea>
+        </span> </li>
+    </ul>
+    <p>
+      <center>
+      <?php if($_GET[type]=="view"){ ?>
+      <a href="javascript:window.close()" title="关闭窗口">关闭</a>
+      <?php }else{ ?>
+        <button class="btn btn-submit submit-btn" type="button"> 保 存 </button>&nbsp&nbsp
+&nbsp        <a href="?c=<?=$c;?>&a=list" title="关闭窗口">返回列表</a>
+        <?php }?>
+      </center>
+    </p>
+  </div>
+  <div id="tab-contract">
+    <ul class="main-form">
+      <li>
+        <label class="field">组织电话</label>
+        <em>*</em>
+        <span>
+        <input type="text" dataType="Require" msg="请输入企业联系电话！" name="ep_phone" value="<?=$ep_phone;?>" class="input" style="width:120px" />
+        </span>
+
+        <label class="field3">组织传真</label>
+<!--         <em>*</em> -->
+        <span>
+        <input type="text"  msg="请输入企业传真！" name="ep_fax" value="<?=$ep_fax;?>" class="input" style="width:120px" />
+        </span>
+
+ <label class="field3">联系邮箱</label>
+        <em></em><span>
+        <input type="text" name="meta[person_mail]" value="<?=$person_mail;?>" class="input" style="width:120px" />
+        </span> 
+      
+      </li>
+      <li>
+	        <label class="field">联系人</label>
+	        <em>*</em><span>
+	        <input type="text" id="person"   dataType="Require" msg="请输入企业联系人！"  name="person" value="<?=$person;?>" class="input" style="width:120px" />
+	        </span>
+             <label class="field3">手机</label>
+        <em></em><span>
+        <input type="text"  msg="请输入联系人手机！" name="person_tel" value="<?=$person_tel;?>" class="input" style="width:120px" />
+	         </span>
+        <label class="field3">联系职务</label>
+        <em></em><span>
+        <input type="text" name="meta[person_job]" value="<?=$person_job;?>" class="input" style="width:120px" />
+        </span> 
+        </li>
+     
+    </ul>
+     
+        <ul class="main-form">
+      	
+      
+      <li>
+        <label class="field" style="float:left;">行政区划</label>
+        <em style="float:left;">*</em><span style="float:left;">
+        <input type="text" id="meta_areaaddr" dataType="Require" msg="请选择企业据在行政区!" name="areaaddr" value="<?=$areaaddr;?>" title="组织认证地址所在行政区" style="height:18px;width:305px;border-style:solid;border-width:1px 0 1px 1px;border-color:#ccc;float:left;" readOnly/>
+        <i class="i-select" id="select-region"></i></span>
+        <label class="field3" style="margin-left:6px;float:left;">区划代码</label>
+        <em style="float:left;">*</em><span>
+        <input type="text" id="areacode" dataType="Require" msg="请输入企业所在行政区代码！" name="areacode" value="<?=$areacode;?>" class="input" style="float:left;width:120px" />
+        </span> </li>
+      <li>
+        <label class="field">注册地址</label>
+        <em>*</em><span>
+        <input type="text" id="ep_addr" dataType="Require" msg="请输入企业注册地址！" name="ep_addr" value="<?=$ep_addr;?>" class="input" style="width:500px" />
+        <a onClick="copy0();"  href="javascript:;">默认</a> </span> </li>
+      <li>
+        <label class="field">英文地址</label>
+        <em></em><span>
+        <input type="text" id="ep_addr_e" name="ep_addr_e" value="<?=$ep_addr_e;?>" class="input"  style="width:368px" title="英文注册地址" />
+        </span>
+        <label class="field3">邮编</label>
+        <em>*</em><span>
+        <input type="text" id="ep_addrcode" dataType="Require" msg="请输入企业注册地址的邮编！" name="ep_addrcode" value="<?=$ep_addrcode;?>" class="input" size="6" />
+        </span> </li>
+      <li>
+        <label class="field">通讯地址</label>
+        <em>*</em>
+        <span>
+	        <input type="text" id="cta_addr" dataType="Require" msg="请输入企业通讯地址！" name="cta_addr" value="<?=$cta_addr;?>" class="input" style="width:500px" />
+	        <a onClick="copy1();" href="javascript:;">同上</a>
+        </span>
+      </li>
+      <li>
+        <label class="field">通讯英文</label>
+        <em></em>
+        <span>
+        	<input type="text" id="cta_addr_e" name="cta_addr_e" value="<?=$cta_addr_e;?>" class="input" style="width:368px" />
+        </span>
+        <label class="field3">邮编</label>
+        <em>*</em>
+        <span>
+        	<input type="text" id="cta_addrcode" dataType="Require" msg="请输入企业通讯地址邮编！" name="cta_addrcode" value="<?=$cta_addrcode;?>" class="input" size="6" />
+        </span>
+      </li>
+
+      <li>
+        <label class="field">办公地址</label>
+        <em>*</em>
+        <span>
+        	<input type="text" id="bg_addr" dataType="Require" msg="请输入企业办公地址！" name="bg_addr" value="<?=$bg_addr;?>" class="input" style="width:500px" />
+        	<a onClick="copy4();" href="javascript:;">同上</a>
+       	</span>
+      </li>
+      <li>
+        <label class="field">办公英文</label>
+        <em></em>
+        <span>
+        	<input type="text" id="bg_addr_e" name="bg_addr_e" value="<?=$bg_addr_e;?>" class="input" style="width:368px" />
+        </span>
+        <label class="field3">邮编</label>
+        <em>*</em>
+        <span>
+        	<input type="text" id="bg_addrcode" dataType="Require" msg="请输入企业办公地址邮编！" name="bg_addrcode" value="<?=$bg_addrcode;?>" class="input" size="6" />
+        </span>
+      </li>
+      <li>
+        <label class="field">
+	        <label><input type="checkbox" name="prod_check[]" value="1"<?=in_array(1,$prod_check)?'checked':'';?> />生产地址&nbsp;&nbsp;&nbsp;</label>
+	        <br/>
+	        <label><input type="checkbox" name="prod_check[]" value="2" <?=in_array(2,$prod_check)?'checked':'';?> />服务地址&nbsp;&nbsp;&nbsp;</label>
+	        <br/>
+	        <label>
+	        <input type="checkbox" name="prod_check[]" value="3" <?=in_array(3,$prod_check)?'checked':'';?> />运营地址&nbsp;&nbsp;&nbsp;
+	        </label>
+        </label>
+        <em>*</em><span>
+        <input type="text" id="prod_addr"  name="prod_addr" value="<?=$prod_addr;?>" class="input" style="width:500px" />        
+        <a onClick="copy2();" href="javascript:;">同上</a> </span> </li>
+		<li>
+        <label class="field">英文地址</label>
+        <em></em>
+        <span>
+        	<input type="text" id="prod_addr_e" name="prod_addr_e" value="<?=$prod_addr_e;?>" class="input" style="width:368px" />
+       	</span>
+       	<label class="field3">邮编</label>
+       	<em></em>
+       	 <span>
+        	<input type="text" id="prod_addrcode"  msg="请输入生产地址邮编！" name="prod_addrcode" value="<?=$prod_addrcode;?>" class="input" size="6" />
+        </span>
+      </li>
+    </ul>
+    <p>
+      <center>
+         <?php if($_GET['type']=="view"){ ?>
+      <a href="javascript:window.close()" title="关闭窗口">关闭</a>
+      <?php }else{ ?>
+        <button class="btn btn-submit submit-btn" type="button"> 保 存 </button>
+        <?php }?>
+      </center>
+    </p>
+  </div>
+  <div id="tab-fapiao">
+    <ul class="main-form">
+      <? if($eid){?>
+      <li>
+        <label class="field">企业名称</label>
+        <em></em><span>
+        <input type="text" class="input" style="width:368px" disabled="disabled" value="<?=$ep_name;?>"/>
+        </span> </span> </li>
+      <li>
+        <label class="field">注册地址</label>
+        <em></em><span>
+        <input type="text" class="input" style="width:368px" disabled="disabled" value="<?=$ep_addr;?>"/>
+        </span> </li>
+      <li>
+        <label class="field">组织电话</label>
+        <em></em><span>
+        <input type="text" class="input" style="width:368px" disabled="disabled" value="<?=$ep_phone;?>"/>
+        </span> </li>
+      <? }?>
+     
+      <li>
+        <label class="field">公司税号</label>
+        <em></em><span>
+        <input type="text" name="meta[grows]" value="<?=$grows;?>" class="input" style="width:368px" />
+        </span></li>
+         <li>
+        <label class="field">开户地址</label>
+        <em></em><span>
+        <input type="text" name="meta[r_add]" value="<?=$r_add;?>" class="input" style="width:368px" />
+        </span></li>
+         <li>
+        <label class="field">开户电话</label>
+        <em></em><span>
+        <input type="text" name="meta[r_tel]" value="<?=$r_tel;?>" class="input" style="width:368px" />
+        </span> </li>
+         <li>
+        <label class="field">开户银行</label>
+        <em></em><span>
+        <input type="text" name="meta[bank]" value="<?=$bank;?>" class="input" style="width:368px"  />
+        </span></li>
+      <li>
+        <label class="field">银行帐号</label>
+        <em></em><span>
+        <input type="text" name="meta[account]" value="<?=$account;?>" class="input"  style="width:368px" />
+        </span> </li>
+        <li>
+	        <label class="field">开户名称</label>
+	        <em></em><span>
+	        <input type="text" name="meta[name_ac]" value="<?=$name_ac;?>" class="input" style="width:368px" />
+	        </span> 
+        </li>
+        <li>
+	        <label class="field">开票备注</label>
+	        <em></em><span>
+	        <input type="text" name="meta[ac_remark]" value="<?=$ac_remark;?>" class="input" style="width:368px" />
+	        </span> 
+        </li>
+    </ul>
+    <p>
+      <center>
+         <?php if($_GET[type]=="view"){ ?>
+      <a href="javascript:window.close()" title="关闭窗口">关闭</a>
+      <?php }else{ ?>
+        <button class="btn btn-submit submit-btn" type="button"> 保 存 </button>
+        <?php }?>
+      </center>
+    </p>
+  </div>
+</form>
+</div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>合同列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<thead>
+		<tr>
+        <th width="40">状态</th>
+			<th width="80">合同编号</th>
+			<th width="60">项目编号</th>
+			<th width="30">初次</th>
+			<th width="*">客户名称</th>
+			<th width="60">专业代码</th>
+			<th width="70">合同来源</th>
+			<th width="70">审核类型</th>
+			<th width="*">受理日期</th>
+			<th width="*">受理人</th>
+			<th width="60" title="合同备注">合同备注</th>
+			<th width="60" title="评审备注">评审备注</th>
+            <th>审批意见</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php if( $contracts ): foreach( $contracts as $row ):?>
+		<tr>
+        <td align="center"><?=r_sys_cache('contract_status',$row['status']);?></td>
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?php  if($row['cti_codes']){ echo implode('<br/>', $row['cti_codes']);}?></td>
+			<td align="center"><?=$row['is_first'];?></td>
+			<td> <?=$row['ep_name'];?> </td>
+			<td align="right"><?php  if($row['audit_codes']){ echo LongToBr(implode('<br/>', $row['audit_codes']), array('；', ';')) ;} ?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td align="center"><?php if($row['audit_types']){  echo implode('<br/>', $row['audit_types']);}?></td>
+			<td align="center"><?=$row['accept_date'];?></td>
+			<td align="center"><?=$row['accept_user'];?></td>
+			<td align="center"><?=$row['note'];?></td>
+			<td align="center"><?=$row['review_note'];?></td>
+            <td><?=$row['approval_note'];?></td>
+		</tr>
+<?php endforeach; endif;?>
+	</tbody>
+</table>
+</body>
+</html>

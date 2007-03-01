@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>审核派人验证</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+});
+</script>
+</head>
+
+<body>
+
+<table class="grid-table">
+	<tr>
+		<th width="80"></th>
+		<th width="200">任务需求</th>
+		<th width="200">当前派人</th>
+		<th width="*">验证结果</th>
+	</tr>
+	<tr align="left">
+		<th valign="top" style="text-align:right;">是否组长</th>
+		<td><?php echo @implode('<br/>',$xq_is_leaders);?></td>
+		<td><?php echo @implode('<br/>',$ck_is_leaders);?></td>
+		<td align="center"><img src="theme/images/<?=$ck_is_leader;?>.png" width="24" /></td>
+	</tr>
+	<tr align="left">
+		<th valign="top" style="text-align:right;">有专职审核员</th>
+		<td>是</td>
+		<td><?=$is_job_V;?></td>
+		<td align="center"><img src="theme/images/<?=$ck_audit_job;?>.png" width="24" /></td>
+	</tr>
+	<tr align="left">
+		<th valign="top" style="text-align:right;">人日</th>
+		<td><?=$o_task['tk_num'];?></td>
+		<td><?=$_num;?></td>
+		<td align="center"><img src="theme/images/<?=$ck_audit_rt;?>.png" width="24" /></td>
+	</tr>
+	<tr align="left">
+		<th valign="top" style="text-align:right;">每个体系总人天</th>
+		<td><?=$o_task['tk_num'];?></td>
+		<td><?php foreach($types_num as $k=>$v){echo f_audit_ver($k).":".$v."<br/>";}?></td>
+		<td align="center"><img src="theme/images/<?=$ck_audit_rt;?>.png" width="24" /></td>
+	</tr>
+	<tr align="left">
+		<th valign="top" style="text-align:right;">对码(GC)</th>
+		<td><?php echo @implode('<br/>',$xq_codes_2017);?></td>
+		<td><?php echo @implode('<br/>',$ckcodes_2017);?></td>
+		<td align="center"><img src="theme/images/<?=$ck_audit_code_2017;?>.png" width="24" /></td>
+	</tr>
+	<tr align="left">
+		<th valign="top" style="text-align:right;">对码(TRC)</th>
+		<td><?php echo @implode('<br/>',$xq_codes);?></td>
+		<td><?php echo @implode('<br/>',$ckcodes);?></td>
+		<td align="center"><img src="theme/images/<?=$ck_audit_code;?>.png" width="24" /></td>
+	</tr>
+</table>
+
+</body>
+</html>

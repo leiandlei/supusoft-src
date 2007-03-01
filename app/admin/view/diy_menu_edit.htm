@@ -1,0 +1,58 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>编辑菜单项</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+</head>
+<body>
+<div style="margin:0 auto 12px;width:750px;">
+	<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+			<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">编辑菜单项</a></li>
+		</ul>
+		<div style="min-height:200px;" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<form method="post" action="?c=diy_menu&a=<?=$a;?>">
+<input type="hidden" name="step" value="1" />
+<input type="hidden" name="parent_id" value="<?=$parent_id;?>" />
+<input type="hidden" name="mid" value="<?=$mid;?>" />
+
+<table style="margin-top:12px;" width="100%" class="grid-table">
+	<tr>
+		<th>名称</th>
+		<td><input type="text" name="name" value="<?=$name;?>" class="input" /></td>
+	</tr>
+	<tr>
+		<th width="120">类型</th>
+		<td><?php echo ('item' == $mtype || $parent_id ) ? '菜单项' : '菜单';?><input type="hidden" name="mtype" value="<?php echo ( $parent_id ) ? 'item' : 'menu';?>" /></td>
+	</tr>
+<?php if( 'item' == $mtype || $parent_id ):?>
+	<tr>
+		<th>链接到</th>
+		<td>
+			<input type="text" name="jump" value="<?=$jump;?>" class="input input-basic" />
+		</td>
+	</tr>
+	<tr>
+		<th>选项</th>
+		<td><select name="target">
+			<option value="rightmain"<?=$target_rightmain;?>>默认(右侧显示)</option>
+			<option value="_blank"<?=$target__blank;?>>新窗口打开</option>
+		</select></td>
+	</tr>
+<?php endif;?>
+	<tr>
+		<th width="120">显示顺序</th>
+		<td><input type="text" name="vieworder" value="<?=$vieworder;?>" class="input" /></td>
+	</tr>
+</table>
+	<p style="margin:20px 0;"><center><button class="btn btn-submit" type="submit"> 保 存 </button></center></p>
+
+</form>
+	</div>
+</div>
+</body>
+</html>

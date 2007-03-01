@@ -1,0 +1,428 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同列表</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.url.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('.c-del').click(function(){
+		confirm_dialog('此操作将删除合同信息以及隶属于该合同的所有项目信息！', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+ 	$('#export-xls-btn').click( do_export_xls );
+	$(".a_link").on("click",function(){
+		$(this).parent().find("span").toggle();
+		})
+	/*此处临时修改合同号
+	$(".ct_code").on("dblclick",function(){
+			var val1=$(this).text();
+			var id=$(this).attr("i");
+			$(this).html('<input type="text" name="ct_code" value="'+val1+'" />');
+			$(this).find("input").focus();
+			$(this).find("input").blur(function(){
+				$.get("?c=ajax&a=contract_list&ct_id="+id+"&ct_code="+$(this).val());
+				$(this).parent().html($(this).val());
+ 			}) 
+		
+		})*/
+
+    $('.status_ht_class').on('change',function(event) {
+        var ct_id = $(this).parent().data('id');
+        var status_ht = $(this).val();
+        $.ajax({
+             type: "POST",
+             url: "./app/admin/control/ajax/configAjax.php?event=eidStatus_ht",
+             data: {
+                 data_params:{
+                  id:ct_id,
+                  status:status_ht
+                 }
+              },
+             dataType: "json",
+             success: function(data){
+                          if( data.errorCode == 0 ){
+                            alert('修改成功');
+                          }else{
+                            alert(data.errorStr);
+                          }
+                      }
+        });
+  })
+
+  $('.status_zj_class').on('change',function(event) {
+        var ct_id = $(this).parent().data('id');
+        var status_zj = $(this).val();
+        $.ajax({
+             type: "POST",
+             url: "./app/admin/control/ajax/configAjax.php?event=eidStatus_zj",
+             data: {
+                 data_params:{
+                  id:ct_id,
+                  status:status_zj
+                 }
+              },
+             dataType: "json",
+             success: function(data){
+                          if( data.errorCode == 0 ){
+                            alert('修改成功');
+                          }else{
+                            alert(data.errorStr);
+                          }
+                      }
+        });
+  })
+	
+});
+
+function approval(){
+	iframe_dialog( '合同审批', $(this).attr( 'href' ), 500, 260 );
+	return false;
+}
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));  
+	form.submit();
+	form.find('input[name=export]').remove();  
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                  break;
+            }
+        }
+    );
+}
+
+</script>
+</head>
+
+<body>
+<form method="get" id="search-form" action="" class="search-form tal" style='width:1400px;margin:0 auto;'>
+  <input type="hidden" name="c" value="<?=$c;?>" />
+  <input type="hidden" name="a" value="<?=$a;?>" />
+  <input type="hidden" id="search_status" name="search_status" value="<?=$search_status;?>" />
+  <table>
+    <tr>
+      <td class='left'>企业名称：</td>
+      <td class='right'><input type="text" id="ep_name" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+      <td class="left">项目编号：</td>
+      <td class='right'><input type="text" id="cti_code" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+      <td class="left">合同编号：</td>
+      <td class='right'><input type="text" id="ct_code" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+      <td class="left">省份：</td>
+      <td class="right"><select id="areacode" name="areacode"
+			class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$province_select;?>
+        </select></td>
+    </tr>
+    <tr> 
+      <!--td class='left'>受理人：</td>
+			<td class='right'><input type="text" id="accept_user" name="accept_user" value="<?=$accept_user;?>" class="input finput" /></td-->
+      <td class='left'>合同负责人</td>
+      <td class='right'><select name="signe_name" class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$signe_select;?>
+        </select></td>
+      <td class='left'>合同来源：</td>
+      <td class='right'><select id="ctfrom" name="ctfrom" class='fselect' <?=($hezuofang=='1')?'disabled':'';?>>
+          <option value=""></option>
+          <?=$ctfrom_select;?>
+        </select></td>
+      <td class='left'>认证体系：</td>
+      <td class='right'><select id="iso" name="iso" class='fselect'>
+          <option value=""></option>
+          <?=$iso_select;?>
+        </select></td>
+      <td class='left'>标准版本：</td>
+      <td class='right'><select id="audit_ver" name="audit_ver" class='fselect'>
+          <option value=""></option>
+          <?=$audit_ver_select;?>
+        </select></td>
+    </tr>
+    <tr>
+      <td class="left">受理日期：</td>
+      <td class="right" ><input type="text" id="accept_date_start" name="accept_date_start" value="<?=$accept_date_start?>"  class="input finput input-date" /></td>
+      <td class="left">至</td>
+      <td class="right"><input type="text" id="accept_date_end" name="accept_date_end" value="<?=$accept_date_end?>"  class="input finput input-date" /></td>
+      <td class="left">专业代码(GC)：</td>
+      <td class='right'><input type="text" id="audit_code_2017" name="audit_code_2017" value="<?=$audit_code_2017;?>" class="input finput" /></td>
+      <td class="left">专业代码(TRC)：</td>
+      <td class='right'><input type="text" id="audit_code" name="audit_code" value="<?=$audit_code;?>" class="input finput" /></td>
+      <td class='left'>审核类型：</td>
+      <td class='right'><select id="audit_type" name="audit_type" class='fselect'>
+          <option value=""></option>
+          <?=$audit_type_select;?>
+        </select></td>
+    </tr>
+  </table>
+  <p class="button-panel">
+    <button class="btn btn-submit" type="submit"> 搜 索 </button>
+    &nbsp;
+    <button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+    &nbsp;
+    <button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>
+  </p>
+  <input type="hidden" name='status' value="<?php echo $status;?>" />
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1400px;margin:0 auto;'>
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all" id="ul">
+    <li class="ui-state-default ui-corner-top <?=$status_0_tab;?>"><a href="?c=contract&a=list<?php gettourl();?>" onclick="ckurl()">待受理 <span class="cnt-total">
+      <?=$status_count[0];?>
+    </span></a></li>
+
+    <li class="ui-state-default ui-corner-top <?=$status_5_tab;?>"><a href="?c=contract&a=list&status=5<?php gettourl();?>" onclick="ckurl()">需修订 <span class="cnt-total">
+      <?=$status_count[5];?>
+    </span></a></li>
+
+    <li class="ui-state-default ui-corner-top <?=$status_1_tab;?>"><a href="?c=contract&a=list&status=1<?php gettourl();?>" onclick="ckurl()">待评审 <span class="cnt-total">
+      <?=$status_count[1];?>
+      </span></a></li>
+     <!-- <li class="ui-state-default ui-corner-top <?=$status_4_tab;?>"><a href="?c=contract&a=list&status=4<?php gettourl();?>">待确认合同 <span class="cnt-total">
+      <?=$status_count[4];?>
+      </span></a></li> -->
+    <li class="ui-state-default ui-corner-top <?=$status_2_tab;?>"><a href="?c=contract&a=list&status=2<?php gettourl();?>" onclick="ckurl()">待审批 <span class="cnt-total">
+      <?=$status_count[2];?>
+      </span></a></li>
+    <li class="ui-state-default ui-corner-top <?=$status_3_tab;?>"><a href="?c=contract&a=list&status=3<?php gettourl();?>" onclick="ckurl()">已审批 <span class="cnt-total">
+      <?=$status_count[3];?>
+      </span></a></li>
+      
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <div>
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th width="30">详细</th>
+            <th width="40">状态</th>
+            <th width="50">合同确认</th>
+            <th width="50">纸件确认</th>
+            <th width="60">上传/下载</th>
+            <?php
+              //if($_GET['status']==3 ){//已审批
+              if( $_GET['status']==2 ){//待审批
+            ?>
+            <!-- <th width="80">合表下载(旧代码)</th> -->
+            <th width="80">合表下载(新代码)</th>
+
+            <?php
+              }
+            ?>
+            <?php
+              if(current_user('usertype')!=2){       
+              if( in_array($_GET['status'],array(1,4)) ){//待评审，待确认合同     
+            ?>
+            <th width="30">评审</th>
+            <?php 
+            }
+              if( in_array($_GET['status'],array(2,3)) ){//待审批，已审批
+            ?>
+            <th width="30">审批</th>
+            <?php
+              }
+              }
+            ?>
+            <?php
+              if( $_GET['status']==5||empty($_GET['status']) ){//需修订
+            ?>
+              <th width="30">编辑</th>
+            <?php
+              }
+              if($_GET['status']==3 ){//已审批
+            ?>
+            <th width="80">收费状态</th>
+            <?php
+              }
+            ?>
+            <th width="80">合同编号</th>
+            <th width="60">项目编号</th>
+            <th width="30">初次</th>
+            <th width="150">客户名称</th>
+            <th width="60">专业代码(GC)</th>
+            <th width="60">专业代码(TRC)</th>
+            <th width="70">合同来源</th>
+            <th width="70">审核类型</th>
+            <th width="*">受理日期</th>
+            <th width="*">受理人</th>
+            <th width="60" title="合同备注">合同备注</th>
+            <th>评审人</th>
+            <th width="60" title="评审备注">评审备注</th>
+            <th>审批人</th>
+             <th>审批时间</th>
+            <th>审批意见</th>
+        	<th>修改人</th>
+            <th>修改时间</th>
+            <!-- <th width="30">删除</th> -->
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+if( $contracts ){
+	foreach( $contracts as $ct_id => $row ){
+?>
+          <tr>
+            <td align="center"><a href="?c=contract&a=show&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/select1.gif" border=0 /></a></td>
+            <td align="center"><?=r_sys_cache('contract_status',$row['status']);?></td>
+            <td align="center" data-id="<?=$row['ct_id'];?>">
+                <?php
+                  // $disabled = '';
+                  $disabled = ( intval($_GET['status']) == 4)?'':'disabled';
+                ?>
+                  <select <?php echo $disabled;?>  name="status_ht" class='status_ht_class fselect'>
+                    <option <?php if($row['status_ht']==0)echo 'selected';?> value="0">---否---</option>
+                    <option <?php if($row['status_ht']==1)echo 'selected';?> value="1">---是---</option>
+                    <option <?php if($row['status_ht']==2)echo 'selected';?> value="2">机构修订</option>
+                    <option <?php if($row['status_ht']==3)echo 'selected';?> value="3">企业修订</option>
+                  </select>
+            </td>
+            <td align="center" data-id="<?=$row['ct_id'];?>">
+                <?php
+                  $disabled = '';
+                  // $disabled = ( intval($_GET['status']) == 4 )?' ':'disabled';
+                ?>
+                  <select <?php echo $disabled;?>  name="status_zj" class='status_zj_class fselect'>
+                    <option <?php if($row['status_zj']==0)echo 'selected';?> value="0">---否---</option>
+                    <option <?php if($row['status_zj']==1)echo 'selected';?> value="1">---是---</option>
+                  </select>
+            </td>
+            <td align="center"><a title="上传文档" href="?c=contract&a=upload&eid=<?=$row['eid'];?>&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/up.gif" border=0 /></a></td>
+            <?php
+              // if( $_GET['status']==3 ){//已审批
+              if( $_GET['status']==2 ){//待审批
+            ?>
+            <!-- <td align="center"><a href="?c=file_zip&a=contract&ct_id=<?=$row['ct_id'];?>&eid=<?=$row['eid'];?>&banben=1"><img src="theme/images/down.gif" border=0 /></a></td> -->
+            <td align="center"><a href="?c=file_zip&a=contract&ct_id=<?=$row['ct_id'];?>&eid=<?=$row['eid'];?>"><img src="theme/images/down.gif" border=0 /></a></td>
+           
+            <?php
+              }
+            ?>
+            <?php
+              if(current_user('usertype')!=2){   
+                if( in_array($_GET['status'],array(1,4)) ){//待评审，待确认合同         
+            ?>     
+              <td align="center"><a title="评审" href="?c=contract&a=review&ct_id=<?=$row['ct_id'];?>&eid=<?=$row['eid'];?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+            <?php
+              }
+              if(in_array($_GET['status'],array(2,3)) ){//待审批，已审批
+            ?>
+              <td align="center"><a title="审批" href="?c=contract&a=approval&ct_id=<?=$row['ct_id'];?>&eid=<?=$row['eid'];?>" rel="" class="ct-approval"><img src="theme/images/b_edit.png" border=0 /></a></td>               
+          
+            <?php
+              }
+            }
+            ?>
+            <?php
+              if( $_GET['status']==5||empty($_GET['status']) ){//需修订
+            ?>
+                <td align="center"><a title="编辑" href="?c=contract&a=edit&ct_id=<?=$row['ct_id'];?>&eid=<?=$row['eid'];?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+            <?php
+              }
+              if( $_GET['status']==3 ){//已审批
+            ?>
+            <td align="center"><?=$row['cost_status'];?></td>
+            <?php
+              }
+            ?>
+            <td align="center"><?=$row['ct_code'];?></td>
+            <td align="center"><?php  if($row['cti_codes']){ echo implode('<br/>', $row['cti_codes']);}?></td>
+            <td align="center"><?=$row['is_first'];?></td>
+            <td><?=$row['ep_name'];?></td>
+            <td align="right"><?php  if($row['audit_codes']){ echo LongToBr(implode('<br/>', $row['audit_codes_2017']), array('；', ';')) ;} ?></td>
+            <td align="right"><?php  if($row['audit_codes']){ echo LongToBr(implode('<br/>', $row['audit_codes']), array('；', ';')) ;} ?></td>
+            
+            	
+            <!-- <td align="right"><?php  if($row['use_codes']){ echo LongToBr(implode('<br/>', $row['use_codes']), array('；', ';')) ;} ?></td> -->
+            <td align="center"><?=$row['ctfrom_V'];?></td>
+            <td align="center"><?php if($row[audit_types]){ echo implode('<br/>', $row['audit_types']);}?></td>
+            <td align="center"><?=$row['accept_date'];?></td>
+            <td align="center"><?=$row['create_user'];?></td>
+            <td align="center"><?php
+if( $row['note'] ){
+?>
+              <a href="javascript:;" title="合同备注：<?=$row[note];?>" class="a_link"><img src="theme/images/other.png" border="0" /><span style="display:none">
+              <?=$row['note'];?>
+              </span></a>
+              <?php
+}
+?></td>
+            
+            <td align="center">
+            <?php 
+              if(in_array($_GET['status'],array(2,3))){
+                echo $row['review_name'];
+              }
+            ?>
+            </td>
+            <td align="center"><?php
+if( $row['review_note'] ){
+?>
+              <a href="javascript:;" title="评审备注：<?=$row['review_note'];?>" class="a_link"><img src="theme/images/other.png" border="0" /><span style="display:none">
+              <?=$row['review_note'];?>
+              </span></a>
+              <?php
+}
+?></td>
+<td> <?php 
+              if($_GET['status']=='3'){
+                echo $row['approval_user'];
+              }
+            ?></td>
+<td><?=$row['approval_date']?></td>
+            <td><?php
+if( $row['approval_note'] ){
+?>
+              <a href="javascript:;" title="审批意见：<?=$row['approval_note'];?>" class="a_link"><img src="theme/images/other.png" border="0" /><span style="display:none">
+              <?=$row['approval_note'];?>
+              </span></a>
+              <?php
+}
+?></td>
+	<TD><?=$row['update_user']?></TD>
+    <TD><?=$row['update_date']?></TD>
+            
+            <!-- <td align="center">
+              <a href="?c=contract&a=del&ct_id=<?=$ct_id;?>" title="删除" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a>
+            </td> -->
+          </tr>
+          <?php
+	}
+} else {
+?>
+          <tr>
+               <td align="center" colspan="18">未找到相关记录</td>
+          </tr>
+          <?php
+}
+?>
+        </tbody>
+      </table>
+      <p>
+        <?=$pages['pages'];?>
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

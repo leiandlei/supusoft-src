@@ -1,0 +1,194 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员列表</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/common.js"></script>
+<script>
+$(function(){
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$(".zige_update").on('change', function(event) {
+		//alert($(this).parent().parent().data('id'));
+		if( $(this).val()==1 ){
+			var data    = {'id':$(this).parent().parent().data('id')};
+			var results = ajax(data,'hrZigeUpdate');
+			if( results.errorCode==0 ){
+				alert('成功')
+			}else{
+				alert('失败');
+			}
+			window.location.reload()
+		}
+	});
+	$(".zige_update_time input").on('change', function(event) {
+		var date    = $(this).val()
+		var data    = {'id':$(this).parent().parent().data('id'),'date':date};
+		var results = ajax(data,'hrZigeUpdateTime');
+		if( results.errorCode==0 ){
+			alert('成功')
+		}else{
+			alert('失败');
+		}
+		window.location.reload()
+	});
+
+	$(".shenhe_num input").on('change', function(event) {
+		var date    = $(this).val()
+		var data    = {'id':$(this).parent().parent().data('id'),'date':date};
+		var results = ajax(data,'hrq_shenhe_num');
+		if( results.errorCode==0 ){
+			alert('成功')
+		}else{
+			alert('失败');
+		}
+		window.location.reload()
+	});
+	$(".peixun_keshi input").on('change', function(event) {
+		var date    = $(this).val()
+		var data    = {'id':$(this).parent().parent().data('id'),'date':date};
+		var results = ajax(data,'hrq_peixun_keshi');
+		if( results.errorCode==0 ){
+			alert('成功')
+		}else{
+			alert('失败');
+		}
+		window.location.reload()
+	});
+	
+})
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="is_hire" value="<?=$is_hire;?>" />	
+	<table>
+		<tr>
+			<td class="left">姓名：</td>
+			<td class="right"><input type="text" name="seach_name" value="<?=$name;?>" class='input finput'/></td>
+			<td class="left">人员编号：</td>
+			<td class="right"><input type="text" name="seach_code" value="<?=$code;?>" class='input finput'/></td>
+			<td class="left">易记码：</td>
+			<td class="right"><input type="text" name="seach_easycode" value="<?=$easycode;?>" class='input finput'/></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			<td colspan="8"  class="right">
+			<p class="button-panel">
+				<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+				<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+				<!-- <button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button> -->
+			</p>
+			</td>
+		</tr>
+	</table>
+</form>
+<br>
+
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1150px;margin:0 auto;'>
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_1_tab;?>"><a href="?c=hr_qualification&a=zige_status_list&status=1">待办 <span class="cnt-total"><?=$hire_total[1];?></span></a></li>
+		<li class="ui-state-default ui-corner-top <?=$status_2_tab;?>"><a href="?c=hr_qualification&a=zige_status_list&status=2">已完成 <span class="cnt-total"><?=$hire_total[2];?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+
+<div id="toolTipLayer" style="position:absolute; visibility: hidden"></div>
+<script>initToolTips()</script>
+
+	<table class="grid-table tal">
+		<thead>
+		<tr>
+			<th>人员编号</th>
+			<th>姓名</th>
+			<th>人员来源</th>
+			<th>联系手机</th>
+			<th>体系</th>
+			<th>资格</th>
+			<th>专兼职</th>
+			<th>有效开始时间</th>
+			<th>有效结束时间</th>
+			<th>培训课时</th>
+			<th>完整审核次数</th>
+			<th>总审核次数</th>
+			<th>上次确认时间</th>
+			<th>当前状态</th>
+			<?php if($status!=2):?>
+			<th>操作</th>
+			<?php endif;?>
+		</tr>
+		</thead>
+		<tbody>
+		<?php if( $results ):foreach( $results as $row ):?>
+		<tr data-id="<?=$row['id'];?>">
+			<td align="center"><?=$row['code'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$ctfrom_array[$row['ctfrom']]['name'];?></td>
+			<td align="center"><?=$row['tel'];?></td>
+			<td align="center"><?=$arr_audit_iso[$row['iso']];?></td>
+			<td align="center"><?=$arr_qua_type[$row['qua_type']];?></td>
+			<td align="center"><?=$arr_audit_job[$row['audit_job']];?></td>
+			<td align="center"><?=$row['s_date'];?></td>
+			<td align="center"><?=$row['e_date'];?></td>
+			<td align="center" class="peixun_keshi">
+				<input type="text" id="peixun_keshi[<?=$row['id'];?>]" name="peixun_keshi" value="<?=$row['peixun_keshi'];?>" style="text-align:center;width:80px;" />
+			</td>
+			<td align="center">
+				<?=$row['shenhe_1003']+$row['shenhe_1007'];?>
+			</td>
+			<td align="center">
+				<?=$row['shenhe_num'];?>
+			</td>
+			<td align="center" class="zige_update_time">
+				<input type="text" id="zige_update_time[<?=$row['id'];?>]" name="zige_update" value="<?=$row['zige_update'];?>" class="input-date" style="text-align:center;width:80px;" />
+			</td>
+			<td align="center" style="color:red"><?=$arr_hr_zige[$row['zige']];?></td>
+			<?php if($status!=2):?>
+			<td align="center">
+				<select class="zige_update">
+					<option value="0">待确认</option>
+					<option value="1">确认</option>
+				</select>
+			</td>
+			<?php endif;?>
+		</tr>
+		<?php endforeach;else:?>
+		<tr>
+			<td align="center" colspan="12">没有找到数据</td>
+		</tr>
+		<?php endif;?>
+		</tbody>
+	</table>
+	<?=$pages['pages'];?>
+	</div>
+</div>
+<br/><br/>
+
+</body>
+</html>

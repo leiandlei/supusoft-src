@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+	<head>
+		<include file='./Public/mui/common/html/head.html' />
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-nav">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		    <h1 class="mui-title">{$results.title}</h1>
+		</header>
+		<div class="mui-content mui-text-center" style="margin-left: 1rem;margin-right: 1rem;margin-top: 30px;">
+			<php>echo htmlspecialchars_decode(htmlspecialchars_decode($results['content']));</php>
+		</div>
+	</body>
+	<script type="text/javascript">
+		mui.init();
+	</script>
+
+</html>

@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>证书详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<!-- basic styles -->
+		<link href="theme/assets/css/bootstrap.min.css" rel="stylesheet" />
+		<link rel="stylesheet" href="theme/assets/css/font-awesome.min.css" />
+		<!--[if IE 7]>
+		  <link rel="stylesheet" href="theme/assets/css/font-awesome-ie7.min.css" />
+		<![endif]-->
+		<!-- page specific plugin styles -->
+		<!-- fonts -->
+		<!-- ace styles -->
+		<link rel="stylesheet" href="theme/assets/css/ace.min.css" />
+		<link rel="stylesheet" href="theme/assets/css/ace-rtl.min.css" />
+		<link rel="stylesheet" href="theme/assets/css/ace-skins.min.css" />
+		<!--[if lte IE 8]>
+		  <link rel="stylesheet" href="theme/assets/css/ace-ie.min.css" />
+		<![endif]-->
+		<!-- inline styles related to this page -->
+		<!-- ace settings handler -->
+		<script src="theme/assets/js/ace-extra.min.js"></script>
+		<!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!--[if lt IE 9]>
+		<script src="theme/assets/js/html5shiv.js"></script>
+		<script src="theme/assets/js/respond.min.js"></script>
+		<![endif]-->
+		<style type="text/css">
+	　　.AutoNewline{ 
+		  Word-break: break-all;/*必须*/ 
+		} 
+		#cert-info-value{
+			margin-left: 120px;
+		}
+		#form-size{
+			height:auto !important;
+
+			height:30px;
+
+			min-height:30px;
+		}
+		#form-title{
+			text-align: center;
+
+			margin-left: 0px;
+		}
+	　　</style>
+	</head>
+
+	<body>
+		<div class="main-container" id="main-container" style="margin-top:5%;">
+			<div class="main-container-inner">
+				<div class="main-content" style="margin-left:0">
+					<div class="page-content">
+						<div class="page-header" style="text-align:center">
+							<h1>
+								证书详情
+							</h1>
+						</div><!-- /.page-header -->
+
+						<div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+								<div class="row">
+									<div class="col-xs-12">
+										<div class="profile-user-info profile-user-info-striped" style="text-align: left;">
+											<div class="profile-info-row">
+												<div id="form-title" class="profile-info-value">
+													证书信息
+												</div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">证书编号</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$certno?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">证书状态</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$str_status?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">初次发证</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$s_date?></div>
+											</div>
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">发证日期</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$first_date?></div>
+											</div>
+											
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">换证日期</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$cgs_date?></div>
+											</div>
+											
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">有效期至</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$e_date?></div>
+											</div>
+
+											
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">认证项目</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$name_audit_ver?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">认证依据</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$str_audit_ver?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">监督次数</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$count_jiandu?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">再认证次数</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$count_zairenzheng?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">是否覆盖多场所</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$multi_site?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">认可标识</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$str_mark?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">证书范围</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$cert_scope?></div>
+											</div>
+
+											<div class="profile-info-row">
+												<div id="form-title"class="profile-info-value">
+													获证企业信息
+												</div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">组织名称</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$cert_name?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name"><?=$arr_work_code?></div>
+												<div id="cert-info-value" class="profile-info-value"><?=$work_code_1?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">企业人数</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$ep_amount?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">注册地址</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$ep_addr?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">办公地址</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$bg_addr?></div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">生产地址</div>
+												<div id="cert-info-value" class="profile-info-value"><?=$prod_addr?></div>
+											</div>
+
+											<div class="profile-info-row">
+												<div id="form-title" class="profile-info-value">
+													发证机构信息
+												</div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">机构名称</div>
+												<div id="cert-info-value" class="profile-info-value">中标华信（北京）认证中心有限公司</div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">机构批准号</div>
+												<div id="cert-info-value" class="profile-info-value">CNCA-R-2015-199</div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">有效期</div>
+												<div id="cert-info-value" class="profile-info-value">2021-10-08</div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">电话</div>
+												<div id="cert-info-value" class="profile-info-value">010-88255986</div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">地址</div>
+												<div id="cert-info-value" class="profile-info-value">北京市石景山区石景山路3号玉泉大厦5层</div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">网址</div>
+												<div id="cert-info-value" class="profile-info-value">www.lll.cn</div>
+											</div>
+
+											<div id="form-size" class="profile-info-row">
+												<div class="profile-info-name">业务范围</div>
+												<div id="cert-info-value" class="profile-info-value">
+													<dt>管理体系认证</dt>
+													<dd>A01 质量管理体系认证
+													<br>A02 环境管理体系认证
+													<br>A03 职业健康安全管理体系认证</dd>
+													<dt>服务认证</dt>
+													<dd>SC09 不动产服务  
+													<br>SC11 科学研究服务（研究和开发服务；专业、科学和技术服务；其他专业、科学和技术服务）</dd>
+												</div>
+											</div>
+											
+											
+											<div class="profile-info-row">
+												<div id="form-title" class="profile-info-value">
+													证书变化历史轨迹
+												</div>
+											</div>
+
+											<div class="table-responsive">
+											  	<table class="table">
+											  		<thead class="row">
+											  			<tr>
+											  				<th class="col-xs-1" style="white-space: inherit;">序号</th>
+											  				<th class="col-xs-3" style="white-space: inherit;">认证活动</th>
+											  				<th class="col-xs-9" style="white-space: inherit;">概要描述</th>
+											  			</tr>
+											  		</thead>
+											    	<tbody>
+											    		<?php $i=count($lishi)+1;foreach($lishi as $item):$i--?>
+											    		<tr>
+											    			<td class="col-xs-1" style="white-space: inherit;"><?=$i?></td>
+											    			<td class="col-xs-2" style="white-space: inherit;"><?=$item['type']?></td>
+											    			<td class="col-xs-9" style="white-space: inherit;">
+											    				<?php
+																	if(!empty($item['content']))echo '变更内容:'.$item['content'].'<br />';
+																	if(!empty($item['date']))echo '变更日期:'.$item['date'].'<br />';
+																	echo '换证日期:'.$cgs_date;
+																	
+																?>
+											    			</td>
+											    		</tr>
+											    		<?php endforeach;?>
+											    	</tbody>
+											  	</table>
+											</div>
+										</div>
+									</div><!-- /span -->
+								</div><!-- /row -->
+
+								<div class="hr hr-10 dotted hr-double"></div>
+
+								<div>
+									<img src="uploads/QRcode/mpQRcode.jpg" style="height:150px">
+									<div>长按 二维码</div>
+									<div>关注“中标华信认证中心”微信公众号</div>
+								</div>
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+					</div><!-- /.page-content -->
+				</div><!-- /.main-content -->
+				<!-- /#ace-settings-container -->
+			</div><!-- /.main-container-inner -->
+		</div>
+	</body>
+</html>

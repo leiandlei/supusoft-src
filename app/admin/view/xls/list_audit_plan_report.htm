@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>审核计划列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table>
+		<thead>
+		<tr>
+			<th width="*">机构批准号</th>
+			<th width="*">机构代码</th>
+			<th width="200">组织名称</th>
+			<!--<th width="*">合同来源</th>-->
+			<th width="*">联系人</th>
+			<th width="*">联系电话</th>
+			<th width="*">审核类型</th>
+			<th width="*">活动类型</th>
+			<th width="*">审核开始时间</th>
+			<th width="*">审核结束时间</th>
+			<th width="*">行政区域</th>
+			<th width="*">详细地址</th>
+			<th width="*">审核组成员</th>
+			<th width="*">技术专家</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $task_projects ){
+	foreach( $task_projects as $pid => $row ){
+?>
+		<tr>
+			<td >CNCA-R-2002-001</td>
+            <td ><?=$row['work_code'];?></td>
+			<td><?=$row['ep_name'];?></td>
+			<!--<td ><?=f_ctfrom($row['ctfrom']);?></td>-->
+			<td ><?=$row['person'];?></td>
+			<td ><?=$row['ep_phone'];?></td>
+			<td ><?=$row['iso'];?></td>
+			<td ><?=$row['audit_type'];?></td>
+			<td ><?=$row['tb_date'];?></td>
+			<td ><?=$row['te_date'];?></td>
+			<td ><?=$row['areacode'];?></td>
+			<td ><?=$row['ep_addr'];?></td>
+			<td><?php echo @implode(',',array_unique($row['s']));?></td>
+			<td><?php echo @implode(';',array_unique($row['z']));?></td>
+		</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+		<tr>
+			<td  colspan="13">请确认一下数据，如果上传格式不对请重新另存为EXECL。</td>
+		</tr>
+	</table>
+</body>
+</html>

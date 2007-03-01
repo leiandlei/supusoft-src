@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+       <head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员信息登记</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script>
+    $(function() {
+		var tooltips = $( "[title]" ).tooltip({position:{my:"left bottom+37", at:"left bottom"}});
+        $( "#user-tab" ).tabs({
+            collapsible: false
+        });
+		 $( "#role" ).tabs({
+            collapsible: false
+        });
+        $(".quan").click(function(){
+            $(this).parent().parent().next().find('input').attr("checked",true);
+            $(this).parent().find('input').attr("checked",true);
+    	});
+    	$(".fan").click(function(){
+    		$($(this).parent().parent().next().find('input')).each(function(){
+    			if($(this).attr("checked")){
+    			  $(this).removeAttr("checked");
+    			}else{
+    			 $(this).attr("checked",'true');
+    			}
+    		})
+    	});
+    	$(".qu").click(function(){
+    		$(this).parent().parent().next().find('input').attr("checked",false);
+            $(this).parent().find('input').attr("checked",false);
+    	});
+		$('#select-username').click(function(){
+			$('#username').attr("disabled",false); 
+    	});
+		$('#select-newpassword').click(function(){
+			$('#newpassword').attr("disabled",false); 
+			$('#newpassword').attr("value",'');
+    	});
+		$('body').mouseover(function() {
+		});
+    });
+
+//防止被浏览器串改帐号密码
+setTimeout("reset_value()", 1000);
+function reset_value()
+{
+	$('#username').attr("value",'<?=$hr_info['username'];?>');
+	$('#newpassword').attr("value",'');
+}
+
+</script>
+</head>
+    </head>
+    <body>
+    <form name="form1" method="post" action="?c=partner&a=sys_save" onSubmit="return form_check_username();">
+	<input type="hidden" id="uid" name="uid" value="<?=$uid?>" />
+	<input type="hidden" name="oldusername" value="<?=$hr_info['username'];?>" />
+	<div id="role" style="margin:0 auto;width:800px;" class="tal">
+		<ul>
+		<? foreach ($left_nav as $my_key=>$val){
+				if(!$val[appName] == ''){
+		?>
+			<li><a href="#<?=$my_key;?>"><?=$val['appName'];?></a></li>
+		<?
+			} 
+		}
+
+		?>
+		</ul>
+		<div style="margin:20px auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all quanxian">
+			<ul class='sys_header'>
+				<li><label style='font-size:18px'> <b><?=$left_nav_array_nav['name']?></b></label><label style='margin-left:30px;cursor:pointer;' class='quan'>[全选]</label><label class='fan' style='margin-left:20px;cursor:pointer;' >[反选]</label><label class='qu' style='margin-left:20px;cursor:pointer;' >[取消]</label></li>
+				<div class='clear sys_line'></div>
+			</ul>
+			
+			<div class="sys_main">
+				<ul>
+				<?php
+					foreach($left_nav_array_nav['options'] as $key=>$options_array){
+						$checked = '';
+						if(@strpos($partner['sys'], urltoauth($options_array[1])) !== false) {
+							$checked = 'checked';
+						}
+						
+						$value = urltoauth($options_array[1]);
+						if(isset($options_array[3])) {
+							$explode = explode('|', $options_array[3]);
+							foreach($explode as $explode){
+								$value .= '|' .urltoauth($explode);
+							}
+						}
+						echo "<li><label><input type='checkbox' name='check_sys[]' value='$value' class='ischeck' $checked >".$options_array[0]."</label></li>";
+					}
+				?>
+				</ul>
+				<div class='clear'></div>
+			</div>
+		</div>
+	</div>
+<p><center><button class="btn btn-submit" type="submit"> 保 存 </button></center></p><br/>
+
+</form>
+    </body>
+</html>

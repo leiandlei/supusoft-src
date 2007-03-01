@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<include file='./Public/mui/common/html/head.html' />
+	</head>
+	<body>
+		<header class="mui-bar mui-bar-nav">
+			<a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+			<h1 id="title" class="mui-title">考核详情</h1>
+		</header>
+		<div class="mui-content"></div>
+	</body>
+	
+	<script type="text/javascript">
+		//启用双击监听
+		mui.init(
+		{
+			subpages:[{
+				url:"{:U('Kaohe/examine_user_info_main',array('exuid'=>I('get.exuid')))}",
+				id:"examine_user_main",
+				styles:{
+					top: '45px',
+					bottom: '0px',
+				}
+			}]
+		});
+	</script>
+
+</html>

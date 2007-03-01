@@ -1,0 +1,225 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>认证评定</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	//var tooltips = $( "[title]" ).tooltip({position:{my:"left+6 center", at:"right center"}});
+	$( "#enterprise-tab" ).tabs({
+		collapsible: false
+	});
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#export-xls-btn').click( do_export_xls );
+});
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1300px;margin:0 auto;'>
+  <?php echo $pages['input'];?>
+  <input type="hidden" name="c" value="<?=$c;?>" />
+  <input type="hidden" name="a" value="<?=$a;?>" />
+  <input type="hidden" name="pd_type" value="<?=$pd_type;?>" />
+  <table>
+    <tr>
+      <td class="left">企业名称：</td>
+      <td class="right"><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+      <td class="left">项目编号：</td>
+      <td class="right"><input type="text" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+      <td class="left">合同编号：</td>
+      <td class="right"><input type="text" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+      <td class="left">省份：</td>
+      <td class="right"><select id="areacode" name="areacode"
+			class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$province_select;?>
+        </select></td>
+        </tr>
+    <tr>
+      <td class="left">审批开始：</td>
+      <td class="right"><input type="text" name="sp_start" value="<?=$sp_start?>"  class="input finput input-date" /></td>
+      <td class="left">至</td>
+      <td class="right"><input type="text" name="sp_end" value="<?=$sp_end?>" class="input finput input-date" /></td>
+    <td class="left">认证体系：</td>
+		<td class="right"><select name="iso" class='fselect'>
+          <option value=""></option>
+          <?=$iso_select;?>
+        </select></td>
+        <td class="left">审核类型：</td>
+      <td class="right"><select name="audit_type" class='fselect'>
+          <option value=""></option>
+          <?=f_select('audit_type')?>
+         
+        </select></td>
+    </tr>
+    <tr>
+      
+     
+      <td class="left">审核开始：</td>
+      <td class="right"><input type="text" name="audit_start_s" value="<?=$audit_start_s?>"  class="input finput input-date" /></td>
+      <td class="left">至</td>
+      <td class="right"><input type="text" name="audit_end_e" value="<?=$audit_end_e?>" class="input finput input-date" /></td>
+      <td class='left'>标准版本：</td>
+		 <td class='right'><select id="audit_ver" name="audit_ver" class='fselect'>
+          <option value=""></option>
+          <?=$audit_ver_select;?>
+        </select></td>
+         <td class="left">合同来源：</td>
+      <td class="right"><select name="ctfrom" class='fselect'>
+          <option value=""></option>
+          <?=f_ctfrom_select();?>
+        </select></td>
+         </tr>
+    <tr>
+     <td class="left">评定老师：</td>
+      <td class="right"><select name="comment">
+      <option value="">==请选择==</option>
+      <?=$comment_select;?>
+      </select></td>
+    </tr>
+	
+  </table>
+  <p class="button-panel">
+    <button class="btn btn-submit" type="submit"> 搜 索 </button>
+    &nbsp;
+    <button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+    &nbsp;
+    <button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>
+  </p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1300px;margin:0 auto;'>
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top <?=$sp_type_0;?>">
+      <a href="?c=assess&a=list_tg&sp_type=0<?php gettourl();?>"> 未审批 
+        <span class="cnt-total">
+          <?=$sp_type_total[0];?>
+        </span>
+      </a>
+    </li>
+    <li class="ui-state-default ui-corner-top <?=$sp_type_2;?>">
+      <a href="?c=assess&a=list_tg&sp_type=2<?php gettourl();?>" > 未通过 
+        <span class="cnt-total">
+          <?=$sp_type_total[2];?>
+        </span>
+      </a>
+    </li>
+    <li class="ui-state-default ui-corner-top <?=$sp_type_1;?>">
+      <a href="?c=assess&a=list_tg&sp_type=1<?php gettourl();?>"> 已审批 
+        <span class="cnt-total">
+          <?=$sp_type_total[1];?>
+        </span>
+      </a>
+    </li>
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <div >
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th width="20"></th>
+            <th width="30">审批</th>
+            <th width="*">合同编号</th>
+            <th width="*">项目编号</th>
+            <th width="200">企业名称</th>
+            <th width="*">合同来源</th>
+            <th width="*">组长</th>
+            <th width="*">审核类型</th>
+            <th width="*">标准</th>
+            <th width="*">一评人员</th>
+            <th width="*">二评人员</th>
+            <th width="*">一评技术专家</th>
+            <th width="*">二评技术专家</th>
+            <th width="100">评定通过</th>
+          <!--   <th width="*">技委会通过</th> -->
+            <th width="*"><!--资料收回-->整改</th>
+            <th width="*"><!--转技委会-->总经理审批</th>
+            <th width="*">审核开始</th>
+            <th width="*">审核结束</th>
+            <th width="*">财务收费</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+if( $resdb ){
+	foreach( $resdb as $row ){
+?>
+          <tr>
+            <td align="center"><a href="?c=contract&a=show&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/select1.gif" border="0" /></a></td>
+            <td align="center"><a title="评定" href="?c=assess&a=edit_tg&pd_id=<?=$row['id'];?>&ct_id=<?=$row['ct_id'];?>&tid=<?=$row['tid'];?>#tab-edit"><img src="theme/images/b_edit.png" border="0" /></a></td>
+            <td align="center"><?=$row['ct_code'];?></td>
+            <td align="center"><?=$row['cti_code'];?></td>
+            <td><?=$row['ep_name'];?></td>
+            <td align="center"><?=$row['ctfrom_V'];?></td>
+            <td align="center"><?=$row['leader'];?></td>
+            <td align="center"><?=$row['audit_type_V'];?></td>
+            <td align="center"><?=$row['audit_ver_V'];?></td>
+            <td align="center"><?=$row['comment_a_name'];?></td>
+            <td align="center"><?=$row['comment_b_name'];?></td>
+            <td align="center"><?=$row['comment_c_name'];?></td>
+            <td align="center"><?=$row['comment_d_name'];?></td>
+            <td align="center"><?=$row['comment_date'];?>
+              <?=$row['comment_pass_V'];?></td>
+            <!-- <td align="center"><span title="<?=$row['comment_b'];?>">
+              <?=$row['comment_b_date'];?>
+              </span>
+              <?=$row['comment_b_pass_V'];?></td> -->
+            <td align="center"><?=$row['rect_finish_V'];?></td>
+            <td align="center"><?=$row['sp_date'];?></td>
+            <td align="center"><?=$row['tb_date'];?></td>
+            <td align="center"><?=$row['te_date'];?></td>
+            <td align="center"><?=$row['is_finance_V'];?></td>
+          </tr>
+          <?php
+	}
+} else {
+?>
+          <tr>
+            <td align="center" colspan="16">未找到相关记录</td>
+          </tr>
+          <?php
+}
+?>
+        </tbody>
+      </table>
+      <p>
+        <?=$pages['pages'];?>
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

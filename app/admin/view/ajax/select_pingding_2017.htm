@@ -1,0 +1,49 @@
+<? tpl('header')?>
+<script src="theme/loaders/script/modernizr-2.8.2.js"></script>
+<link rel="stylesheet" href="theme/loaders/css/main.css">
+<link rel="stylesheet" href="theme/loaders/css/load5.css">
+<script type="text/javascript">
+
+$(function() { 
+
+	$( "#audit-down-tab" ).tabs({
+		collapsible: false
+	});
+});
+
+</script>
+<style>
+li {
+	overflow: hidden;
+}
+.zhuyi{
+  margin-bottom: -30px;
+}
+</style>
+</head>
+
+<body style="padding-bottom:20px;">
+<br/>
+<div id="audit-down-tab" style="margin:0 auto;width:300px;height:350px" class="tal">
+  <ul>
+    <li></li>
+  </ul>
+  <div id="tab-audit" style="padding:50px">
+	<ul class="doc-list">
+	               
+		<li> <a href="?c=doc&a=RZ-002&ct_id=<?=$_GET['ct_id'];?>&tid=<?=$_GET['tid'];?>&eid=<?=$_GET['eid'];?>&banben=1">认证评定模板下载</a></li>
+	    <li>&nbsp;</li>
+	    <li>&nbsp;</li>
+	    <li><a href="?c=doc&a=PB-003&ct_id=<?=$_GET['ct_id'];?>&tid=<?=$_GET['tid'];?>&banben=1">认证注册决定审批表</a></li>
+	    <li>&nbsp;</li>
+	    <li>&nbsp;</li>
+
+
+	</ul>
+  </div>
+
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>审核项目信息</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<style type="text/css">
+.ctxm-table{border-collapse: collapse;border-spacing: 0;}
+.ctxm-table .td{padding:5px;border:1px solid #ccc;}
+
+.txxm-table{border-collapse: collapse;border-spacing: 0;}
+.txxm-table td{padding:.4em .6em;border:1px solid #f2f6fb;}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+
+});
+
+</script>
+</head>
+
+<body>
+<?php echo einfo("eid=$eid&ct_id=$ct_id");?>
+<br>
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">合同审核项目</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<?php
+if( $projects ){
+	foreach( $projects as $row ){
+?>
+		<table width="100%" class="grid-table">
+			<tr>
+				<td colspan="4">项目详细信息&gt;&gt;</td>
+			</tr>
+			<tr>
+				<th width="120" align="right">合同编号：</th>
+				<th width="330"align="left"><?=$row['ct_code'];?></th>
+				<th width="120" align="right">项目编号：</th>
+				<th align="left"><?=$row['cti_code'];?></th>
+			</tr>
+			<tr>
+				<td align="right">认证标准：</td>
+				<td align="left"><?=$row['audit_ver_V'];?></td>
+				<td align="right">审核类型：</td>
+				<td align="left"><?=$row['audit_type_V'];?></td>
+			</tr>
+			<tr>
+				<td align="right">是否进现场：</td>
+				<td align="left"><?=$row['is_site_V'];?></td>
+			
+			</tr>
+			<tr>
+				<td align="right">代码(GC)：</td>
+				<td align="left"><?=$row['use_code_2017'];?></td>
+				<td align="right">代码(TRC)：</td>
+				<td align="left"><?=$row['use_code'];?></td>
+			</tr>
+			<tr>
+				<td align="right">认可标志：</td>
+				<td align="left"><?=f_mark($row['mark']);?></td>
+				<td align="right">转入：</td>
+				<td align="left"><?=$row['is_turn_V'];?></td>
+			</tr>
+			<tr>
+				<td align="right">风险等级：</td>
+				<td align="left"><?=$row['risk_level']?></td>
+				<td align="right">体系人数：</td>
+				<td align="left"><?=$row['total'];?></td>
+			</tr>
+			<tr>
+				<th align="right">任务开始日期：</th>
+				<th align="left"><?=$row['tb_date'];?></th>
+				<th align="right">任务结束日期：</th>
+				<th align="left"><?=$row['te_date'];?></th>
+			</tr>
+			<tr>
+				<td align="right">最后审核日期：</td>
+				<td align="left"><?=$row['final_date'];?></td>
+				<td align="right">评定日期：</td>
+				<td align="left"><?=$row['sp_date'];?></td>
+			</tr>
+			<tr>
+				<td align="right">证书编号：</td>
+				<td align="left"><?=$row['certno']?></td>
+				<td align="right">证书状态：</td>
+				<td align="left"><?=read_cache("certstate",$row['c_status']);?></td>
+			</tr>
+			<tr>
+				<td align="right">证书注册：</td>
+				<td align="left"><?=$row['s_date']?></td>
+				<td align="right">证书到期：</td>
+				<td align="left"><?=$row['e_date']?></td>
+			</tr>
+			<tr>
+				<th align="right">评定结果：</th>
+				<th align="left"><?=$row[pd_type];?></th>
+				<th align="right">审核人日：</th>
+				<th align="left"><?=$row['tk_num']?></th>
+			</tr>
+			<tr>
+				<td align="right">组长：</td>
+				<td align="left"><?=$row['leader'];?></td>
+				<td align="right">审核状态：</td>
+				<td align="left"><?=$row['t_status']?></td>
+			</tr>
+			<tr>
+				<td align="right">审核员信息：</td>
+				<td colspan="3"><?=$row['auditor'];?></td>
+			</tr>
+			<!--tr>
+				<td align="right">技委会意见：</td>
+				<td colspan="3"><?=$row['jwh_note'];?></td>
+			</tr-->
+			<tr>
+				<td align="right">认证范围：</td>
+				<td colspan="3"><?=$row['scope'];?></td>
+			</tr>
+			<tr>
+				<td align="right">评定备注：</td>
+				<td colspan="3"><?=$row['comment_note'];?></td>
+			</tr>
+			<?php if($row[change]) {?>
+			<tr>
+				<th align="right" >证书变更</th>
+				<td colspan="3"></td>
+			</tr>
+			<?php foreach($row[change] as $val) {?>
+			<tr>
+				<td align="right" >变更前</td>
+				<td colspan="3"><?=read_cache("certstate", $val['cg_af']). $val['cg_af'];?></td>
+			</tr>
+			<tr>
+				<td align="right" >变更后</td>
+				<td colspan="3"><?=read_cache("certstate", $val['cg_bf']). $val['cg_bf'];?></td>
+			</tr>
+			<tr>
+				<td align="right" >变更备注</td>
+				<td colspan="3"><?=$val[note];?></td>
+			</tr>
+			<?php } }?>
+			<tr>
+				<td colspan="4"></td>
+			</tr>
+		</table>
+		<br/>
+<?php
+	}
+}
+?>
+	</div>
+</div>
+</body>
+</html>

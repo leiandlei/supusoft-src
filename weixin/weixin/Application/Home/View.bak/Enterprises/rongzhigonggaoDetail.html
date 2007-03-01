@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>通知公告详情</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<include file='./Public/style/css/common/common.css.html,./Public/style/js/common/common.js.html' />
+	</head>
+
+	<body>
+		<div class="main-container" id="main-container">
+			<div class="space-4"></div>
+			<div class="space-4"></div>
+			<div class="main-container-inner">
+				<div class="main-content">
+					<!-- <div class="breadcrumbs" id="breadcrumbs">
+						<form class="form-search">
+							<table>
+								<tr>
+									<td>搜索</td>
+									<td><input type="text" placeholder="Search ..." /></td>
+								</tr>
+							</table>
+						</form>
+					</div> -->
+					<div class="page-content">
+
+						<div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+								<form class="form-horizontal" role="form">
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="biaoti"> 标题 </label>
+										<div class="col-sm-9">
+											<input type="text" id="biaoti" value="{$results.title}" disabled class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+
+									<div class="space-4"></div>
+
+									<div>
+										<label for="neirong">内容</label>
+										<textarea id="neirong" class="autosize-transition form-control" style="overflow: hidden; word-wrap: break-word; height: 60px; width: 83.3333%; margin: 0px -0.208333px 0px 0px;resize: vertical;" disabled>{$results.content}</textarea>
+									</div>
+
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<div class="col-sm-9">
+											<span class="help-inline col-xs-12 col-sm-7">
+												<label class="middle">
+													<span class="lbl">附件</span>
+													<notempty name="results.filename">
+														<!-- <a href='http://wx.lll.cn/web/uploads/notice/{$results.filename}'>
+															<i class="icon-folder-close bigger-110" style="margin-left: 10px;"></i>
+														</a> -->
+														<a href="{:U('Downs/downsNotice',array('id'=>$results['id']))}">
+															<i class="icon-folder-close bigger-110" style="margin-left: 10px;"></i>
+														</a>
+													</notempty>
+													
+												</label>
+											</span>
+										</div>
+									</div>
+
+									<div class="hr hr-24"></div>
+								</form>
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+
+					</div>
+				</div>
+
+			</div><!-- /.main-content-inner -->
+		</div><!-- /.main-container -->
+	</body>
+</html>

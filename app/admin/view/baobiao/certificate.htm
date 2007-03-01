@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<title>年报</title>
+		<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+		<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="theme/js/jquery.js"></script>
+		<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+
+		<link rel="stylesheet" type="text/css" href="theme/js/w2ui-1.2/w2ui-1.2.min.css" />
+		<script type="text/javascript" src="theme/js/w2ui-1.2/w2ui-1.2.min.js"></script>
+
+		<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+		<script type="text/javascript" src="theme/js/validator.js"></script>
+		<script type="text/javascript">
+			$(document).ready(function(){
+				$( ".nianbao" ).tabs({collapsible: false});
+				$( "input.input-date" ).datepicker({
+					changeMonth	: true,
+					changeYear	: true,
+					dateFormat	: "yy-mm-dd"
+				});
+
+				$('.btn-nianbao').click(function(){
+					if( !$(this).data('type') ){
+						alert('请刷新页面');
+						return false;
+					}
+
+					var sdate = $(this).parent().parent().find("input[name='sdate']").val();
+					if(!sdate){
+						alert('请输入开始时间');
+						return false;
+					}
+					
+
+					$(".load-excel").css('display','inline-block');
+					$.post('?c=baobiao&a=certificate_excel&sdate='+sdate, function(result) {
+						$(".load-excel").css('background-image','');
+						$(".load-excel").html('恭喜, 生成Excel表成功! 请点击' + '<a style="color:red" href="' + result + '" target="_blank">此处</a>' + '下载');
+					});
+				})
+			});
+		</script>
+	</head>
+	<body>
+		<div class="nianbao" style="margin: 0 auto; width: 750px;" class="tal">
+			<ul>
+				<li><a href="#tab-basic-excel">证书报表统计信息下载</a></li>
+			</ul>
+
+			<div id="tab-basic-excel" style="100%">
+				<table style="100%" class='grid-table'>
+					<thead>
+						<tr align='center'>
+							<th width="150" align='center'>开始时间</th>
+							<th width="*">生成excel</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr align='center'>
+							<td>
+								<input type='text' name='sdate' value='<?=$sdate?>' class="input input-date"/>
+							</td>
+							<td>
+								<button data-type="excel" class="btn-nianbao" class="btn btn-button" type="button">生成报表</button>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="3" height="54" align="center" valign="middle">
+								<span class="load-status" style="padding-left:40px;height:54px;line-height:54px;background:url(theme/images/loading.gif) 0 8px no-repeat;display:none;">Access表生成中，请您稍等...</span>
+								<span class="load-excel" style="padding-left:40px;height:54px;line-height:54px;background:url(theme/images/loading.gif) 0 8px no-repeat;display:none;">数据表生成中，请您稍等...</span>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</body>
+</html>

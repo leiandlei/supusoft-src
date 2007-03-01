@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>1111</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<include file='./Public/style/css/common.css.html,./Public/style/js/common.js.html' />
+		<script src="__PUBLIC__/style/js/user/list.js" type="text/javascript"></script>
+	</head>
+
+	<body>
+		<div class="navbar navbar-default" id="navbar">
+			<include file="Public/Common/top.html" />
+		</div>
+		
+		<div class="main-container" id="main-container">
+			<script type="text/javascript">
+				try{ace.settings.check('main-container' , 'fixed')}catch(e){}
+			</script>
+
+			<div class="main-container-inner">
+				<div class="sidebar" id="sidebar">
+					<include file="Public/Common/menu.html" />
+				</div>
+				<div class="main-content">
+
+					<div class="page-content">
+						<div class="page-header">
+							<h1>
+								微信管理
+								<small>
+									<i class="icon-double-angle-right"></i>
+									微信配置
+								</small>
+							</h1>
+						</div><!-- /.page-header -->
+
+						<div class="row">
+							<div class="col-xs-12">
+								<!-- PAGE CONTENT BEGINS -->
+								<form action="#" method="post" class="form-horizontal" role="form">
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="Username"> 用户名 </label>
+										<div class="col-sm-8">
+											<input type="text" id="Username" value="{:session('userInfo.user')}" disabled placeholder="Username" class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="AppID"> AppID </label>
+										<div class="col-sm-8">
+											<input type="text" id="AppID" name='appID' value="{$detail.appid}"  placeholder="AppID" class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="AppSecret"> AppSecret </label>
+										<div class="col-sm-8">
+											<input type="text" id="AppSecret" name='appSecret' value="{$detail.appsecret}"  placeholder="AppSecret" class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+
+									<div class="space-4"></div>
+									<div class="space-4"></div>
+									<div class="space-4"></div>
+									<div class="space-4"></div>
+									<div class="space-4"></div>
+									
+
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="URL"> 回调URL </label>
+										<div class="col-sm-8">
+											<input type="text" id="URL" name='url' value="{$detail.url}"  placeholder="URL" class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="Token"> Token </label>
+										<div class="col-sm-8">
+											<input type="text" id="Token" name='token' value="{$detail.token}"  placeholder="Token" class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+
+
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="EncodingAESKey"> EncodingAESKey </label>
+										<div class="col-sm-8">
+											<input type="text" id="EncodingAESKey" name='encodingAESKey' value="{$detail.encodingaeskey}"  placeholder="EncodingAESKey" class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+
+									<div class="form-group">
+										<label class="col-sm-4 control-label no-padding-right" for="type" style='padding-top:10px'> 消息加解密方式 </label>
+										<div class="radio col-sm-8">
+											<label>
+												<input name="type" value="1" type="radio" class="ace" <if condition="$detail.type eq 1">checked</if> />
+												<span class="lbl"> 明文模式 </span>
+											</label>
+
+											<label>
+												<input name="type" value="2" type="radio" class="ace" <if condition="$detail.type eq 2">checked</if> />
+												<span class="lbl"> 兼容模式 </span>
+											</label>
+
+											<label>
+												<input name="type" value="3" type="radio" class="ace" <if condition="$detail.type eq 3">checked</if> />
+												<span class="lbl"> 安全模式（推荐） </span>
+											</label>
+										</div>
+									</div>
+
+
+									<div class="space-4"></div>
+									<div class="space-4"></div>
+
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-4 col-md-8">
+											<button class="btn" type="reset">
+												<i class="icon-undo bigger-110"></i>
+												重置
+											</button>
+											&nbsp; &nbsp; &nbsp;
+											<button class="btn btn-info" type="submit">
+												<i class="icon-ok bigger-110"></i>
+												提交
+											</button>
+										</div>
+									</div>
+								</form>
+							</div>
+					</div><!-- /.page-content -->
+
+				</div><!-- /.main-content -->
+		</div><!-- /.main-container -->
+	</body>
+	<include file='./Public/style/modal/user/list.html' />
+</html>

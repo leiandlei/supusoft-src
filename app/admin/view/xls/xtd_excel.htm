@@ -1,0 +1,83 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>协调单项目列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr>
+			<th>合作方编号</th>
+			<th>公司名称</th>
+			<th>地址</th>
+			<th>办公地址</th>
+			<th>联系人</th>
+			<th>联系电话</th>
+			<th>地点附近车站及路途</th>
+			<th>体系</th>
+			<th>人数</th>
+			<th>拿证时间</th>
+			<th>范围</th>
+			<th>合作方备注</th>
+			<th>专业代码</th>
+			<th>一阶段审核开始时间</th>
+			<th>一阶段审核结束时间</th>
+			<th>二阶段审核开始时间</th>
+			<th>二阶段审核结束时间</th>
+			<th>现场总人日</th>
+			<th>实际安排人员</th>
+			<th>人日增减说明</th>
+			<th>组长</th>
+			<th>组员</th>
+			<th>技术专家</th>
+			<th>营业范围</th>
+			<th>资料备注</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $users ){
+	foreach( $users as $row ){
+?>
+		<tr>
+			<td align="center"><?=$row['code'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['areaaddr'];?></td>
+			<td align="center"><?=$row['epaddr'];?></td>
+			<td align="center"><?=$row['person'];?></td>
+			<td align="center"><?=$row['person_tel'];?></td>
+			<td align="center"><?=$row['station'];?></td>
+			<td align="center"><?=$row['audit_ver'];?></td>
+			<td align="center"><?=$row['renshu'];?></td>
+			<td align="center"><?=$row['cert_time'];?></td>
+			<td align="center"><?=$row['scope'];?></td>
+			<td align="center"><?=$row['partner_note'];?></td>
+			<td align="center"><?=$row['zhuanye'];?></td>
+			<td align="center"><?=$row['yjdshsj_start'];?></td>
+			<td align="center"><?=$row['yjdshsj_end'];?></td>
+			<td align="center"><?=$row['ejdshsj_start'];?></td>
+			<td align="center"><?=$row['ejdshsj_end'];?></td>
+			<td align="center"><?=$row['total_num'];?></td>
+			<td align="center"><?=$row['sj_preson'];?></td>
+			<td align="center"><?=$row['zjrr'];?></td>
+			<td align="center"><?=$row['leader'];?></td>
+			<td align="center"><?=$row['zuyuan'];?></td>
+			<td align="center"><?=$row['jszj'];?></td>
+			<td align="center"><?=$row['manage_scope'];?></td>
+			<td align="center"><?=$row['note'];?></td>
+		</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

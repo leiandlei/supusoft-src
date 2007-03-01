@@ -1,0 +1,90 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>统计</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.url.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('.c-del').click(function(){
+		confirm_dialog('此操作将删除合同信息以及隶属于该合同的所有项目信息！', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+
+	
+});
+
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body style='width:800px;margin:0 auto;'>
+<br/>
+
+<form method="get" id="search-form" action="" class="search-form tal" >
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+	<table>
+		<tr>
+			<td class="left">审核时间：</td>
+			<td class="right"><input type="text" name="s_date" value="<?=$s_date;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="e_date" value="<?=$e_date;?>" class="input input-date finput"/></td>
+			
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp; 
+	</p>
+    <br/>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" >
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_0_tab;?>"><a href="#">项目 <span class="cnt-total"></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<ul>
+<?php
+if( $data ){
+	foreach( $data as  $row ){
+?>
+<li style="margin-top:5px;"><?=$row?></li>
+
+		
+<?php
+	}
+} 
+?>
+</ul>
+	</div>
+</div>
+</body>
+</html>

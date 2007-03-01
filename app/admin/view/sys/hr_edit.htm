@@ -1,0 +1,199 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>人员信息登记</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script>
+    $(function() {
+		var tooltips = $( "[title]" ).tooltip({position:{my:"left bottom+37", at:"left bottom"}});
+        $( "#user-tab" ).tabs({
+            collapsible: false
+        });
+		 $( "#role" ).tabs({
+            collapsible: false
+        });
+        $(".quan").click(function(){
+            $(this).parent().parent().next().find('input').attr("checked",true);
+            $(this).parent().find('input').attr("checked",true);
+    	});
+    	$(".fan").click(function(){
+    		$($(this).parent().parent().next().find('input')).each(function(){
+    			if($(this).attr("checked")){
+    			  $(this).removeAttr("checked");
+    			}else{
+    			 $(this).attr("checked",'true');
+    			}
+    		})
+    	});
+    	$(".qu").click(function(){
+    		$(this).parent().parent().next().find('input').attr("checked",false);
+            $(this).parent().find('input').attr("checked",false);
+    	});
+		$('#select-username').click(function(){
+			$('#username').attr("disabled",false); 
+    	});
+		$('#select-newpassword').click(function(){
+			$('#newpassword').attr("disabled",false); 
+			$('#newpassword').attr("value",'');
+    	});
+		$('body').mouseover(function() {
+		});
+    });
+
+//防止被浏览器串改帐号密码
+setTimeout("reset_value()", 1000);
+function reset_value()
+{
+	$('#username').attr("value",'<?=$hr_info['username'];?>');
+	$('#newpassword').attr("value",'');
+}
+//检测用户帐号是否重复
+var r = 0;
+function form_check_username() {
+	if(check_username() > 0){return false;}else{$("form1").submit();}
+}
+function check_username() {
+	username = $('#username').val();
+	uid = $('#uid').val();
+	if( username != '' ){
+		$.post(
+			'?c=ajax&a=check_username',
+			{username:username, uid:uid},
+			function(result) {
+				r = parseInt( result );
+				if( r > 0 ) {
+					alert('用户帐号系统中已存在');
+				}
+			}
+		);
+	}
+	return r;
+}
+</script>
+</head>
+<body>
+
+<form name="form1" method="post" action="?c=sys&a=save" onSubmit="return form_check_username();">
+<input type="hidden" id="uid" name="uid" value="<?=$uid?>" />
+<input type="hidden" name="oldusername" value="<?=$hr_info['username'];?>" />
+<div id="user-tab" style="margin:0 auto;width:800px;" class="tal">
+	<ul>
+		<li><a href="#tab-basic">权限管理</a></li>
+	</ul>
+	<div id="tab-basic">
+		<ul class="main-form">
+			<li>
+				<label class="field">人员编号：</label><span><input name="code" value="<?=$hr_info['code'];?>" style="width:180px"  disabled='disabled' /><em>*</em></span>
+			</li>
+			<li>
+				<label class="field">姓名：</label><span><input name="name" value="<?=$hr_info['name'];?>" style="width:180px"  disabled='disabled' /><em>*</em></span>
+			</li>
+			<li>
+				<label class="field">帐号：</label><span><input id="username" name="username" value="<?=$hr_info['username'];?>" title="该用户新帐号，请谨慎修改！" onblur="check_username();" style="width:180px"  disabled='disabled' /><i class="i-select" id="select-username"></i><em>*</em></span>
+			</li>
+			<li>
+				<label class="field">密码：</label><span><input id="newpassword" name="newpassword" value=""  title="该用户新密码，请谨慎修改！" style="width:180px"  disabled='disabled' /><i class="i-select" id="select-newpassword"></i><em>*</em></span>
+			</li>
+		</ul>
+	</div>
+<p><center><button class="btn btn-submit" type="submit"> 保 存 </button></center></p>
+</div>
+<br />
+<div id="role" style="margin:0 auto;width:800px;" class="tal">
+<ul>
+<? foreach ($left_nav as $my_key=>$val){
+		if(!$val[appName] == ''){
+?>
+	<li><a href="#<?=$my_key;?>"><?=$val['appName'];?></a></li>
+<?
+	} 
+}
+
+?>
+</ul>
+
+<?php
+	foreach ($left_nav as $my_key=>$left_nav_array){
+    
+    ?>
+    <div id="<?=$my_key;?>">
+     <?
+		foreach ($left_nav_array as $left_nav_array_nav){
+        if(!is_array($left_nav_array_nav))continue;
+?>
+<div style="margin:20px auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all quanxian">
+	<ul class='sys_header'>
+		<li><label style='font-size:18px'> <b><?=$left_nav_array_nav['name']?></b></label><label style='margin-left:30px;cursor:pointer;' class='quan'>[全选]</label><label class='fan' style='margin-left:20px;cursor:pointer;' >[反选]</label><label class='qu' style='margin-left:20px;cursor:pointer;' >[取消]</label></li>
+		<div class='clear sys_line'></div>
+	</ul>
+	
+	<div class="sys_main">
+		<ul>
+		<?php
+			foreach($left_nav_array_nav['options'] as $key=>$options_array){
+				$checked = '';
+				if(@strpos($hr_info['sys'], urltoauth($options_array[1])) !== false) {
+					$checked = 'checked';
+				}
+				
+				$value = urltoauth($options_array[1]);
+				if(isset($options_array[3])) {
+					$explode = explode('|', $options_array[3]);
+					foreach($explode as $explode){
+						$value .= '|' .urltoauth($explode);
+					}
+				}
+				echo "<li><label><input type='checkbox' name='check_sys[]' value='$value' class='ischeck' $checked >".$options_array[0]."</label></li>";
+			}
+		?>
+		</ul>
+		<div class='clear'></div>
+	</div>
+</div>
+<?php
+		}
+        ?>
+        </div>
+        <?
+	}
+?>
+<p><center><button class="btn btn-submit" type="submit"> 保 存 </button></center></p><br/>
+
+</form>
+<br/><br/>
+<hr />
+<?php
+
+    foreach ($left_nav as $my_key=>$left_nav_array){
+    	
+        echo("模块名称:");
+        echo($val['appName']);
+        echo("<br>");
+        foreach ($left_nav_array as $left_nav_array_nav){
+            if(!is_array($left_nav_array_nav))continue;
+            echo("--------菜单名:");
+            echo($left_nav_array_nav['name']);
+            foreach($left_nav_array_nav['options'] as $key=>$options_array){
+				$checked = '';
+				if(@strpos($hr_info['sys'], urltoauth($options_array[1])) !== false) {
+					$checked = 'checked';
+                    echo("--------");
+                    echo("操作权限:");
+                    $value = urltoauth($options_array[0]);
+                    echo($value);
+                    
+				}
+			}
+            echo("<br>");
+        }
+    }
+    
+?>
+</div>
+
+</body>
+</html>

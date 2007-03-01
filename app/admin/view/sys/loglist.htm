@@ -1,0 +1,135 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>日志列表</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+var self = null;
+    $(function() {
+		//var tooltips = $( "[title]" ).tooltip({position:{my:"left+6 center", at:"right center"}});
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+        $( "input.input-date" ).datepicker({
+    		changeMonth	: true,
+    		changeYear	: true,
+    		dateFormat	: "yy-mm-dd"
+    	});
+		
+		$('td img').on( 'click', function(e) {
+			self = this;
+			//var href = '?c=ajax&a=select_auditor&taskBeginDate=<?=$taskBeginDate;?>&taskEndDate=<?=$taskEndDate;?>&iso_str=<?=$iso_str;?>&audit_code_str=' + $(this).attr('urn');
+			var href = '?c=sys&a=loglist&id=' + $(this).attr('id');
+			e.preventDefault();
+			var $this = $(this);
+			var horizontalPadding = 30;
+			var verticalPadding = 30;
+			$('<iframe border="0" id="frame1" frameborder="no" src="' + href + '" />').dialog({
+				title: $(this).attr('id') + ' 更改数据',
+				autoOpen: true,
+				width: 800,
+				height: 360,
+				modal: true,
+				resizable: false,
+				autoResize: true,
+				overlay: {opacity: 0.5,background: "black"},
+				close: function(ev,ui){$(this).remove();}
+				}).width(780).height(360);
+		});
+        
+    });
+    </script>
+</head>
+
+<body>
+<form method="get" action="?" class="search-form tal" style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+<input type="hidden" name="is_hire" value="<?=$is_hire;?>" />	
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" name="e_name" value="<?=$e_name;?>" class="input finput"/></td>
+			<td class="left">用户名称：</td>
+			<td class="right"><input type="text" name="u_name" value="<?=$u_name;?>" class="input finput"/></td>
+			<td class="left">日志内容：</td>
+			<td class="right"><input type="text" name="content" value="<?=$content;?>" class="input finput"/></td>
+			<td class="left">操作人：</td>
+			<td class="right"><input type="text" name="up_name" value="<?=$up_name;?>" class="input finput"/></td>
+		</tr>
+		<tr>
+			<td class="left">开始时间：</td>
+			<td class="right"><input type="text" name="s_date" value="<?=$s_date;?>" class="input input-date finput" /></td>
+			<td class="left">结束时间：</td>
+			<td class="right"><input type="text" name="e_date" value="<?=$e_date;?>" class="input input-date finput"/></td>
+			<td class="left">IP：</td>
+			<td class="right"><input type="text" name="ip" value="<?=$ip;?>" class="input finput"/></td>
+		</tr>
+		<tr>
+			<td colspan="8">
+				<button class="btn btn-submit" type="submit"> 搜 索 </button>
+			</td>
+		</tr>
+	</table>
+</form>
+
+
+<br/>
+<div style='width:1050px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>"><a href="javascript:;">审核操作日志</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<table width='100%' class='grid-table'>
+		<thead>
+		<tr>
+			<th width="50">ID</th>
+			<th>企业名称</th> 
+            <th>人员姓名</th> 
+			<th>日志内容</th>
+			<th>更改数据</th>
+			<th>操作人</th>
+			<th>操作时间</th>
+			<th>操作IP</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr>
+			<td align="center"><?=$row['id'];?></td>
+			<td align="center"><?=$row['eid'];?></td>
+			<td align="center"><?=$row['uid'];?></td>
+			<td align="left"><?=$row['content'];?></td>
+			<td align="center"><?php if ($row['af_str'] or $row['bf_str']) { ;?><img onclick="" id="<?=$row['id'];?>" src="theme/images/other.png" border="0" /> <?php } ?></td>
+			<td align="center"><?=$row['create_user'];?></td>
+			<td align="center"><?=$row['create_date'];?></td>
+			<td align="center"><?=$row['ip'];?></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="10">没有找到数据</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+<?=$pages['pages'];?>
+</div>
+</div>
+<br/><br/>
+
+</body>
+</html>

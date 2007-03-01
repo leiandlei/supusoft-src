@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同来源</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script>
+$(function(){
+	$('.c-del').click(function(){ 
+		confirm_dialog('确定删除配置信息？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});  
+})
+
+</script>
+
+</head>
+
+<body>
+
+<div style="margin:0 auto 12px;width:750px;">
+	<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+			<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">合同来源设置</a></li>
+		</ul>
+		<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<form method="post" action="?c=setting_ctfrom&a=add">
+<input type="hidden" name="step" value="1" />
+<table width="100%" class="grid-table">
+	<tr>
+		<th width="80">添加顶级：</th>
+		<td><label>名称：<input type="text" name="name" value="" class="input input-basic" /></label>
+			<button type="submit" class="btn btn-submit"> 添加 </button>
+		</td>
+	</tr>
+</table>
+</form>
+<br/>
+<table width="100%" class="form-table">
+	<tr>
+		<th align="center" width="80">编码</th>
+		<th>名称</th>
+		<th align="center" width="60">状态</th>
+		<th align="center" width="180">操作</th>
+	</tr>
+<?php
+if( $resdb ){
+	foreach( $resdb as $id => $row ){
+?>
+	<tr>
+		<td align="center"><?=$row['code'];?></td>
+		<td><?=$row['space'];?><?=$row['name'];?></td>
+		<td align="center"><?=$row['is_stop_V'];?></td>
+		<td align="right"><?php if( '00' == substr( $row['code'], 6, 2 ) ):?><a href="?c=setting_ctfrom&a=add&upcode=<?=$row['code'];?>">添加子级</a> &nbsp | &nbsp <?php endif;?><a href="?c=setting_ctfrom&a=edit&code=<?=$row['code'];?>">编辑</a> &nbsp | &nbsp <a href="?c=<?=$c;?>&a=del&to=<?=$a;?>&code=<?=$row['code'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a>&nbsp;</td>
+	</tr>
+<?php
+	}
+}
+?>
+</table>
+
+		</div>
+	</div>
+</div>
+
+
+</body>
+</html>

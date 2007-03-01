@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>标准版本</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script>
+$(function(){
+	$('.c-del').click(function(){ 
+		confirm_dialog('确定删除配置信息？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});  
+})
+
+</script>
+
+</head>
+
+<body>
+
+<div style="margin:0 auto;width:1000px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">标准版本设置</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<form method="post" action="?c=setting_audit_ver&a=save">
+<input type="hidden" name="type" value="<?=$type;?>" />
+<table class="form-table">
+	<tr>
+		<th width="40">排序</th>
+		<th width="40">体系</th>
+		<th width="80">编码</th>
+		<th width="80">简称</th>
+		<th width="*">认证标准</th>
+		<th width="*">备注</th>
+		<th width="80">是否上报</th>
+		<th width="120">状态</th>
+		<th width="40">操作</th>
+	</tr>
+<?php
+if( $resdb ){
+	foreach( $resdb as $id => $row ){
+		$row['stop_Y'] = $row['is_stop'] ? 'checked' : '';
+		$row['stop_N'] = $row['is_stop'] ? '' : 'checked';
+		$row['shangbao_Y'] = $row['is_shangbao'] ? 'checked' : '';
+		$row['shangbao_N'] = $row['is_shangbao'] ? '' : 'checked';
+?>
+	<tr align="center">
+		<td><input type="text" name="vieworder[<?=$id;?>]" value="<?=$row['vieworder'];?>" class="input" size="2" /></td>
+		<td><select name="iso[<?=$id;?>]" style="width:100px;">
+			<option value="">请选择</option>
+			<?=$row['iso_select'];?>
+		</select></td>
+		<td><input type="text" name="ver[<?=$id;?>]" value="<?=$row['audit_ver'];?>" class="input" size="8" /></td>
+		<td><input type="text" name="msg[<?=$id;?>]" value="<?=$row['msg'];?>" class="input" size="8" /></td>
+		<td><input type="text" name="audit_basis[<?=$id;?>]" title="<?=$row['audit_basis'];?>" value="<?=$row['audit_basis'];?>" class="input" size="30" /></td>
+		<td><input type="text" name="note[<?=$id;?>]" value="<?=$row['note'];?>" class="input" size="20" /></td>
+		<td>
+			<input type="radio" id="shangbao-{<?=$id;?>}-Y" name="is_shangbao[<?=$id;?>]" value="1" <?=$row['shangbao_Y'];?>/><label for="shangbao-{<?=$id;?>}-Y"> 是</label>
+			<input type="radio" id="shangbao-{<?=$id;?>}-N" name="is_shangbao[<?=$id;?>]" value="0" <?=$row['shangbao_N'];?>/><label for="shangbao-{<?=$id;?>}-N"> 否</label>
+		</td>
+		<td>
+			<input type="radio" id="stop-{<?=$id;?>}-N" name="is_stop[<?=$id;?>]" value="0" <?=$row['stop_N'];?>/><label for="stop-{<?=$id;?>}-N"> 启用</label>
+			<input type="radio" id="stop-{<?=$id;?>}-Y" name="is_stop[<?=$id;?>]" value="1" <?=$row['stop_Y'];?>/><label for="stop-{<?=$id;?>}-Y"> 停用</label>
+		</td>
+		<td align="center"><a href="?c=<?=$c;?>&a=del&to=<?=$a;?>&id=<?=$row['vid'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+	</tr>
+<?php
+	}
+}
+?>
+	<tr align="center">
+		<td><input type="text" name="new[vieworder][]" class="input" value="" size="2" /></td>
+		<td><select name="new[iso][]" style="width:100px;">
+			<option value="">请选择</option>
+			<?=$iso_select;?>
+		</select></td>
+		<td><input type="text" name="new[ver][]" value="" class="input" size="8" /></td>
+		<td><input type="text" name="new[msg][]" value="" class="input" size="8" /></td>
+		<td><input type="text" name="new[audit_basis][]" class="input" value="" size="30" /></td>
+		<td><input type="text" name="new[note][]" value="" class="input" size="20" /></td>
+		<td>
+			<label><input type="radio" name="new[is_stop][]" value="1" /> 是</label>
+			<label><input type="radio" name="new[is_stop][]" value="0" /> 否</label>
+		</td>
+		<td>
+			<label><input type="radio" name="new[is_stop][]" value="0" /> 启用</label>
+			<label><input type="radio" name="new[is_stop][]" value="1" /> 停用</label>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td colspan="8" class="cRed">说明：请谨慎修改以上设置，CNAS设定的请不要修改。</td>
+	</tr>
+</table>
+
+<p style="font-size:0;height:9px;overflow:hidden;"></p>
+<p class="button-panel tac"><button class="btn btn-submit" type="submit"> 保 存 </button></p>
+</form>
+
+	</div>
+</div>
+
+</body>
+</html>

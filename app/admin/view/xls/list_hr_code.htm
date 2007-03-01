@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>人员专业列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+	<thead>
+		<tr>
+			<th align='center'>编号</th>
+			<th align='center'>姓名</th>
+			<th align='center'>状态</th>
+			<th align='center'>合同来源</th>
+			<th align='center'>专兼职</th>
+			<th align='center'>体系</th>
+			<th align='center'>能力来源</th>
+			<th align='center'>三级专业分组</th>
+            <th align='center'>分组代码</th>
+			<th align='center'>代码</th>
+			<th align='center'>通过时间</th>
+			<th align='center'>评定人员</th>
+			<th align='center'>备注</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+if( $hacs ){
+	foreach( $hacs as $row ){
+?>
+		<tr>
+			<td align="center"><?=$row['code'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['is_hire_V'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td align="center"><?=$row['audit_job'];?></td>
+			<td align="center"><?=$row['iso_V'];?></td>
+			<td align="center"><?=$row['source'];?></td>
+            <td align="center"><?=$row['fenzu'];?></td>
+            <td align="center"><?=$row['use_code'];?></td>
+			<td align="center"><?=$row['audit_code'];?></td>
+			<td align="center"><?=$row['pass_date'];?></td>
+			<td align="center"><?=$row['evaluater'];?></td>
+			<td align="center"><?=$row['note'];?></td>
+		</tr>
+		<?php
+	}
+}
+?>
+	</tbody>
+</table>
+</body>
+</html>

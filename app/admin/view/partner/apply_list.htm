@@ -1,0 +1,185 @@
+<? tpl('header')?>
+<body>
+	<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+		<input type="hidden" name="c" value="<?=$c;?>" />
+		<input type="hidden" name="a" value="<?=$a;?>" />
+		<input type="hidden" name="status" value="<?=$status;?>" />
+		<table>
+		    <tr>
+		        <td class="left">合作方编号:</td>
+		        <td class='right'>
+		            <input type="text" name="seach_code" value="<?=$code;?>" class="input finput"/>
+		        </td>
+
+		        <td class="left">合作方名称:</td>
+		        <td class='right'>
+		            <input type="text" name="seach_name" value="<?=$name;?>" class="input finput"/>
+		        </td>
+
+		        <td class="left">合作方级别:</td>
+		        <td class='right'>
+		            <select name="seach_level">
+		            	<option value="">无</option>
+		            	<option value="1">优质</option>
+		            	<option value="2">一半</option>
+		            	<option value="3">劣质</option>						
+		            </select>
+		        </td>
+		    </tr>
+		</table>
+	  	<p class="button-panel">
+	    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+	    	&nbsp;
+	    	<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+		</p>
+	</form>
+	<br/>
+
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top <?=$tabs[1];?>">
+		    	<a href="?c=partner&a=apply_list&tab=1">
+		    		受理中
+		    		<span class="cnt-total">
+		      			<?=$total[1];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[2];?>">
+		    	<a href="?c=partner&a=apply_list&tab=2">
+		    		待审批
+		    		<span class="cnt-total">
+		      			<?=$total[2];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[3];?>">
+		    	<a href="?c=partner&a=apply_list&tab=3">
+		    		已审批
+		    		<span class="cnt-total">
+		      			<?=$total[3];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[4];?>">
+		    	<a href="?c=partner&a=apply_list&tab=4">
+		    		受理
+		    		<span class="cnt-total">
+		      			<?=$total[4];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[5];?>">
+		    	<a href="?c=partner&a=apply_list&tab=5">
+		    		不受理
+		    		<span class="cnt-total">
+		      			<?=$total[5];?>
+		      		</span>
+		      	</a>
+		    </li>
+	  	</ul>
+	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		    <table class="grid-table tal">
+		        <thead>
+		            <tr>
+		              	<th width="">合作方编号</th>
+		              	<th width="">合作方名称</th>
+		              	<th width="">企业名称</th>
+		              	<th width="">合作方联系电话</th>
+		              	<th width="">企业方联系电话</th>
+		              	<th width="">认证体系</th>
+		              	<th width="">体系人数</th>
+		              	<th width="">最晚拿证时间</th>
+		              	<th width="">派组方式</th>
+		              	<th width="">状态</th>
+		              	<th width="width:70px;">操作</th>
+		            </tr>
+		      	</thead>
+		        <tbody>
+			        <?php if( $results ):foreach( $results as $row ):?>
+			        <tr align='center'  data-id="<?=$row['pti_id']?>" style="height:47px">
+			      		<td><?=$row['code'];?></td>
+			      		<td><?=$row['name'];?></td>
+			            <td><?=$row['ep_name'];?></td>
+			            <td><?=$row['contacts_name_tel'];?></td>
+			            <td><?=$row['ep_contacts_name_tel'];?></td>
+			            <td><?=$row['iso_str'];?></td>
+			            <td><?=$row['iso_person_lenth'];?></td>
+			            <td><?=$row['last_time'];?></td>
+			            <td><?=$arr_paizu[$row['paizu']];?></td>
+			            <td>
+			            	<select class="status_change">
+			            		<option value="1" <?=($row['status']=='1')?'selected':'';?>>受理中</option>
+			            		<option value="2" <?=($row['status']=='2')?'selected':'';?>>待审批</option>
+			            		<option value="3" <?=($row['status']=='3')?'selected':'';?>>已审批</option>
+			            		<option value="4" <?=($row['status']=='4')?'selected':'';?>>受理</option>
+			            		<option value="5" <?=($row['status']=='5')?'selected':'';?>>不受理</option>
+			            	</select>
+			            </td>
+			            <td>
+			                <!-- <a href="?c=training&a=lessonInfo&id=<?=$row['id'];?>"><img src="theme/images/select1.gif" border="0"></a>&nbsp;&nbsp; -->
+			                <a href="?c=partner&a=apply_edit&id=<?=$row['pti_id'];?>"><img src="theme/images/b_edit.png" border=0 /></a>&nbsp;&nbsp;
+			                <a href="javascript:0" class="del"><img src="theme/images/b_drop.png" border=0 /></a>
+			                <!-- <a href=""><img src="theme/images/down.gif"  border=0 /></a> -->
+			            </td>
+			        </tr>
+			        <?php endforeach;else:?>
+		            <tr>
+		              	<td align="center" colspan="16">未找到相关记录</td>
+		            </tr>
+			        <?php endif;?>
+		      	</tbody>
+		    </table>
+	    	<p>
+	          <?=$pages['pages'];?>
+	        </p>
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+		$('.del').on('click', function(event) {
+			var id      = $(this).parent().parent().data('id');
+			var data    = {'id':id};
+			var results = ajax(data,'partnerInfoListdel');
+			if(results.errorCode==0){
+				alert('成功');
+				window.location.href="?c=partner&a=apply_list&tab=<?=$tab?>"; 
+			}else{
+				alert('失败');
+			}
+		});
+
+		$('.status_change').on('change', function(event) {
+			var id      = $(this).parent().parent().data('id');
+			var results = ajax({'id':id,'status':$(this).val()},'partnerInfoStatus');
+			if(results.errorCode==0){
+				alert('成功');
+				window.location.href="?c=partner&a=apply_list&tab=<?=$tab?>"; 
+			}else{
+				alert('失败');
+			}
+		});
+
+    $("#all").click(function(){    
+        if(this.checked){    
+            $("input:checkbox").attr("checked", true);   
+        }else{    
+            $("input:checkbox").attr("checked", false); 
+        }    
+    });
+  })
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>申请认证</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<include file='./Public/style/css/common/common.css.html,./Public/style/js/common/common.js.html' />
+	</head>
+
+	<body>
+		<div class="main-container" id="main-container">
+			<div class="space-4"></div>
+			<div class="space-4"></div>
+			<div class="main-container-inner">
+				<div class="main-content">
+					<!-- <div class="breadcrumbs" id="breadcrumbs">
+						<form class="form-search">
+							<table>
+								<tr>
+									<td>搜索</td>
+									<td><input type="text" placeholder="Search ..." /></td>
+								</tr>
+							</table>
+						</form>
+					</div> -->
+					<div class="page-content">
+
+						<div class="row">
+							<div class="col-xs-12" style="margin-left:9%;">
+								<!-- PAGE CONTENT BEGINS -->
+								<form id="form" class="form-horizontal" role="form" method="post" action="{:U('Enterprises/shenqingrenzheng')}" >
+									<input type="hidden" name="sub" value="1">
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="ep_name"> 企业名称 </label>
+										<div class="col-sm-9">
+											<input type="text" name="ep_name" id="ep_name" value="{$results.ep_name}"  class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="iso"> 申请体系 </label>
+										<div class="col-sm-9">
+											<input type="text" name="iso" id="iso" value="{$results.iso}"  class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="tel_person"> 联系人 </label>
+										<div class="col-sm-9">
+											<input type="text" name="tel_person" id="tel_person" value="{$results.tel_person}"  class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="tel"> 联系方式 </label>
+										<div class="col-sm-9">
+											<input type="text" name="tel" id="tel" value="{$results.tel}"  class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div>
+										<label for="note">备注</label>
+										<textarea id="note" name="note" class="autosize-transition form-control" style="overflow: hidden; word-wrap: break-word; height: 60px; width: 83.3333%; margin: 0px -0.208333px 0px 0px;resize: vertical;">{$results.note}</textarea>
+									</div>
+
+									
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-3 col-md-9">
+											<button class="btn" type="reset">
+												<i class="icon-undo bigger-110"></i>
+												重置
+											</button>
+											&nbsp;&nbsp;
+											<button class="btn btn-info">
+												<i class="icon-ok bigger-110"></i>
+												提交
+											</button>
+										</div>
+									</div>
+
+								</form>
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+
+					</div>
+				</div>
+			</div><!-- /.main-content-inner -->
+		</div><!-- /.main-container -->
+	</body>
+	<script src="__PUBLIC__/style/js/Enterprises/shenqingrenzheng.js" type="text/javascript" charset="utf-8"></script>
+</html>

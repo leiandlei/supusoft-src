@@ -1,0 +1,226 @@
+<? tpl('header')?>
+<body>
+<form method="post" id="from" action="?c=partner&a=partner_edit">
+	<input id="id" type="hidden" name="id" value="<?=$pt_id;?>" />
+	<input type="hidden" name="sub" value="1">
+	<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+		<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+		    <li>新建合作方</li>
+		 </ul>
+		<div id="tab-basic">
+			<ul class="main-form">
+				<li>
+					<label class="field">合作方编号</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="code" name="code" value="<?=$code;?>" dataType="Require" msg="请输入合作方编号！"   class="input"/>
+					</span> 
+
+					<label class="field">合作方名称</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="name" name="name" value="<?=$name;?>" dataType="Require" msg="请输入合作方名称！"   class="chachong_name"/>
+						 <em id="chachongname" style="width:80px"></em>
+					</span> 
+			    </li>
+				<li>
+					<label class="field">合作方级别</label>
+					<em>*</em>
+					<span>
+						<select name="level" style="width: 171px;height: 25px;" dataType="Require" msg="请选择合作方级别！">
+							<?=$partner_select;?>
+						</select>
+					</span>
+
+					<label class="field">合作方性质</label>
+					<em></em>
+					<span>
+						<input type="text" id="type" name="type" value="<?=$type;?>" class="input"/>
+					</span> 
+			    </li>
+				<li>
+					<label class="field">合作方领导</label>
+					<em></em>
+					<span>
+						<input type="text" id="lead" name="lead" value="<?=$lead;?>" class="input" />
+					</span> 
+
+					<label class="field">合作方领导联系方式</label>
+					<em></em>
+					<span>
+						<input type="text" id="lead_tel"  name="lead_tel" value="<?=$lead_tel;?>" class="input" />
+					</span>
+			    </li>
+				<li>
+					<label class="field">联系人</label>
+					<em></em>
+					<span>
+						<input type="text" id="contacts_name" name="contacts_name" value="<?=$contacts_name;?>" class="input" />
+					</span> 
+
+					<label class="field">联系电话</label>
+					<em></em>
+					<span>
+						<input type="text" id="contacts_name_tel" name="contacts_name_tel" value="<?=$contacts_name_tel;?>" class="input" />
+					</span> 
+				</li>
+
+				<li>
+					<label class="field">QQ</label>
+					<em></em>
+					<span>
+						<input type="text" id="qq" name="qq" value="<?=$qq;?>" class="input" />
+					</span>
+
+					<label class="field">邮箱</label>
+					<em></em>
+					<span>
+						<input type="text" id="email" name="email" value="<?=$email;?>" class="input" />
+					</span>
+			    </li>
+					
+			    <li>
+			    	<label class="field">结算点</label>
+					<em></em>
+					<span>
+						<input type="text" id="jiesuandian" name="jiesuandian" value="<?=$jiesuandian;?>" class="input" />
+					</span>
+
+					<label class="field">返款税点</label>
+					<em></em>
+					<span>
+						<input type="text" id="fanshuidian" name="fanshuidian" value="<?=$fanshuidian;?>" class="input" />
+					</span>
+			    </li>
+
+			    <li>
+			    	<label class="field">派组方式</label>
+					<em></em>
+					<span>
+						<select name="paizu" style="width: 171px;height: 25px;">
+							<?=$pzfs_select;?>
+						</select>
+					</span>
+					<!--<label class="field">微信推送人员</label>
+					<em></em>
+					<span>
+					 <input type="text"    id="wx_name" name="wx_name[<?=$wx_name;?>]" class="wx_name" value="<?=$wx_name;?>" />
+					 <input type="hidden"  id="s_id"    name="s_id[<?=$s_id;?>]"        class="wx_name" value="<?=$s_id;?>"/>
+					</span>-->
+			    </li>
+
+				<li>
+					<label class="field">合作方账号</label>
+					<em></em>
+					<span>
+						<input type="text" id="username" name="username" value="<?=$username;?>" class="input" />
+					</span> 
+
+					<label class="field">合作方密码</label>
+					<em></em>
+					<span>
+						<input type="text" id="password" name="password" class="input" />
+					</span> 
+				</li>
+
+				<li>
+					<label class="field">备注信息</label>
+					<em></em>
+					<span>
+						<textarea cols="74" id="note" rows="3" name="note" style="width:490px;"><?=$note;?></textarea>
+					</span> 
+				</li>
+			</ul>
+			<p>
+				<center style="margin-bottom: 10px;">
+					<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+					<a href="?c=partner&a=partner_list" title="关闭窗口">返回列表</a>
+				</center>
+			</p>
+		</div>
+	</div>
+</form>
+
+</body>
+<script type="text/javascript">
+$(function(){
+	$('button.submit-btn').on('click',function(){
+    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+    $('#from').submit();
+  });
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	 //人员查重
+    $('.chachong_name').blur(function(){
+      var name  = $('.chachong_name').val();
+      $.ajax({
+        url: '?c=ajax&a=partner_chachong&name='+name,
+        type: 'POST',
+        dataType: 'json',
+        data: {},
+        success:function(deta){
+          if(deta == 1)$("#chachongname").append('已存在合作方');
+        }
+      })
+    });
+    //选择学员
+	$("#wx_name").on('click',selectStudent);
+	
+});
+	//选择微信推送人员
+	function selectStudent(){
+		var href = '?c=ajax&a=select_weixin_student';
+		$('<iframe id="iframe_student" border="0" frameborder="no" src="' + href + '" />').dialog({
+			title: '推送微信人员列表',
+		    autoOpen: true,
+		    width: 800,
+		    height: 420,
+		    modal: true,
+		    resizable: false,
+		    autoResize: true,
+		    buttons	:{
+			'取消'	: function(){
+				 $(this).dialog("close");
+			},
+			'确定'	: function(){
+				var s_id  = '';
+				var s_str = '';
+				var old_str=$('#wx_name').val(); 
+				
+                if(old_str)old_str='';    
+				$(this).contents().find('input.s-name').each(function(index)
+				{
+					if( $(this).attr( 'checked' ) && $(this).val() )
+					{
+						s_id   += $(this).next().val() + ';';
+						s_str  += $(this).val() + ';';
+					}
+						
+				});
+				// console.log(s_id);
+				// console.log(s_str);
+				$('#wx_name').val( s_str );
+                $('#s_id').val( s_id );
+				$(this).dialog('close');
+				
+			}
+		},
+		open	: function(){
+			var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+			btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+		}
+		}).width(780);
+	}
+	//写入学员
+	// function insertStudent(data){
+	// 	$('#s_id').val(data.id);	
+	// 	$('#wx_name').val(data.name);
+	// 	$('#iframe_student').dialog('close');
+	// 	$('#iframe_student').dialog('destroy');
+	// 	$('#iframe_student').remove();
+	// }
+</script>
+</html>

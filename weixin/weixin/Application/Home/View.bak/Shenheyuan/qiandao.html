@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/bootstrap/css/bootstrap.min.css"/>
+		<link rel="stylesheet" type="text/css" href="__PUBLIC__/bootstrap/css/bootstrap-combined.min.css"/>
+		<script src="__PUBLIC__/bootstrap/js/jquery.min.js" type="text/javascript"></script>
+		<script src="__PUBLIC__/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    </head>
+    <body>
+		<div class="container" style="margin-top:10px">
+			<div class="row-fluid">
+				<div class="span12">
+					<h3>
+						<p>{$username}您好，</p>以下是您今天的审核任务和签到记录
+					</h3>
+				</div>
+			</div>
+			<div class="row-fluid">
+				<div class="span12">
+					<div class="tabbable tabs-left" id="tabs-156224">
+						<ul class="nav nav-tabs" style="width:70%">
+							<volist name="shenherenwu" id="vo">
+								<li  class="active">
+									<a href="#panel-{$vo.eid}" data-toggle="tab">{$vo.ep_name}</a>
+								</li>
+							</volist>
+						</ul>
+						<div class="tab-content">
+							<volist name="shenherenwu" id="vo">
+								<div class="tab-pane active" id="panel-{$vo.eid}">
+									<button data-eid="{$vo.eid}" data-tid="{$vo.tid}" data-pid="{$vo.pid}" type="button" class="qiandao clearfix width-55 pull-left btn btn-sm btn-primary">
+										签到
+									</button>
+								</div>
+							</volist>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row-fluid">
+				<div class="span12">
+					<table class="table table-hover">
+						<thead>
+							<tr>
+								<th style="min-width:80px;text-align: center;">企业名称</th>
+								<th style="text-align: center;">签到位置</th>
+								<th style="min-width:90px;text-align: center;">签到时间</th>
+							</tr>
+						</thead>
+						<tbody>
+							<volist name="qiandaodlist" id="vo">
+								<tr class='info'>
+									<td>{$vo.ep_name}</td>
+									<td>{$vo.qd_addr}附近</td>
+									<td style="text-align: center;">{$vo.qd_datetime}</td>
+								</tr>
+							</volist>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+    </body>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script type="text/javascript">
+		wx.config({
+		     debug: false
+		    ,appId:     "{$weAutoInfo.appId}"       //公众号的唯一标识
+		    ,timestamp: "{$weAutoInfo.timestamp}"   //生成签名的时间戳
+		    ,nonceStr:  "{$weAutoInfo.nonceStr}"    //签名的随机串
+		    ,signature: "{$weAutoInfo.signature}"   //签名
+		    ,jsApiList: ['checkJsApi','onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo','hideMenuItems','showMenuItems','hideAllNonBaseMenuItem','showAllNonBaseMenuItem','translateVoice','startRecord','stopRecord','onRecordEnd','playVoice','pauseVoice','stopVoice','uploadVoice','downloadVoice','chooseImage','previewImage','uploadImage','downloadImage','getNetworkType','openLocation','getLocation','hideOptionMenu','showOptionMenu','closeWindow','scanQRCode','chooseWXPay','openProductSpecificView','addCard','chooseCard','openCard']
+		});
+		$(function(){
+			$(".qiandao").on('click', function(event)
+			{
+				var params = {'pid':$(this).data('pid'),'tid':$(this).data('tid'),'eid':$(this).data('eid')};
+			  	wx.getLocation({
+			      	success: function (res) {
+				        console.log(params);
+				        $.ajax({
+				          	 type: "POST"
+				          	,async:false
+				          	,url: "../Ajax/qiandao"
+				          	,data:{"location":res,"params":params}
+				          	,dataType: "json"
+				          	,success: function(e)
+				          	{
+			          			if( e.errorCode==0 ){
+			          				alert('签到成功');
+			          				wx.closeWindow();
+			          			}else
+			          			{
+			          				alert( e.errorStr );
+			          			}
+				            }
+				        });
+			      	},
+			      	cancel: function (res) {
+			        	alert('用户拒绝授权获取地理位置');
+			      	}
+			    });
+		  	});
+		})
+	</script>
+</html>

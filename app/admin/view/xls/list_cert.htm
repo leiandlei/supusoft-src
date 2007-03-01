@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>证书列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr align='center'>
+			<th width="*">cas1</th>
+			<th width="*">cas2</th>
+			<th width="*">cas3</th>
+			<th width="200">cas4</th>
+            <th width="*">cas5</th>
+            <th width="*">cas6</th>
+           
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+			<td align="center"><?=$row['certno'];?></td>
+			<td align="center"><?=$row['date'];?></a></td>
+			<td align="center"><?=$row['iso'];?></a></td>
+			<td align="left"><?=$row['cert_name'];?></td>
+            <td align="center"><?=$row['status'];?></td>
+            <td align="center"><?=$row['cert_scope'];?></td>
+           
+		</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>提示信息</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<?=$jump;?>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<style type="text/css">
+body{font-size:12px;}
+
+</style>
+
+</head>
+<body>
+
+
+<div style="margin:90px auto 0;width:300px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top"><a href="javascript:;">提示信息</a></li>
+	</ul>
+	<div class="ui-tabs-panel notice-<?=$notice_style;?> ui-corner-bottom">
+		 <div style="margin-bottom:10px;" class="clearfix">
+			<span class="notice-ico-<?=$notice_style;?>"></span>
+			<h4><?=$message;?></h4>
+		 </div>
+		 <p class="button-panel tac">
+			<form method="get" action="/<?php if(isset($_REQUEST['anchor'])){echo '#'.$_REQUEST['anchor'];} ?>">
+<?php
+if( $jumpurl ){
+	$matches = parse_url( $jumpurl );
+	parse_str( $matches['query'], $querys );
+	if( $querys ){
+		foreach( $querys as $key => $val ){
+?>
+				<input type="hidden" name="<?=$key;?>" value="<?=$val;?>" />
+<?php
+		}
+	}
+} 
+?>  
+				<!--button class="btn btn-submit" type="submit"> 确定 </button--> &nbsp; 
+				<button class="btn btn-button" onclick="javascript:history.go(-1);" type="button"> 返回 </button>
+			</form>
+		 </p>
+	</div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,327 @@
+<? tpl('header')?>
+<body>
+	<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+		<input type="hidden" name="c" value="<?=$c;?>" />
+		<input type="hidden" name="a" value="<?=$a;?>" />
+		<input type="hidden" name="ctfrom" value="<?=$ctfrom;?>" />
+		<input type="hidden" name="tab" value="<?=$tab;?>" />
+		<table>
+		    <tr>
+		        <td class="left">企业名称：</td>
+		        <td class='right'>
+		            <input type="text" name="seach_name" value="<?=$name;?>" class="input finput"/>
+		        </td>
+		        <td class="left">月份：</td>
+		        <td width="150"><input type='text' id='s_date' name='s_date' value='<?=$s_date?>' class="input input-date"/></td>
+		        <td class="left">人员姓名：</td>
+		        <td width="150"><input type='text' id='seach_person' name='seach_person' value='<?=$person?>' class="input finput"/></td>
+			</tr>
+			<tr>
+		        <td class="left">组长：</td>
+		        <td class='right'>
+		            <input type="text" name="seach_leader" value="<?=$leader;?>" class="input finput"/>
+		        </td>
+		        <td class="left">组员：</td>
+		        <td class='right'>
+		            <input type="text" name="seach_zuyuan" value="<?=$zuyuan;?>" class="input finput"/>
+		        </td>
+		        <td class="left">审核类型：</td>
+		        <td class='right'>
+		         	<select id="audit_type" name="seach_audit_type" class='fselect' style="width:169px">
+          				<option value="">--请选择--</option>
+          				<option value="1001" <?=$audit_type=='1001'?'selected':''; ?>>初审</option>
+			            <option value="1004" <?=$audit_type=='1004'?'selected':''; ?>>监一</option>
+			            <option value="1005" <?=$audit_type=='1005'?'selected':''; ?>>监二</option>
+			            <option value="1006" <?=$audit_type=='1006'?'selected':''; ?>>再认证</option>
+      				</select>
+		        </td>
+			</tr>
+		</table>
+	  	<p class="button-panel">
+	    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+	    	
+		</p>
+	</form>
+	<br/>
+<div style='width:1650px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top <?=$tabs[1];?>">
+		    	<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=1<?php gettourl();?>">
+		    		待受理
+		    		<span class="cnt-total">
+		      			<?=$total[1];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[2];?>">
+		    	<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=2<?php gettourl();?>">
+		    		待处理
+		    		<span class="cnt-total">
+		      			<?=$total[2];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[3];?>">
+		    	<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=3<?php gettourl();?>">
+		    		策划中
+		    		<span class="cnt-total">
+		      			<?=$total[3];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[4];?>">
+		    	<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=4<?php gettourl();?>">
+		    		已派组
+		    		<span class="cnt-total">
+		      			<?=$total[4];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[5];?>">
+		    	<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=5<?php gettourl();?>">
+		    		待回卷
+		    		<span class="cnt-total">
+		      			<?=$total[5];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[6];?>">
+		    	<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=6<?php gettourl();?>">
+		    		评定中
+		    		<span class="cnt-total">
+		      			<?=$total[6];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[7];?>">
+		    	<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=7<?php gettourl();?>">
+		    		整改中
+		    		<span class="cnt-total">
+		      			<?=$total[7];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[8];?>">
+		    	<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=8<?php gettourl();?>">
+		    		已发证
+		    		<span class="cnt-total">
+		      			<?=$total[8];?>
+		      		</span>
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=$tabs[9];?>">
+		    	<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=9<?php gettourl();?>">
+		    		不受理
+		    		<span class="cnt-total">
+		      			<?=$total[9];?>
+		      		</span>
+		      	</a>
+		    </li>
+	  	</ul>
+	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	        <li class="ui-corner-bottom" style="float:left;list-style-type:none;">
+	  			<button>
+		    	<a href="?c=concert_sheet&a=xtd_xq_list&ctfrom=<?=$ctfrom;?>" >
+		    		<strong>添加</strong>
+		      	</a>
+		      	</button>
+		      	<button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>
+		    </li>
+		    <?php if ($user=="王晨轩"|| $user=="王晓璐") { ?>
+		    <li class="ui-corner-bottom" style="float:right;list-style-type:none;">
+	  			<p>计划员：<?=$user;?></p>
+		    </li>
+		    <?php } ?>
+		    <table class="grid-table tal">
+		        <thead>
+		    		<tr>
+		    		    <th width="">排序</th>
+		              	<th style="width:150px;">企业名称</th>
+		              	<th style="width:100px;">地点</th>
+		              	<th style="width:50px;">地点附近车站及路途</th>
+		              	<th width="">联系人</th>
+		              	<th width="">联系方式</th>
+		              	<th style="width:50px;">体系</th>
+		              	<th width="">人数</th>
+		              	<th width="">范围</th>	
+		              	<th style="width:30px;">合作方备注</th>
+		              	<th style="width:30px;">上传/下载</th>
+		              	<th style="width:30px;">专业代码(GC)</th>
+		              	<th style="width:30px;">专业代码(TRC)</th>
+		              	<th style="width:50px;">审核类型</th>
+		              	
+		              	<th style="width:100px;">一阶段审核开始时间</th>
+		              	<th style="width:100px;">一阶段审核结束时间</th>
+						<th style="width:100px;">二阶段审核开始时间</th>
+						<th style="width:100px;">二阶段审核结束时间</th>
+						<th width="">现场总人日</th>
+						<th width="">组长</th>
+						<th width="">组员</th>
+						<th width="">技术专家</th>
+						<th width="">营业范围</th>
+						<th width="">备注信息</th>
+		              	<th width="width:100px;">操作</th>
+		            </tr>
+		      	</thead>
+		        <tbody>
+			        <?php if( $results ):foreach( $results as $row ):?>
+			        <tr align='center'  data-id="<?=$row['id']?>" style="height:27px" id="<?=$row['id'];?>">
+			            <td align="center"  width="40px">
+							<span onclick="up(this);" class="btn"  type="button" title="上移" aria-hidden="true" style="cursor: pointer;" ><img src="theme/images/shift_up.png" border=0 /></span>
+						    <span onclick="down(this);" class="btn" type="button" title="下移" aria-hidden="true" style="cursor: pointer;"><img src="theme/images/shift_down.png" border=0 /></span>
+					    </td>
+			      		<td><?=$row['name'];?></td>
+			      		<td><?=$row['areaaddr'];?></td>
+			            <td align="center"><?php if($row['station']){ ?><a href="javascript:;" title="<?=$row['station'];?>" class="a_link"  ><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$row['station'];?></span></a><?php }?></td>
+			            <td><?=$row['person'];?></td>
+			            <td><?=$row['person_tel'];?></td>
+			            <td><?=$row['audit_ver1'];?></td>
+			            <td><?=$row['renshu'];?></td>
+			            <td align="center"><?php if($row['scope']){ ?><a href="javascript:;" title="<?=$row['scope'];?>" class="a_link"  ><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$row['scope'];?></span></a><?php }?></td>
+			            <td align="center"><?php if($row['partner_note']){ ?><a href="javascript:;" title="<?=$row['partner_note'];?>" class="a_link"  ><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$row['partner_note'];?></span></a><?php }?></td>
+			            <td align="center"><a title="上传文档" href="?c=concert_sheet&a=upload&id=<?=$row['id'];?>&ctfrom=<?=$ctfrom;?>"><img src="theme/images/up.gif" border=0 /></a></td>
+			            <td align="center"><?php if($row['zhuanye_2017']){ ?><a href="javascript:;" title="<?=$row['zhuanye_2017'];?>" class="a_link"  ><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$row['zhuanye'];?></span></a><?php }?></td>
+			            <td align="center"><?php if($row['zhuanye']){ ?><a href="javascript:;" title="<?=$row['zhuanye'];?>" class="a_link"  ><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$row['zhuanye'];?></span></a><?php }?></td>
+			            	
+			            <td align="center"><?=read_cache("audit_type",$row['audit_type']);?></td>
+			            <td><?=$row['yjdshsj_start'];?></td>
+			      		<td><?=$row['yjdshsj_end'];?></td>
+			            <td><?=$row['ejdshsj_start'];?></td>
+			            <td><?=$row['ejdshsj_end'];?></td>
+			            <td><?=$row['total_num'];?></td>
+			            <td><?=$row['leader'];?></td>
+			            <td><?=$row['zuyuan'];?></td>
+			            <td><?=$row['jszj'];?></td>
+			            <td align="center"><?php if($row['manage_scope']){ ?><a href="javascript:;" title="<?=$row['manage_scope'];?>" class="a_link"  ><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$row['manage_scope'];?></span></a><?php }?></td>
+			            <td align="center"><?php if($row['note']){ ?><a href="javascript:;" title="<?=$row['note'];?>" class="a_link"  ><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$row['note'];?></span></a><?php }?></td>
+			            <td> 
+			                <a href="?c=concert_sheet&a=xtd_xqlist_edit&id=<?=$row['id'];?>&ctfrom=<?=$ctfrom;?>"><img src="theme/images/b_edit.png" border=0 /></a>&nbsp;&nbsp;
+			                <?php if ($usertype=='stuff') { ?>	
+			                <a href="javascript:0" class="del"><img src="theme/images/b_drop.png" border=0 /></a>
+			                <? } ?>
+			            </td>
+			        </tr>
+			        <?php endforeach;else:?>
+		            <tr>
+		              	<td align="center" colspan="16">未找到相关记录</td>
+		            </tr>
+			        <?php endif;?>
+		      	</tbody>
+		    </table>
+	    	<p>
+	          <?=$pages['pages'];?>
+	        </p>
+	  	</div>
+	</div>
+
+</body>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$( "input.input-date" ).datepicker({
+			changeMonth	: true,
+			changeYear	: true,
+			dateFormat	: "yy-mm-dd"
+		});
+		$('#export-xls-btn').click( do_export_xls );
+
+		
+	});
+	function do_export_xls()
+	{
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+    }
+	$(function(){
+		$('.del').on('click', function(event) {
+			if (!confirm("确认要删除？")) 
+			{
+            	window.event.returnValue = false;
+	        }else{
+	        	var id      = $(this).parent().parent().data('id');
+	        	// alert(id);
+				var data    = {'id':id};
+				var results = ajax(data,'partnerxtdEnterprisesListdel');
+				if(results.errorCode==0){
+					alert('删除成功');
+					window.location.href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>"; 
+				}else{
+					alert('删除失败');
+				}
+	        }
+				
+
+		});
+		$('.status_change').on('change', function(event) {
+			var id      = $(this).parent().parent().data('id');
+			var results = ajax({'id':id,'status':$(this).val()},'coorEnterprisesStatus');
+			if(results.errorCode==0){
+				alert('成功');
+				window.location.href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>&tab=<?=$tab?>"; 
+			}else{
+				alert('失败');
+			}
+		});
+
+  })
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    // 上移
+function up(obj)
+{
+  var $tr = $(obj).parents("tr");
+  if ($tr.index() != 0) {
+    var current_id   = $tr.attr('id');
+    var exchange_id  = $tr.prev("tr").attr('id');
+    $.ajax({
+      url:  '?c=ajax&a=change_xtd&current_id='+current_id+'&exchange_id='+exchange_id,
+      type: 'POST',
+      data: {},
+      success:function(json) {
+        if (json == 1) {
+          $tr.fadeOut().fadeIn();
+          $tr.prev().before($tr);
+        } else {
+           alert('上移失败');
+        }
+      }
+    });
+  }
+}
+// 下移
+function down(obj) 
+{
+  var len = $(".down").length;
+  var $tr = $(obj).parents("tr");
+    if ($tr.index() != len - 1) {
+      var current_id   = $tr.attr('id');
+      var exchange_id  = $tr.next("tr").attr('id');
+      $.ajax({
+        url:  '?c=ajax&a=change_xtd&current_id='+current_id+'&exchange_id='+exchange_id,
+        type: 'POST',
+        data: {},
+        success:function(json) {
+          if (json == 1) {
+            $tr.fadeOut().fadeIn();
+            $tr.next().after($tr);
+          } else {
+          	alert('下移失败');
+          }
+        }
+      });
+  }
+}
+
+    </script>
+</html>

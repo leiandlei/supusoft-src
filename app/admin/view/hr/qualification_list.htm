@@ -1,0 +1,254 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>注册资格查询</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" /> 
+<script type="text/javascript" src="theme/js/jquery.js"></script> 
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+$(function() {
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('.c-del').click(function(){
+		confirm_dialog('确认要删除该人员？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+	$('#export-xls-btn').click( do_export_xls );
+});
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+
+function isoonchange(value){
+	if(value=='OTHER'){
+		$("#qua_type").html('<option value="">--请选择--</option><?php echo sys_cache_select("data_for");?>');
+	}
+	else{
+		$("#qua_type").html('<option value="">--请选择--</option><?=$qualification_select?>');
+	}
+}
+$(function(){
+	$('.del').on('click', function(event) {
+		if (!confirm("确认要删除？")) 
+		{
+        	window.event.returnValue = false;
+        }else{
+        	var id      = $(this).parent().parent().data('id');
+			var data    = {'id':id};
+			var results = ajax(data,'qualificationlistdel');
+			if(results.errorCode==0){
+				alert('删除成功');
+				window.location.href="?c=hr_qualification&a=list"; 
+			}else{
+				alert('删除失败');
+			}
+       }
+	});
+});
+</script>
+</head>
+
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="is_hire" value="<?=$is_hire;?>" />
+<input type="hidden" name="status" value="<?=$status;?>" />
+	<table>
+		<tr>
+			<td class="left">姓名：</td>
+			<td class="right"><input type="text" name="name" value="<?=$name;?>" class="input finput"/></td>
+			<td class="left">人员编号：</td>
+			<td class="right"><input type="text" name="h_code" value="<?=$h_code;?>" class="input finput"/></td>
+			<td class="left">易记码：</td>
+			<td class="right"><input type="text" name="easycode" value="<?=$easycode;?>" class="input finput"/></td>
+			<td class="left">资格号码：</td>
+			<td class="right"><input type="text" name="qua_no" value="<?=$qua_no;?>" class="input finput"/></td>
+		</tr>
+		<tr>
+			<td class="left">人员来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value="">--请选择--</option><?=$ctfrom_select;?></select></td>
+			<td class="left">专兼职：</td>
+			<td class="right"><select name="audit_job" class='fselect'><option value="">--请选择--</option><?=f_select('audit_job');?></select></td>
+			<td class="left">年龄：</td>
+			<td class="right"><select name="age_limit" class='fselect'>
+				<option value="">--请选择--</option>
+				<option value="65" <? if($age_limit=='65'){?> selected <? };?>>大于65岁</option>
+                <option value="63" <? if($age_limit=='63'){?> selected <? };?>>大于63岁</option>
+			</select></td>
+			<td class="left">组长与否：</td>
+			<td class="right"><select name="is_leader" class='fselect'><option value="">--请选择--</option><?=$is_leader_select;?></select></td>
+		</tr>
+		<tr>
+			<td class="left">体系：</td>
+			<td class="right"><select name="iso" class='fselect' onblur="isoonchange(this.value)"><option value="">--请选择--</option><?=$iso_select;?></select></td>
+
+			<td class="left">资格：</td>
+			<td class="right">
+				<select id="qua_type" name="qualification" class='fselect'>
+					<option value="">--请选择--</option>
+					<option value="01,02">高级及审核员</option>
+					<?=$qualification_select;?>
+				</select>
+			</td>
+            <td class="left">资格到期：</td>
+			<td class="right"><select name="e_date_limit" class='fselect'>
+				<option value="">--请选择--</option>
+				<option value="4" <? if($e_date_limit=='4'){?> selected <? };?>>前四个月</option> 
+			</select></td>
+			<td class="left">状态：</td>
+			<td class="right"><select name="is_hire" class='fselect'><option value="">--请选择--</option><?=$f_is_hire;?></select></td>
+		</tr>
+		 
+		<tr>
+			 
+			<td class="left">人员分层：</td>
+			<td class="right">
+				<select name="m_separate" class='fselect'>
+					<option value="">请选择</option>
+					<option value="A" <?php if($m_separate == 'A')  echo "selected";?>>A</option>
+            		<option value="B" <?php if($m_separate == 'B')  echo "selected";?>>B</option>
+            		<option value="C" <?php if($m_separate == 'C')  echo "selected";?>>C</option>
+            		<option value="D" <?php if($m_separate == 'D')  echo "selected";?>>D</option>
+				</select>
+			</td>
+			<td class="left">结束时间：</td>
+			<td class="right"><input type="text" name="e_date_s" value="<?=$e_date_s;?>" class="input input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="e_date_e" value="<?=$e_date_e;?>" class="input input-date" /></td>
+			
+			<td class="left">体系：</td>
+			<td class="right">
+				<input type="checkbox" name="ckb_iso[]" value="A01" <?php if(in_array('A01',$ckb_iso))echo 'checked';?> >QMS
+				<input type="checkbox" name="ckb_iso[]" value="A02" <?php if(in_array('A02',$ckb_iso))echo 'checked';?> >EMS
+				<input type="checkbox" name="ckb_iso[]" value="A03" <?php if(in_array('A03',$ckb_iso))echo 'checked';?> >OHSMS
+			</td>
+		</tr>
+		 
+			
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>
+	</p>
+</form>
+<br />
+<form method="post" action="?c=enterprise&a=del">
+<div style='width:1050px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		 
+		<li class="ui-state-default ui-corner-top <?=$status_1_tab;?>"><a href="?c=hr_qualification&a=list&status=1&is_hire=1<?php gettourl();?>">在职有效 <span class="cnt-total"><?=$state_total[1];?></span></a></li>
+		<li class="ui-state-default ui-corner-top <?=$status_0_tab;?>"><a href="?c=hr_qualification&a=list&status=0<?php gettourl();?>">失效 <span class="cnt-total"><?=$state_total[0];?></span></a></li> 
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<table class="grid-table tal">
+	<thead>
+		<tr>
+			<th align='center'>编辑</th>
+			<th align='center'>状态</th>
+			<th align='center'>姓名</th>
+			<th align='center'>年龄</th>
+			<th align='center'>编号</th>
+			<th align='center'>合同来源</th>
+			<th align='center'>专兼职</th>
+			<th align='center'>体系</th>
+			<th align='center'>资格</th>
+			<th align='center'>资格证编号</th>
+			<th align='center'>组长与否</th>
+			<th align='center'>开始时间</th>
+			<th align='center'>结束时间</th>
+		 
+			<th align='center'>人员分层</th>
+			<th align='center'>审核次数</th>
+			<th align='center'>组长次数</th>
+			<th align='center'>电话</th>
+			<th align='center'>备注</th>
+			<th align='center'>删除</th>
+          <!--  <th align="center">删除</th>-->
+		</tr>
+	</thead>
+	<tbody>
+<?php
+if( $qualis ){
+	foreach( $qualis as $row ){
+?>
+		<tr data-id="<?=$row['qid']?>" >
+			<td align="center"><a href="?c=<?=$c;?>&a=edit&uid=<?=$row['uid'];?>&id=<?=$row['qid'];?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+			<td align="center"><?php if($row['is_hire']=='1'){echo '在职';}else{echo '停用';};?></td>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['age'];?></td>
+			<td align="center"><?=$row['code'];?></td>
+			<td align="center"><?=$row['ctfrom'];?></td>
+			<td align="center"><?=$row['audit_job']?></td>
+			<td align="center"><?=$row['iso'];?></td>
+			<td align="center"><?php if($row['iso']=='OTHER'): echo r_sys_cache("data_for", $row['qua_type']); else: echo $row['qua_type']; endif; ?></td>
+			<td align="center"><?=$row['qua_no'];?></td>
+			<td align="center"><?=$is_leader_arr[$row['is_leader']];?></td>
+			<td align="center"><?=$row['s_date'];?></td>
+			<td align="center"><?=$row['e_date'];?></td>
+		 
+			<td align="center"><?=$row['m_separate'];?></td>
+			<td align="center"><?=$row['audit_times'];?></td>
+			<td align="center"><?=$row['leader_times'];?></td>
+			<td align="center"><?=$row['tel'];?></td>
+			<td align="center">
+			<?php
+if( $row['note'] ){
+?>
+<a href="javascript:;" title="<?=$row['note'];?>"><img src="theme/images/other.png" border="0" /></a> 
+<?php
+}
+?>
+			</td>
+			<td align="center">
+				<a href="javascript:0" class="del"><img src="theme/images/b_drop.png" border=0 /></a>
+			</td>
+            <!-- <td align="center"><a href="?c=<?=$c;?>&a=del&id=<?=$row['qid']?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td> -->
+		</tr>
+		<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="14">没有找到数据</td>
+		</tr>
+		<?php
+}
+?>
+	</tbody>
+</table>
+<p><?=$pages['pages'];?></p>
+
+	</div>
+</div>
+
+</form>
+</body>
+</html>

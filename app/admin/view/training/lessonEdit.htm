@@ -1,0 +1,174 @@
+<? tpl('header')?>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript" src="theme/js/region.js"></script>
+</head>
+<body>
+
+
+<form method="post" id="from" action="?c=training&a=lessonEdit">
+	<input id="id" type="hidden" name="id" value="<?=$id;?>" />
+	<input type="hidden" name="sub" value="1">
+	<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+		<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+		    <li>课程登记</li>
+		 </ul>
+		<div id="tab-basic">
+		<ul class="main-form">
+			<!-- 中幅 -->
+			<li>
+				<label class="field">课程编号</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="l_code" dataType="Require" msg="请输入课程编号！"  name="l_code" value="<?=$l_code;?>" class="input"/>
+				</span> 
+		    </li>
+			<li>
+				<label class="field">课程名称</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="l_name" dataType="Require" msg="请输入课程名称！"  name="l_name" value="<?=$l_name;?>" class="input"/>
+				</span> 
+				<label class="field">教师</label>
+				<em></em>
+				<span>
+					<input type="text" id="l_teacher" name="l_teacher" value="<?=$l_teacher;?>" class="input" />
+				</span>
+		    </li>
+			<li>
+				<label class="field">培训地点</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="l_addresss" dataType="Require" msg="请输入培训地点！"  name="l_addresss" value="<?=$l_addresss;?>" class="input" />
+				</span> 
+				<label class="field">课程费用</label>
+				<em>*</em>
+				<span>
+					<input type="number" id="l_subject_money" dataType="Require" msg="请输入课程费用"  name="l_subject_money" value="<?=$l_subject_money;?>" class="input" />
+				</span>
+		    </li>
+		    <!-- 宽幅 -->
+			<li>
+				<label class="field">培训开始时间</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="l_st_time" dataType="Require" msg="请输入培训开始时间！" name="l_st_time" value="<?=$l_st_time;?>" class="input-date" />
+					<font color="#F00"></font>
+				</span> 
+				<label class="field">培训结束时间</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="l_en_time" dataType="Require" msg="请输入培训结束时间！" name="l_en_time" value="<?=$l_en_time;?>" class="input-date" />
+					<font color="#F00"></font>
+				</span> 
+			</li>
+
+			<li>
+				<label class="field">带班老师</label>
+				<em></em>
+				<span>
+					<input type="text" id="l_daiban_teacher" name="l_daiban_teacher" value="<?=$l_daiban_teacher;?>" class="input" />
+				</span>
+				<label class="field">带班老师联系方式</label>
+				<em></em>
+				<span>
+					<input type="text" id="l_daiban_teacher_tel" name="l_daiban_teacher_tel" value="<?=$l_daiban_teacher_tel;?>" class="input" />
+				</span> 
+			</li>
+			<li>
+				<label class="field">报名电话</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="l_baoming_tel" name="l_baoming_tel" value="<?=$l_baoming_tel;?>" class="input" />
+				</span> 
+
+				<label class="field">报名QQ</label>
+				<em>*</em>
+				<span>
+					<input type="text" id="l_baoming_qq" name="l_baoming_qq" value="<?=$l_baoming_qq;?>" class="input" />
+				</span>
+		    </li>
+				
+		    <li>
+		    	<label class="field">报名邮箱</label>
+				<em >*</em>
+				<span>
+					<input type="text" id="l_baoming_email" name="l_baoming_email" value="<?=$l_baoming_email;?>" class="input" />
+				</span>
+
+				<label class="field">证书体系</label>
+				<em>*</em>
+				<span>
+					<input type="checkbox" id="l_iso" name="l_iso[]" value="1" <?=(in_array(1,$iso))?'checked':'';?> />QMS
+					<input type="checkbox" id="l_iso" name="l_iso[]" value="2" <?=(in_array(2,$iso))?'checked':'';?> />EMS
+					<input type="checkbox" id="l_iso" name="l_iso[]" value="3" <?=(in_array(3,$iso))?'checked':'';?> />OHSMS
+					<input type="checkbox" id="l_iso" name="l_iso[]" value="4" <?=(in_array(4,$iso))?'checked':'';?> />服务
+					<br>
+					<input type="checkbox" id="l_iso" name="l_iso[]" value="5" <?=(in_array(5,$iso))?'checked':'';?> />建工
+				</span>
+		    </li>
+
+		    <li>
+		    	<label class="field">单张证书</label>
+				<em>*</em>
+				<span>
+					<input type="radio" id="l_iso_only" name="l_iso_only" value="1" <?=($l_iso_only==1)?'checked':'';?> />是
+					&nbsp;
+					<input type="radio" id="l_iso_only" name="l_iso_only" value="0" <?=($l_iso_only==0)?'checked':'';?> />否
+				</span>
+		    </li>
+
+		    <!-- <li>
+				<label class="field">文件类型</label>
+				<em></em>
+				<span>
+					<select name="type" style="width:171px;">
+						<option></option>
+						<option value="101">教材</option>
+						<option value="102">试卷</option>
+						<option value="103">培训计划</option>
+						<option value="104">培训通知</option>
+						<option value="105">课程表</option>
+						<option value="106">台账</option>
+						<option value="107">其他</option>
+					</select>
+				</span> 
+
+				<label class="field">文件</label>
+				<em></em>
+				<span>
+					<input type="file" name="file" >
+				</span> 
+			</li> -->
+
+			<li>
+				<label class="field">备注信息</label>
+				<em></em>
+				<span>
+					<textarea cols="74" id="l_note" rows="3" name="l_note" style="width:490px;"><?=$l_note;?></textarea>
+				</span> 
+			</li>
+		</ul>
+		<p>
+			<center style="margin-bottom: 10px;">
+				<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+				<a href="?c=<?=$c;?>&a=lessonList" title="关闭窗口">返回列表</a>
+			</center>
+		</p>
+	</div>
+
+</form>
+</body>
+<script type="text/javascript">
+$(function(){
+	$('button.submit-btn').on('click',function(){
+    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+    $('#from').submit();
+  });
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+});
+</script>
+</html>

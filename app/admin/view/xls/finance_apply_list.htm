@@ -1,0 +1,62 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>财务申请报销明细列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr>
+			<th width="60">是否发放</th>
+            <th width="60">姓名</th>
+			<!--th width="60">业务类型</th>
+            <th width="200">企业名称</th>
+			<th width="80">起始日期</th>
+			<th width="80">结束日期</th-->
+            <th width="80">出差总天数</th>
+            <th width="60">飞机票</th>
+            <th width="60">火车票</th>
+            <th width="60">汽车票</th>
+            <th width="60">出租车票</th>
+            <th width="60">住宿票</th>
+            <th width="60">餐票</th>
+            <th width="*">其他</th>
+		</tr>
+		</thead>
+		
+		<tbody>
+	
+<?php
+if( $auditors ){
+	foreach( $auditors as $id => $row ){
+?>	<tr align='center'>
+			 <td align="center"><?=$row['is_grant'];?></td>
+            <td align="center"><?=$row['name'];?></td>
+			<!--td align="center"><?=$row['data_for'];?></td>
+			<td align="center"><?=$row['ep_name'];?></td>
+			<td class="ep-name"><?=$row['taskBeginDate'];?></td>
+			<td align="center"><?=$row['taskEndDate'];?></td-->
+            <td align="center" id="other"><?=$row['day_num'];?></td>
+			<td align="center" id="tickets"><?=$row['tickets'];?></td>
+			<td align="center" id="train"><?=$row['train'];?></td>
+			<td align="center" id="bus"><?=$row['bus'];?></td>
+            <td align="center" id="taxi"><?=$row['taxi'];?></td>
+            <td align="center" id="hotel"><?=$row['hotel'];?></td>
+            <td align="center" id="food"><?=$row['food'];?></td>
+            <td align="center" id="other"><?=$row['other'];?></td>
+		</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>项目清单</title>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<style>
+		tabld{border-collapse:collapse;border:1px solid #999;}
+		TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+		br{mso-data-placement:same-cell;}
+	</style>
+</head>
+
+	<body>
+		<table class="grid-table">
+			<thead>
+				<tr>
+					<th>合同来源</th>
+					<th>企业名称</th>
+					<th>地点</th>
+					<th>联系人</th>
+					<th>联系方式</th>
+					<th>企业邮箱</th>
+					<th>体系</th>
+					<th>认可标志</th>
+					<th>范围</th>
+					<th>标准版本</th>
+					<th>人数</th>
+					<th>专业代码</th>
+					<th>上次审核类型</th>
+					<th>上次审核组长</th>
+					<th>上次审核结束时间</th>
+					<th>最后审核日</th>
+					<th>发证日期</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php if( $results ):foreach( $results as $row ):?>
+				<?php $count = count($row['cti_cf']);?>
+				<?php if($count>1):?>
+					<tr align='center' data-id="<?=$row['id']?>" style="height:27px">
+						<td rowspan="<?=$count?>"><?=$ctfrom_array[$row['ctfrom']]['name'];?></td>
+						<td rowspan="<?=$count?>"><?=$row['ep_name'];?></td>
+						<td rowspan="<?=$count?>"><?=$row['areaaddr'];?></td>
+						<td rowspan="<?=$count?>"><?=$row['person'];?></td>
+						<td rowspan="<?=$count?>"><?=$row['person_tel'];?></td>
+						<td rowspan="<?=$count?>"><?=$row['person_mail'];?></td>
+						<td><?=$audit_ver_array[$row['cti_cf'][0]['audit_ver']]['msg'];?></td>
+						<td><?=$row['cti_cf'][0]['mark']==01?'CNAS':'其他';?></td>
+						<td><?=$row['cti_cf'][0]['cert_scope'];?></td>
+						<td><?=$audit_ver_array[$row['cti_cf'][0]['audit_ver']]['audit_basis'];?></td>
+						<td><?=$row['cti_cf'][0]['total'];?></td>
+						<td><?=$row['cti_cf'][0]['audit_code'];?></td>
+						<td><?=$arr_audit_type[$row['cti_cf'][0]['audit_type']];?></td>
+						<td><?=$row['cti_cf'][0]['zjname'];?></td>
+						<td><?=$row['cti_cf'][0]['te_date'];?></td>
+						<td><?=$row['cti_cf'][0]['final_date'];?></td>
+						<td><?=$row['cti_cf'][0]['first_date'];?></td>
+					</tr>
+					<?php for($i=1;$i<$count;$i++):?>
+					<tr align='center' data-id="<?=$row['id']?>" style="height:27px">
+						<td><?=$audit_ver_array[$row['cti_cf'][$i]['audit_ver']]['msg'];?></td>
+						<td><?=$row['cti_cf'][$i]['mark']==01?'CNAS':'其他';?></td>
+						<td><?=$row['cti_cf'][$i]['cert_scope'];?></td>
+						<td><?=$audit_ver_array[$row['cti_cf'][$i]['audit_ver']]['audit_basis'];?></td>
+						<td><?=$row['cti_cf'][$i]['total'];?></td>
+						<td><?=$row['cti_cf'][$i]['audit_code'];?></td>
+						<td><?=$arr_audit_type[$row['cti_cf'][$i]['audit_type']];?></td>
+						<td><?=$row['cti_cf'][$i]['zjname'];?></td>
+						<td><?=$row['cti_cf'][$i]['te_date'];?></td>
+						<td><?=$row['cti_cf'][$i]['final_date'];?></td>
+						<td><?=$row['cti_cf'][$i]['first_date'];?></td>
+					</tr>
+					<?php endfor;?>
+				<?php else:?>
+					<tr align='center' data-id="<?=$row['id']?>" style="height:27px">
+						<td><?=$ctfrom_array[$row['ctfrom']]['name'];?></td>
+						<td><?=$row['ep_name'];?></td>
+						<td><?=$row['areaaddr'];?></td>
+						<td><?=$row['person'];?></td>
+						<td><?=$row['person_tel'];?></td>
+						<td><?=$row['person_mail'];?></td>
+						<td><?=$audit_ver_array[$row['cti_cf'][0]['audit_ver']]['msg'];?></td>
+						<td><?=$row['cti_cf'][0]['mark']==01?'CNAS':'其他';?></td>
+						<td><?=$row['cti_cf'][0]['cert_scope'];?></td>
+						<td><?=$audit_ver_array[$row['cti_cf'][0]['audit_ver']]['audit_basis'];?></td>
+						<td><?=$row['cti_cf'][0]['total'];?></td>
+						<td><?=$row['cti_cf'][0]['audit_code'];?></td>
+						<td><?=$arr_audit_type[$row['cti_cf'][0]['audit_type']];?></td>
+						<td><?=$row['cti_cf'][0]['zjname'];?></td>
+						<td><?=$row['cti_cf'][0]['te_date'];?></td>
+						<td><?=$row['cti_cf'][0]['final_date'];?></td>
+						<td><?=$row['cti_cf'][0]['first_date'];?></td>
+					</tr>
+				<?php endif;?>
+				<?php endforeach;else:?>
+				<tr>
+					<td align="center" colspan="16">未找到相关记录</td>
+				</tr>
+				<?php endif;?>
+			</tbody>
+		</table>
+	</body>
+
+</html>

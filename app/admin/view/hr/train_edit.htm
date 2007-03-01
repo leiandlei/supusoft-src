@@ -1,0 +1,62 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>培训派人</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script> 
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<link href="theme/js/time/jquery-ui-timepicker-addon.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/time/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="theme/js/time/jquery-ui-timepicker-zh-CN.js"></script>
+</head>
+<body> 
+ 
+<form method="post">  
+<div style="margin:0 auto;width:800px;"  class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">培训</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<table class="grid-table">
+			<tr> 
+				<th>姓名</th><td><?=$hrInfo['name']?><input type="hidden" name="name" value="<?=$hrInfo['name']?>" /></td>
+            </tr>
+            <tr>
+				<th>开始日期</th><td><input type="text" id="taskBeginDate" name="taskBeginDate" value="<?=$taskBeginDate;?>" class="input-date" style="width:150px" /></td>
+            </tr>
+            <tr>
+				<th>结束日期</th><td><input type="text" id="taskEndDate" name="taskEndDate" value="<?=$taskEndDate;?>" class="input-date" style="width:150px" /></td> 
+			</tr> 
+            <tr>
+				<th>备注</th><td><textarea name="note" style="width:400px; height:50px;"><?=$auditorInfo['note']?></textarea></td> 
+			</tr> 
+				<tr>
+              	<td align="center" colspan="9"> 
+                <button class="btn btn-submit" type="submit"> 保 存 </button></td>
+              </tr>
+		</table> 
+	</div>
+</div>
+
+</form>
+
+
+</body>
+<script type="text/javascript">
+    $("input.input-date").datetimepicker({    
+        defaultDate: $('input.input-date').val(),    
+        dateFormat: "yy-mm-dd",    
+        showSecond: true,    
+        timeFormat: 'HH:mm:ss',    
+        stepHour: 1,    
+        stepMinute: 1,    
+        stepSecond: 1    
+    })    
+   
+</script>
+</html>

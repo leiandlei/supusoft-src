@@ -1,0 +1,59 @@
+<? tpl('header')?>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript" src="theme/js/region.js"></script>
+<script type="text/javascript" src="theme/js/common.js"></script>
+</head>
+<body>
+
+
+<form method="post" id="from" action="?c=examine&a=edit">
+	<input id="id" type="hidden" name="id" value="<?=$detail['id'];?>" />
+	<input id="id" type="hidden" name="save" value="1" />
+	<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+		<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+		    <li>考核登记</li>
+		 </ul>
+		<div id="tab-basic">
+			<ul class="main-form">
+				<li>
+					<label class="field">考核名称</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="name" name="name" value="<?=$detail['name'];?>" dataType="Require" msg="考核名称！" class="input"/>
+					</span> 
+			   	</li>
+			   	<li>
+					<label class="field">相关内容</label>
+					<em>*</em>
+					<span>
+						<textarea id="content" name="content" dataType="Require" msg="相关内容！" style="width: 450px;height: 200px;" class="input"><?=$detail['content'];?></textarea>
+					</span> 
+			   	</li>
+			   	<li>
+					<label class="field">人日</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="day" name="day" value="<?=$detail['day'];?>" dataType="Require" msg="请输入人日！" class="input"/>
+					</span> 
+			   	</li>
+			</ul>
+			<p>
+				<center style="margin-bottom: 10px;">
+					<button class="btn btn-submit submit-btn" type="button"> 保 存 </button>&nbsp;&nbsp;&nbsp;
+					<a href="?c=<?=$c;?>&a=studentList" title="关闭窗口">返回列表</a>
+				</center>
+			</p>
+		</div>
+	</div>
+
+</form>
+</body>
+<script type="text/javascript">
+$(function(){
+	$('button.submit-btn').on('click',function(){
+    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+    	$('#from').submit();
+  });
+});
+</script>
+</html>

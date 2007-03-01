@@ -1,0 +1,177 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>文档上传</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+
+	$('#add-btn').click( addRecord );
+	addRecord();
+	$('#upload-btn').click(check_upload);
+});
+
+function addRecord(){
+	tbody = $('#add-attachs');
+	tr = $('#add-attach');
+	new_tr = tr.clone();
+	new_tr.attr('id','');
+	new_tr.show();
+	tbody.append(new_tr);
+}
+
+
+function check_upload(){
+	var r = 1;
+	$('input[type=file][name="archive[]"]').each(function(){
+		var $this = $(this);
+		var tr = $this.parent().parent();
+		if( '' == tr.attr('id') ){
+			if( $this.val() != '' ){
+				var o_ftype = tr.find('select');
+				if( '' == o_ftype.val() ){
+					alert( '请选择文档：'+$this.val()+' 的类型！' );
+					r = 0;
+				}
+			}
+		}
+	});
+	if( r ){
+		$('#upload-form').submit();
+	}
+	
+}
+
+</script>
+</head>
+
+<body>
+<?php echo einfo("ct_id=$ct_id");?>
+<br/>
+
+
+
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">文档上传</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		
+		<br/>
+		<form method="post" id="upload-form" id="upload-form" action="?c=contract&a=upload" enctype="multipart/form-data">
+		<input type="hidden" name="ct_id" value="<?=$ct_id;?>" />
+		<input type="hidden" name="eid" value="<?=$eid;?>" />
+		<input type="hidden" name="step" value="1" />
+		<table width="100%" class="form-table">
+			<tr>
+				<td width="110">文档类型</td>
+				<td width="230">上传</td>
+				<td width="*">备注</td>
+			</tr>
+			<tbody id="add-attachs">
+			</tbody>
+			<tr id="add-attach" style="display:none;">
+				<td><select name="ftype[]">
+					<option value="">=请选择=</option>
+					<?=$arctype_select;?>
+				</select></td>
+				<td><input type="file" name="archive[]" /></td>
+				<td><input type="text" class="input" name="description[]" style="width:100%;" /></td>
+			</tr>
+		</table>
+		<!--<p class="note-msg">提示：最大支持10MB</p>-->
+		<p>
+			<center><button class="btn btn-button" type="button" id="add-btn"> 添加 </button> &nbsp; <button class="btn btn-submit" id="upload-btn" type="button"> 上传 </button></center>
+		</p>
+		</form>
+		<br/>
+		
+	</div>
+</div>
+<br/>
+<!--<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">申请认证里需提交的附件资料</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<form method="post" action="?c=contract&a=save_attach">
+		<input type="hidden" name="ct_id" value="<?=$ct_id;?>" />
+		<ol style="padding-left:20px;line-height:23px;">
+<?php if( $xq_attachs ): $cnt = 1; foreach( $xq_attachs as $id => $filename ):?>
+			<li><label><input type="checkbox" name="uploaded_id[]" value="<?=$id;?>" <?php if( in_array( $id, $uploaded_files) ):?>checked<?php endif;?>/><?=$filename;?></label></li>
+<?php endforeach; endif;?>
+		</ol>
+		<p class="button-panel tac" style="margin-top:10px;">
+			<button type="submit" class="btn btn-submit"> 保 存 </button>
+		</p>
+		</form>
+	</div>
+</div>
+<br/>-->
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">文档下载</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<form method="post" action="?c=attachment&a=batdown">
+		<table class="grid-table">
+			<tr>
+				<th width="30">选择</th>
+				<th>文档名</th>
+				<th>文档类型</th>
+				<th>备注</th>
+				<th>上传时间</th>
+				<th>上传人</th>
+				<th>操作</th>
+			</tr>
+			<tbody id="attach-list">
+<?php
+if( $ct_archives ){
+	foreach( $ct_archives as $row ){
+?>
+			<tr>
+				<td align="center"><input type="checkbox" name="aid[]" value="<?=$row['id'];?>" /></td>
+				<td align="center"><?=$row['name'];?></td>
+				<td align="center"><?=$row['ftype_V'];?></td>
+				<td align="center">
+<?php
+if( $row['description'] ){
+?>
+<a href="javascript:;" title="<?=$row['description'];?>"><img src="theme/images/other.png" border="0" /></a> 
+<?php
+}
+?>
+				</td>
+				<td align="center"><?=$row['create_date'];?></td>
+				<td align="center"><?php echo f_username($row['create_uid']);?></td>
+				<td align="center">
+					<a href="?c=attachment&a=down&aid=<?=$row['id'];?>&class=enterprise">下载</a><!-- &nbsp; | 
+					<a href="?c=contract&a=delattach&ct_id=<?=$ct_id;?>&aid=<?=$row['id'];?>">删除</a>-->
+				</td>
+			</tr>
+<?php
+	}
+}
+?>			</tbody>
+			<tr>
+				<td></td>
+				<td colspan="6">
+					<button type="submit" class="btn btn-submit"> 批量打包下载 </button>
+				</td>
+			</tr>
+		</table>
+		</form>
+		</div>
+		</div>
+</body>
+</html>

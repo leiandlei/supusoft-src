@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>审核员年报</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+	
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#report1-xls-btn').click( do_export_xls1 );
+});
+function do_export_xls1(){
+	var export_xls_url = '?c=xls&a=auditor_report';
+	var param = '';
+	param += '&s_date='+$('#s_date').val();
+	param += '&e_date='+$('#e_date').val();
+	var s_date = $('#s_date').val();
+	var e_date = $('#e_date').val();
+	if(s_date>e_date){
+		alert('开始时间不能大于结束时间');
+		return;
+	}else if(!s_date || !e_date){
+		alert('请输入时间');
+		return;
+	}
+	window.location.href= export_xls_url + param;
+}
+
+</script>
+</head>
+<body>
+
+<div id="contract-tab" style="margin: 0 auto; width: 750px;" class="tal">
+	<ul>
+		<li><a href="#tab-basic">审核员年报</a></li>
+	</ul>
+<div id="tab-basic" style="100%">
+	<table style="100%" class='grid-table'>
+		<thead>
+		<tr align='center'>
+			<th width="150" align='center'>开始时间</th>
+			<th width="150">结束时间</th>
+			<th width="*">获证组织基本信息表</th>
+		</tr>
+		</thead>
+		<tr align='center'>
+			<td width="150"><input type='text' id='s_date' name='s_date' value='<?=$s_date?>' class="input input-date"/></td>
+			<td width="150"><input type='text' id='e_date' name='e_date' value='<?=$e_date?>' class="input input-date"/></td>
+			<td><button id="report1-xls-btn" class="btn btn-button" type="button">导出excel表</button></td>
+		</tr>
+	</table>
+</div></div>
+
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>任务列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<tr align="center">
+    <td colspan="42" align="center"><?=$is_office=='1'?'本部':'不坐班'?><?=$audit_job=='1'?'专职':'兼职'?>审核天数统计</td>
+    </tr>
+	<tr align="center">
+			<th   rowspan="2" >序号</th>
+           <th  rowspan="2" width="50">姓名</th>
+           <?php for($j=1;$j<=12;$j++){?>
+           
+			<th colspan="3"><?=$j;?>月份</th>
+            
+           
+           
+            <?php }?>
+			<th colspan="4">合计</th>
+            </tr>
+            <tr>
+             <?php for($j=1;$j<=12;$j++){?>
+             <th>次数</th>
+			<th>天数</th>
+			<th>组长天数</th>
+            <?php }?>
+			<th>次数</th>
+			<th>天数</th>
+			<th>组长天数</th>
+			<th>年度平均</th>
+			
+		</tr>
+	<tbody>
+<?php
+if( $count  ){
+$i=0;
+	foreach($count as $uid=>$val){
+
+?>
+		<tr>
+			<td align="center"><?=++$i;?></td>
+           <td align="center"><?=f_username($uid)?></td>
+			
+            <?php foreach($val as $m=>$_val){?>
+			<td align="center"><?=$_val[1];?></td>
+			<td align="center"><?=$_val[2];?></td>
+			<td align="center"><?=$_val[3];?></td>
+            <?php }
+            for($k=$month;$k<=12;$k++){
+            ?>
+            <td></td>
+            <td></td>
+            <td></td>
+            <?php }?>
+            <td></td>
+		</tr>
+		<?php
+	}
+} 
+?>
+	</tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>公告列表</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+    $(function() {
+		//var tooltips = $( "[title]" ).tooltip({position:{my:"left+6 center", at:"right center"}});
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+        $( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+    });
+    function add_notice(){
+		location.href='?c=notice&a=add';
+    }
+    </script>
+</head>
+
+<body>
+<form method="post" action="" class="search-form tal" style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+	<table>
+		<tr>
+			<td class="left">标题：</td>
+			<td class="right"><input type="text" name="title" value="<?=$title;?>" class="input finput"/></td>
+			<td class="left">发布人：</td>
+			<td class="right"><input type="text" name="name" value="<?=$name;?>" class="input finput"/></td>
+			<td class="left">发布时间：</td>
+			<td class="right"><input type="text" name="s_date" value="<?=$s_date;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="e_date" value="<?=$e_date;?>" class="input input-date finput"/></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button class="btn btn-button" type="button"  onclick='javascript:add_notice();'><a href="?c=notice&a=add" >发布公告</a></button>
+	</p>
+</form>
+
+<br/>
+<div style="margin: 9px auto 0; width: 1050px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+<ul
+	class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+	<li
+		class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a
+		href="javascript:;">公告管理 <span class="cnt-total"></span></a></li>
+</ul>
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="40">操作</th> 
+			<th>标题</th>
+			<th>类型</th>
+			<th width="200">发布时间</th>
+			<th width="120">发布人</th>
+			<th width="60">人员查看情况</th>
+			<th width="40">删除</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr>
+			<td align="center">
+				<a href="?c=notice&a=edit&id=<?=$row['id'];?>"><img src="theme/images/b_edit.png" border=0 /></a>
+			</td> 
+			<td align="left"><?=$row['title'];?></td>
+			<td align="center"><?=$arr_noticeStype[$row['type']];?></td>
+			<td align="center"><?=$row['update_date'];?></td>
+			<td align="center"><?=$row['author'];?></td>
+			<td align="center">
+				<a href="?c=notice&a=viewUserList&id=<?=$row['id'];?>&type=<?=$row['type'];?>"><img src="theme/images/select1.gif" border="0"></a>&nbsp;&nbsp;
+			</td>
+			<td align="center"><a href="?c=notice&a=del&id=<?=$row['id'];?>"><img src="theme/images/b_drop.png" border=0 /></a></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="6">没有找到数据</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+<?=$pages['pages'];?>
+</div>
+</div>
+</body>
+</html>

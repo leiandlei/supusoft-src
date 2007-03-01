@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>证书邮寄列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr align='center'>
+			
+			<th width="100">合同编号</th>
+			<th width="100">项目编号</th>
+			<th width="100">证书编号</th>
+			<th width="200">组织名称</th>
+            <th width="80">邮寄日期</th>
+			<th width="100">快递公司</th>
+			<th width="100">快递单号</th>
+            <th width="40">邮寄备注</th>
+            <th width="60">联系人</th>
+            <th width="60">电话</th>
+            <th width="50">邮寄邮编</th>
+            <th width="200">邮寄地址</th>
+            <th width="50">收费状态</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr align='center'>
+			
+			 <td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['cti_code'];?></a></td>
+			<td align="center"><?=$row['certno'];?></a></td>
+			<td align="center"> <?=$row['ep_name'];?> </td>
+            <td align="center"><?=$row['sms_date'];?></td>
+			<td align="center"><?=read_cache("send_company",$row['sms_name']);?></td>
+			<td align="center"><?=$row['sms_no'];?></td>
+            <td align="center"><?=$row['sms_note'];?></td>
+            <td align="center"><?=$row['sms_person'];?></td>
+            <td align="center"><?=$row['sms_tel'];?></td>
+            <td align="center"><?=$row['sms_code'];?></td>
+            <td align="center"><?=$row['sms_addr'];?></td>
+            <td align="center"><?=$finance_arr[$row[is_finance]];?></td>
+	  	</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

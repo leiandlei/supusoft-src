@@ -1,0 +1,327 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>证书变更</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script> 
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$( "#certificate-tab" ).tabs();
+});
+
+</script>
+<script>
+var zt_endtime = '$zt_endtime[finalItemDate]';
+
+function ck_changeitem(k){
+	var x;
+	var cg_arr = new Array('105','106','107','97_01','97_02','97_03','97_04','97_05','98');
+	for(x in cg_arr){
+		if(cg_arr[x] != k && $('#'+cg_arr[x]).attr('checked')){
+			alert('同时只能选择一种证书状态变更');
+			$('#'+k).attr('checked',false);
+			return false;
+			break;
+		}
+	}
+	var count_zs = '$count_zs';
+	if(count_zs != '1' && (k == '06_1' || k == '06_2' || k == '03_1')){
+		alert('专业代码变更，范围变更，标准变更只限定单张证书操作');
+		$('#'+k).attr('checked',false);
+		return false;
+	}
+
+	if($('#'+k).attr('checked')){
+		$('#table'+k).show();
+		$('.table'+k).show();
+		$('#input'+k).attr({ dataType: "Require", msg: "变更内容不能为空" });
+		if(k == '97_01'){
+			$("#zs_change_date").val(zt_endtime);
+			$('#zs_zanting_edate').attr({dataType: "Require", msg: "暂停到期时间不能为空" });
+			$('#zs_zanting_edate').blur(function(){
+			  	var zs_change_date = $('#zs_change_date').val();
+				var zs_zanting_edate = $('#zs_zanting_edate').val();
+				var certEnd = $('#certEnd').val();
+				$.post('.?c=change&do=ajax',{kind:'shijiancha','zs_change_date': zs_change_date,'zs_zanting_edate': zs_zanting_edate,'certEnd': certEnd},function(r){
+					if(r=='01'){ alert("暂停到期时间不能超过6个月");}
+					if(r=='02'){ alert("暂停到期时间不能大于证书到期时间 ");}
+				});
+			});
+
+		}
+		if(k == '97_03'){
+			var ol = "$rows[zs_zanting_edate]";
+			$('#zs_change_date').val(ol);
+		}
+		if(k == '06_1'){
+			$('#06_2').attr('checked','checked');
+			$('#table06_2').show();
+		}
+	}else{
+		$('#table'+k).hide();
+		$('.table'+k).hide();
+		$('#input'+k).attr({ dataType: "", msg: "" });
+		$("#zs_change_date").val("");
+		if(k == '03'){
+			$("#zs_change_date").val('');
+			$('#zs_zanting_edate').attr({dataType: "", msg: "" });
+			$('#zt_changereason').attr({dataType: "", msg: "" });
+		}
+		if(k == '05'){
+			$('#cx_changereason').attr({dataType: "", msg: "" });
+		}
+	}
+}
+
+function del(obj){
+	var del_url = $(obj).parents("a").attr("title");
+	if(confirm("你确定要删除吗？")){location.href = del_url;}
+}
+function get_zs_zanting_edate(){
+	var iso = $('#pro_iso').val();
+	var zs_change_date = $('#zs_change_date').val();
+	if(zs_change_date!=''){
+		$.post('.?c=change&do=ajax',{kind:'zs_zanting_edate','zs_change_date': zs_change_date,'iso':iso},function(r){
+			$('#zs_zanting_edate').val(r);
+		});
+	}
+}
+function checkForm(){
+	var cgids = $('input[type=radio]:checked');
+		if( 1 >cgids.length ){
+			alert('请选择变更所处的阶段！');
+			return false;
+		}
+
+	
+	}
+</script>
+</head>
+
+<body>
+<?php echo einfo("cert_id=$zsid&width=800&ct_id=$ct_id");?>
+<br/>
+<form name="winput" method="post" action="?c=change&a=save" onsubmit="return checkForm()" >
+<input type="hidden" name="zsid" value='<?=$zsid?>' />
+<input type="hidden" name="url" value='<?=$url?>' />
+<input type="hidden" name="cgid" value="<?=$cg_info[id]?>" />
+<input type="hidden" name="ct_id" value="<?=$_GET[ct_id]?>" />
+
+<input type="hidden" name='new_97_02' value='05'  />
+<input type="hidden" name='new_97_04' value='04'  />
+<input type="hidden" name='new_97_05' value='05'  />
+<input type="hidden" name='old_97_02' value='<?=$zs_info['status']?>'  />
+<input type="hidden" name='old_97_04' value='<?=$zs_info['status']?>'  />
+<input type="hidden" name='old_97_05' value='<?=$zs_info['status']?>'  />
+<input type="hidden" name="eid" value='<?=$eid?>' />
+<div id="certificate-tab" style="margin: 0 auto;width:800px;height:210px; <?php if($type) {?>display:none <?php }?>" class="tal" >
+	<ul>
+		<li><a href="#tab-content-basic">证书内容变更</a></li>
+		<li><a href="#tab-state-basic">证书状态变更</a></li>
+	</ul>
+		<div id="tab-content-basic">
+			<ul class="change_ul" style="min-height:90px;">
+				<?=$changeitem_content_li?>
+			</ul>
+		</div>
+		<div id="tab-state-basic">
+			<ul class="change_ul" style="min-height:90px;">
+				<?=$changeitem_state_li?>
+			</ul>
+			
+		</div>
+</div>
+<div class="list-table tal">
+<table border='1' style='width:800px;margin: 0 auto;margin-top:20px;' class='grid-table'>
+	<tr>
+    	<th>选择</th>
+        <th>状态</th>
+    	<th>审核阶段</th>
+        <th>任务开始时间</th>
+        <th>任务结束时间</th>
+         </tr>
+    	<? foreach($proj_ls as $proj){?>
+        	<tr>
+            	<td align="center"><input type="radio" name="pid_radio" value="<?=$proj['id']?>" /></td>
+            	<td><?=r_sys_cache('project_status',$proj[status])?></td>
+                <td><?=read_cache('audit_type',$proj[audit_type])?></td>
+                <td><?=$db->get_var("SELECT tb_date FROM `sp_task` WHERE `id` = '$proj[tid]'")?></td>
+                 <td><?=$db->get_var("SELECT te_date FROM `sp_task` WHERE `id` = '$proj[tid]'")?></td>
+            </tr>
+        <? } ?>
+            <tr>
+            	<td align="center"><input type="radio" name="biangeng" value="<?=$proj['id']?>" /></td>
+                <td>证书变更</td>
+                <td></td>
+                <td></td>
+            </tr>
+        <tr><td colspan="5" align="right">注：如果非监督的项目，请添加特殊审核项目</td></tr>
+    </table>
+</div>
+<div class="list-table tal">
+<table border='1' style='width:800px;margin: 0 auto;margin-top:20px;' class='grid-table'>
+	<tr>
+		<td width='20%' align='right'>变更时间：</td>
+		<td width='80%' align='left'><input type='text' name='cgs_date' value='<?=$cg_info['cgs_date']?>' class="input input-date"/> 
+			</td>
+           
+	</tr>
+	<tr style='display:none;' id='table0101'>
+		<td align='right'>新组织名称：</td>
+		<td align='left'>
+			<div class='in_div'>原组织名称：<?=$zs_info['cert_name']?><input type="hidden" name='old_0101' value='<?=$zs_info['cert_name']?>' /></div>
+			<input type='text' name='new_0101' value='<?=$cg_meta_01?>' size='100'/>
+		</td>
+	</tr>
+	<tbody style='display:none;'  id="table0102">
+	<tr>
+		<td align='right'>原证书地址：</td>
+		<td align='left'><?=$zs_info['cert_addr']?><span style="color:red;">【请同步修改企业地址】</span>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>新证书地址：</td>
+		<td align='left'>
+			<input type="hidden" name='old_0102' value='<?=$cp_info['ep_addr']?>' />
+			<input type='text' name='new_0102' value='<?=$cg_meta_02?>' style="width:500px;"/>
+		</td>
+	</tr>
+	</tbody>
+	<tr style='display:none;' id='table103'>
+		<td align='right'>新体系人数：</td>
+		<td align='left'>
+			<div class='in_div'><?=$cti_info['total']?><input type="hidden" name='old_103' value='<?=$cti_info['total']?>' /></div>
+			<input type='text' name='new_103' value='<?=$cg_meta_03?>' size='100'/>
+		</td>
+	</tr>
+	<tr style='display:none;' id='table104'>
+		<td align='right'>新标志：</td>
+		<td align='left'>
+			<div class='in_div'><?=$mark_array[$zs_info[mark]]['name']?><input type="hidden" name='old_104' value='<?=$zs_info['mark']?>' /></div>
+			<?=$mark_radio?>
+		</td>
+	</tr>
+	<tbody style='display:none;' id='table105'>
+	<tr>
+		<td align='right'>新扩大范围：</td>
+		<td align='left'>
+			<div class='in_div'><?=$zs_info['cert_scope']?><input type="hidden" name='old_105_scope' value='<?=$zs_info['cert_scope']?>' /></div>
+			<textarea name="new_105_scope" style="width:80%;height:72px;"><?=$cg_meta_105?></textarea>
+		</td>
+	</tr>
+	<!-- <tr>
+		<td align='right'>新扩大范围专业小类：</td>
+		<td align='left'>
+			<div class="in_dir"><?=$zs_info['audit_code'];?><input type="hidden" name='old_05_code' value='<?=$zs_info['audit_code'];?>' /></div>
+			<input name="new_05_code" value="<?=$cg_meta_05?>" type="text" class="input input-basic" />
+		</td>
+	</tr> -->
+	</tbody>
+	<tbody style='display:none;' id='table106'>
+	<tr>
+		<td align='right'>新缩小范围：</td>
+		<td align='left'>
+			<div class='in_div'><?=$zs_info['cert_scope']?><input type="hidden" name='old_106_scope' value='<?=$zs_info['cert_scope']?>' /></div>
+			<textarea name="new_106_scope" style="width:98%;height:72px;"><?=$cg_meta_106?></textarea>
+		</td>
+	</tr>
+	<!-- <tr>
+		<td align='right'>新缩小范围小类：</td>
+		<td align='left'>
+			<div class='in_div'><?=$zs_info['audit_code']?><input type="hidden" name='old_06_code' value='<?=$zs_info['audit_code']?>' /></div>
+			<input name="new_06_code" value="<?=$cg_meta_06?>" type="text" class="input input-basic" />
+	</tr> -->
+	</tbody>
+	<tr style='display:none;' id='table107'>
+		<td align='right'>新产品规格：</td>
+		<td align='left'>
+			<div class='in_div'></div>
+			<input type='text' name='new_107' value='<?=$cg_meta_107?>' size='100'/>
+		</td>
+	</tr>
+	<tr style='display:none;' id='table108'>
+		<td align='right'>新标准：</td>
+		<td align='left'>
+			<div class='in_div'><?=$audit_ver_array[$zs_info['audit_ver']]['audit_basis'];?><input type="hidden" name='old_108' value='<?=$zs_info['audit_ver']?>' /></div>
+			<?=$audit_ver_radio?>
+		</td>
+	</tr>
+	<tr style='display:<?=$change_zt_display;?>;' id='table97_01'>
+		<td align='right'>暂停原因：</td>
+		<td align='left'>
+			<input type="hidden" name='old_97_01' value='<?=$zs_info['status']?>'  />	
+			<select name="certpasue_value" style="width:256px"><?=$certpasue_select?></select> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;暂停到期：<input type="text" name="cge_date" value="<?=$cg_info['cge_date']?>" class="input-date" />
+			<input type="hidden" name='new_97_01' value='02'  />	
+		</td>
+	</tr>
+	<tr style='display:<?=$change_zt_display;?>;' id='table97_01' class='table97_01'>
+		<td align='right'>具体原因：</td>
+		<td align='left'>
+			<?=$certpasue_check;?>
+    
+	</tr>
+	<tr style='display:none;'>
+		<td align='right'>证书恢复：</td>
+		<td align='left'>
+			<input type="hidden" name='old_97_02' value="<?=$zs_info['status']?>" />
+			<input type="hidden" name='new_97_02' value="01" />
+		</td>
+	</tr>
+	<tr style='display:<?=$change_cx_display;?>;' id='table97_03'>
+		<td align='right'>撤销原因：</td>
+		<td align='left'>
+			<input type="hidden" name='old_97_03' value='<?=$zs_info['status']?>'  />
+			<select name="certrecall_value" style="width:256px"><?=f_select('certrecall',$cg_info['cg_reason']);?></select>
+			<input type="hidden" name='new_97_03' value='03'  />
+		</td>
+	</tr>
+	<tr style='display:<?=$change_cx_display;?>;' id='table97_03' class='table97_03'>
+		<td align='right'>具体原因：</td>
+		<td align='left'>
+			
+			<?=$recalqus_check;?>
+	
+           
+		</td>
+	</tr>
+	<!--tr>
+		<td align='right'>申请部门：</td>
+		<td align='left'>
+			<input type='text' name='department' value="<?=$cg_info[department]?>"/>
+		</td>
+	</tr>
+	<tr>
+		<td align='right'>申请人：</td>
+		<td align='left'>
+			<input type='text' name='people' value="<?=$cg_info[people]?>"/>
+		</td>
+	</tr>-->
+	
+   
+            <tr >
+		<td align='right'>变更备注：</td>
+		<td align='left'><textarea name="note" style="width:500px;height:60px;"><?=$cg_info[note]?></textarea></td>
+	</tr>
+	<tr>
+		<td align='center' colspan='2'><p><center><?php if($_GET[step]) { ?><a href="javascript:history.go(-1);"><font color="#00f">点击返回列表页</font></a><?php }else {?><button class="btn btn-submit" type="submit"> 保 存 </button><?php }?></center></p> </td>
+	</tr>
+</table>
+</div>
+</form>
+
+</body>
+</html>

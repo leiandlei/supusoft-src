@@ -1,0 +1,83 @@
+<?php tpl('header')?>
+<body>
+	<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+		<input type="hidden" name="c" value="<?=$c;?>" />
+		<input type="hidden" name="a" value="<?=$a;?>" />
+		<input type="hidden" name="status" value="<?=$status;?>" />
+		<table>
+		    <tr>
+		        <td class="left">月份:</td>
+		        <td class='right'>
+		            <input type='text' value="<?=$month?>" name="month" class="input-date" />
+		        </td>
+		    </tr>
+		</table>
+	  	<p class="button-panel">
+	    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+	    	&nbsp;
+	    	<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+		</p>
+	</form>
+	<br/>
+
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top ui-state-active">
+		    	<a href="?c=development&a=shenheyuan">
+		    		审核员
+		      	</a>
+		    </li>
+	  	</ul>
+  	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+  	    	<form method="post" id="from" action="?c=development&a=save_hezuofang">
+		    	<table class="grid-table tal" style="text-align: center">
+					<thead>
+						<tr>
+							<th>编码</th>
+							<th>姓名</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($results as $vo):?>
+							<tr>
+								<td><?=$vo['code'];?></td>
+								<td><?=$vo['name'];?></td>
+								<td>
+									<a href="?c=development&a=shenheyuan&month=<?=$month;?>&uid=<?=$vo['id'];?>&type=<?=($type=='unlist')?'unlist':'list'?>"><img src="theme/images/b_edit.png" border=0 /></a>
+								</td>
+							</tr>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+			</form>
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+	    $('button.submit-btn').on('click',function(){
+	    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+	    	$('#from').submit();
+	  	});
+
+	  	$( ".input-date" ).datepicker({
+			changeMonth	: true,
+			changeYear	: true,
+			dateFormat	: "yy-mm"
+		});
+  	})
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</html>

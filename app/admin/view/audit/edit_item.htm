@@ -1,0 +1,127 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>特殊审核项</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<style type="text/css">
+.ctxm-table{border-collapse: collapse;border-spacing: 0;}
+.ctxm-table .td{padding:5px;border:1px solid #ccc;}
+
+.txxm-table{border-collapse: collapse;border-spacing: 0;}
+.txxm-table td{padding:.4em .6em;border:1px solid #f2f6fb;}
+</style>
+<script type="text/javascript">
+
+var self = null;
+
+$(document).ready(function(){
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	if($("#audit_type").val()=="3001")
+		$("#audit_ver").show();
+	$("#audit_type").change(function(){
+		
+		if($(this).val()=="3001")
+			$("#audit_ver").show();
+		
+		else
+			$("#audit_ver").hide();
+		
+		})
+	
+});
+
+
+
+</script>
+</head>
+
+<body>
+<?php echo einfo("cti_id=$cti_id&ct_id=$ct_id");?>
+<br/>
+
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top "><a href="#">已有项目</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<table width="100%" class='grid-table'>
+			<tr>
+				<td>审核类型</td>
+				<td>状态</td>
+			</tr>
+<?php 
+	foreach($ddatas as $value){ 
+		$status_0 = '未安排';
+		$status_1 = '已安排';
+		$status_2 = '待审批';
+		$status_3 = '已审批';
+		$status_5 = '维护';
+?>
+			<tr>
+				<td><?=f_audit_type($value['audit_type'])?></td>
+				<td><?=${'status_'.$value['status']}?></td>
+			</tr>
+<?php } ?>
+		</table>
+	</div>
+</div>
+<br>
+<form method="post" action="<?=$REAUEST_URI;?>" onsubmit="return Validator.Validate(this,2)">
+<input type="hidden" name="step" value="1" />
+<input type="hidden" name="cti_id" value="<?=$cti_id;?>" />
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">特殊审核项目生成</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<table width="100%" class='grid-table'>
+			<tr>
+				<td>审核类型</td>
+				<td>后续操作</td>
+				<td>是否换证</td>
+				<td>预审日期</td>
+			</tr>
+			<tr>
+				<td><select name="audit_type" id="audit_type" dataType="Require" msg="审核类型不能为空！">
+					<option value="">=请选择=</option>
+					<?=$audit_type_select2 ?>
+				</select><em style='color:red'>*</em><br/><span id="audit_ver" style="display:none;">标准：<?=$audit_ver_radio;?></span></td>
+                
+				<td><select name="audit_kind" dataType="Require" msg="后续操作不能为空！">
+					<option value="">=请选择=</option>
+					<option value="1">审核+评定</option>
+					<option value="2">评定</option>
+				</select><em style='color:red'>*</em></td>
+				<td><select name="ifchangecert" dataType="Require" msg="是否换证不能为空！">
+					<option value="">=请选择=</option>
+					<option value="1" <?=ifchangecert?"selected":""?>>换证</option>
+					<option value="0" <?=ifchangecert=='0'?"selected":""?>>不换证</option>
+				</select><em style='color:red'>*</em></td>
+				<td><input type="text" name="pre_date" value="<?=$pre_date;?>" class="input input-date" dataType="Require" msg="与审日期不能为空！"/><em style='color:red'>*</em></td>
+			</tr>
+             
+		</table>
+		<p><button class="btn btn-submit" type="submit"> 提 交 </button></p>
+	</div>
+</div>
+</form>
+</body>
+</html>

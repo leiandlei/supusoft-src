@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>进度查询</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+
+var self = null;
+
+$(document).ready(function(){
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	
+});
+
+
+
+</script>
+</head>
+
+<body>
+
+
+<div style="margin:0 auto;width:1150px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">进度查询</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+		<form method="get" action="">
+		<input type="hidden" name="c" value="<?=$c;?>" />
+		<input type="hidden" name="a" value="<?=$a;?>" />
+		<input type="hidden" name="eid" value="<?=$eid;?>" />
+		 <table >
+    <tr>
+    		<td class="left">
+			企业名称：</td>
+            <td class='right'><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input input-basic" /> </td>
+            <td class="left">项目编号：</td>
+            <td class='right'><input type="text" name="cti_code" value="<?=$cti_code;?>" class="input" /> </td> 
+     </tr>
+    <tr>     
+      <td class="left">审核时间：</td>
+          <td class='right'><input type="text" name="te_dates" class="input input-date" value="<?=$te_dates;?>" /></td>
+    
+          <td class="left">至</td>
+          <td class='right'><input type="text" name="te_datee" class="input input-date" value="<?=$te_datee;?>" /></td>
+    </tr>
+    </table>
+			<button class="btn btn-submit" type="submit"> 提 交 </button>
+		
+		</form>
+	</div>
+</div>
+<br/>
+<div style="margin:0 auto;width:2000px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">进度详情</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<table class="grid-table">
+<?php
+	if( current_user('usertype') == 2 ){
+?>
+		<tr>
+			<th>企业</th>
+	        <th>项目编号</th>
+			<th>体系</th>
+			<th>审核类型</th>
+			<th>合同状态</th>
+			<th>项目状态</th>
+			<th>审核开始时间</th>
+			<th>审核结束时间</th>
+			<th>证书编号</th>
+			<th>证书状态</th>
+			<th>证书注册日期</th>
+			<th>证书到期日期</th>
+	        <th>归档时间</th>
+		</tr>
+	<?php
+		if( $projects ){
+			foreach( $projects as $row ){
+	?>
+			<tr align="center">
+		        <td><?=$row['ep_name'];?></td>
+				<td><?=$row['cti_code'];?></td>
+				<td><?=$row['iso'];?></td>
+				<td><?=$row['audit_type'];?></td>
+				<td><?=$row['ct_state'];?></td>
+				<td><?=$row['state'];?></td>
+		        <td><?=$row['bufuhe'];?></td>
+				<td><?=$row['tb_date'];?></td>
+				<td><?=$row['te_date'];?></td>
+				<td><?=$row['certno'];?></td>
+				<td><?=$row['cert_start'];?></td>
+				<td><?=$row['cert_end'];?></td>
+		        <td><?=$row['save_date'];?></td>
+			</tr>
+	<?php
+			}
+		}
+	?>
+<?php
+	}else{
+?>
+			<tr>
+				<th>企业</th>
+		        <th>项目编号</th>
+				<th>体系</th>
+				<th>审核类型</th>
+				<th>合同状态</th>
+				<th>合同创建时间</th>
+				<th>合同评审时间</th>
+				<th>合同审批时间</th>
+				<th>项目状态</th>
+				<th>项目维护时间</th>
+				<th>最后审核日期</th>
+				<th>审核开始时间</th>
+				<th>审核结束时间</th>
+				<th>交档时间</th>
+				<th>评定完成时间</th> 
+		        <th>整改完成时间</th> 
+		        <th>是否有不符合</th> 
+				<th>认证决定时间</th>
+				<th>总经理审批时间</th>
+				<th>证书编号</th>
+				<th>证书状态</th>
+				<th>证书注册日期</th>
+				<th>证书到期日期</th>
+				<th>证书邮寄日期</th>
+		        <th>归档时间</th>
+			</tr>
+	<?php
+		if( $projects ){
+			foreach( $projects as $row ){
+	?>
+			<tr align="center">
+		        <td><?=$row['ep_name'];?></td>
+				<td><?=$row['cti_code'];?></td>
+				<td><?=$row['iso'];?></td>
+				<td><?=$row['audit_type'];?></td>
+				<td><?=$row['ct_state'];?></td>
+				<td><?=$row['ct_create_date'];?></td>
+				<td><?=$row['ct_review_date'];?></td>
+				<td><?=$row['ct_approval_date'];?></td>
+				<td><?=$row['state'];?></td>
+				<td><?=$row['audit_up_date'];?></td>
+				<td><?=$row['final_date'];?></td>
+				<td><?=$row['tb_date'];?></td>
+				<td><?=$row['te_date'];?></td>
+				<td><?=$row['redata_date'];?></td>
+				<td><?=$row['comment_pass_date'];?></td> 
+		        <td><?=$row['rect_date'];?></td>
+		        <td><?=$row['bufuhe'];?></td>
+				<td><?=$row['comment_date'];?></td>
+				<td><?=$row['sp_date'];?></td>
+				<td><?=$row['certno'];?></td>
+				<td><?=$row['cert_state'];?></td>
+				<td><?=$row['cert_start'];?></td>
+				<td><?=$row['cert_end'];?></td>
+				<td><?=$row['send_date'];?></td>
+		        <td><?=$row['save_date'];?></td>
+			</tr>
+	<?php
+			}
+		}
+?>
+<?php	
+	}
+?>
+</table>
+
+	</div>
+</div>
+</body>
+</html>

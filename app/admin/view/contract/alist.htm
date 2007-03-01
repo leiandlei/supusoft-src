@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>企业列表</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" action="" class="search-form tal" style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+			<td class="left">组织代码：</td>
+			<td class="right"><input type="text" name="work_code" value="<?=$work_code;?>" class="input finput" /></td>
+			<td class="left">合同来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect' <?=($hezuofang=='1')?'disabled':'';?>><option value="">--请选择--</option><?=$ctfrom_select;?></select></td>
+			<td class="left">省份：</td>
+			<td class="right"><select name="areacode" class='fselect'><option value="">--请选择--</option><?=$province_select;?></select></td>
+		</tr>
+		<tr>
+			<td class="left">联系人：</td>
+			<td class="right"><input type="text" name="person" value="<?=$person;?>" class="input finput" /></td>
+			<td class="left">是否已登记：</td>
+			<td class="right">
+            	<input type="radio" name="if_c" value="1" <?php if($if_c == '1') echo "checked";?> />已登记
+                <input type="radio" name="if_c" value="0" <?php if($if_c == '0') echo "checked";?> />未登记
+            </td>
+			<td class="left"></td>
+			<td class="right"></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button>&nbsp;
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+
+	</p>
+</form>
+<br/>
+
+<div style="margin:0 auto;width:1050px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">合同登记 <span class="cnt-total"><?=$total;?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<table class="grid-table tal">
+		<thead>
+		<tr>
+			<th width="30">登记</th>
+			<th width="80">企业编号</th>
+			<th width="*">企业注册名称</th>
+<!--			<th width="30">子</th> -->
+			<th width="80">合同来源</th>
+			<th width="100">联系人</th>
+			<th width="90">联系电话</th>
+			<th width="130">企业电话</th>
+			<th width="130">企业传真</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $enterprises ){
+	foreach( $enterprises as $row ){
+?>
+		<tr>
+			<td align="center"><?php if(!$row['parent_id']){?><a href="?c=<?=$c;?>&a=edit&eid=<?=$row['eid'];?>"><img src="theme/images/b_edit.png" border=0 title="合同登记" /></a><?php }?></td>
+			<td align="center"><?=$row['code'];?></td>
+			<td><?=$row['ep_name'];?></td>
+<!--			<td align='center'>
+				<?php if($row['parent_id']){?><a href="?c=contract&a=alist&parent_id=<?=$row['parent_id'];?>">是</a><?php }?>
+				
+			</td>-->
+			<td align="center"><?=$row['ctfrom'];?></td>
+			<td align="center"><?=$row['person'];?></td>
+			<td align="center"><?=$row['person_tel'];?></td>
+			<td align="center"><?=$row['ep_phone'];?></td>
+			<td align="center"><?=$row['ep_fax'];?></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="10">没有找到名称</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+<!--  -->
+<?=$pages['pages'];?>
+<!--  -->
+</div>
+</div>
+
+</body>
+</html>

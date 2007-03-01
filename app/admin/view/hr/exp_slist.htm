@@ -1,0 +1,193 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>审核经理</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<style  type="text/css">
+<!--
+.trans_msg{ filter:alpha(opacity=100,enabled=1) revealTrans(duration=.2,transition=1) blendtrans(duration=.2);}
+.4{font-zise:40px;color:red}
+-->
+</style>
+<script>
+    $(function() {
+		//var tooltips = $( "[title]" ).tooltip({position:{my:"left+6 center", at:"right center"}});
+		$( '.del' ).click(function(){
+			
+ 			confirm_dialog('确定评审经历删除信息吗！',$(this).attr( 'href' ) );
+    		return false;
+		}
+		
+		
+		);
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+        $( ".input-date" ).datepicker({
+    		changeMonth	: true,
+    		changeYear	: true,
+    		dateFormat	: "yy-mm-dd"
+    	});
+		$('#export-xls-btn').click( do_export_xls );
+    });
+	function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+    function delete_file(id){
+    	if(confirm('确定删除文档吗？')){
+			location.href='?c=files&a=del&id='+id;
+    	}
+    }
+    function add_files(id){
+    	location.href='?c=experience&a=sedit';
+    }
+  
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+		//全选
+	function checkall(){
+		$(".benan").each(function(){
+ 			if($(this).attr("checked")){
+ 			  $(this).removeAttr("checked");
+ 			}else{
+ 			 $(this).attr("checked",'true');
+ 			}
+ 		})
+		 
+	}
+    </script>
+</head>
+
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c?>" />
+<input type="hidden" name="a" value="<?=$a?>" />
+	<table>
+		<tr>
+			<td class="left">创建人：</td>
+			<td class="right"><input type="text" name="add_hr" value="<?=$add_hr;?>"  class="input finput"/></td>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" name="area" value="<?=$area;?>"  class="input finput"/></td>
+			<td class="left">审核身份：</td>
+			<td class="right"><input type="text" name="position" value="<?=$position;?>"  class="input finput"/></td>
+			<td class="left">状态：</td>
+			<td class="right"><select name="online" class='fselect'><option value="">--请选择--</option><?=$online_select;?></select></td>
+			
+		</tr>
+		<tr>
+			<td class="left">开始日期：</td>
+			<td class="right"><input type="text" name="s_dates" value="<?=$s_dates;?>" class="input input-date finput" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="s_datee" value="<?=$s_datee;?>" class="input input-date finput" /></td>
+			<td class="left">结束日期：</td>
+			<td class="right"><input type="text" name="e_dates" value="<?=$e_dates;?>" class="input input-date finput" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="e_datee" value="<?=$e_datee;?>" class="input input-date finput" /></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button> &nbsp; 
+	</p>
+</form>
+
+<br/>
+
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='margin:0 auto;'>
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top"><a href="?c=hr_exp&a=glist<?php gettourl();?>">工作经历 <span class="cnt-total"><?=$total['g'];?></span></a></li>
+		<li class="ui-state-default ui-corner-top"><a href="?c=hr_exp&a=jlist<?php gettourl();?>" >教育经历 <span class="cnt-total"><?=$total['j'];?></span></a></li>
+		<li class="ui-state-default ui-corner-top  ui-tabs-active ui-state-active"><a href="?c=hr_exp&a=slist">审核经历 <span class="cnt-total"><?=$total['s'];?></span></a></li>
+		<li class="ui-state-default ui-corner-top"><a href="?c=hr_exp&a=plist<?php gettourl();?>">培训经历 <span class="cnt-total"><?=$total['p'];?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<div class="list-table tal">
+ <form method="post" action="?c=hr_exp&a=slist">
+	<table class="grid-table">
+		<thead>
+		<tr>
+            <th width="30"><div onclick="javascript:checkall()">全选</div></th>
+            <th width="50">状态</th>
+            <th width="80">姓名</th>
+			<th width="100">开始时间</th>
+			<th width="100">结束时间</th>
+			<th width="80">审核天数</th>
+			<th width="100">参加审核身份</th>
+			<th width="200">企业名称</th>
+            <th width="80">体系</th>
+            <th width="80">审核类型</th>
+			<th width="160">创建日期</th>
+ 			<th width="30">删除</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $pid => $row ){
+?>
+		<tr>
+        	 <td align="center">
+             <?if(!$row[online]){?>
+             <input class="benan" type="checkbox" name="<?=$row[id]?>" />
+             <?}?>
+             </td>
+             <td align="center"><?=$online_arr[$row['online']];?> </td>
+             <td align="center"><?=$row['add_hr'];?></td>
+			<td align="center"><?=$row[s_date]?></td>
+			<td align="center"><?=$row[e_date]?></td>
+			<td align="center"><?=$row[date_long]?></td>
+			<td align="center"><?=$row[position];?></td>
+			<td align="center"><?=$row[area];?></td>
+            <td align="center"><?=f_iso($row[iso]);?></td>
+            <td align="center"><?=f_audit_type($row[audit_type]);?></td>
+			<td align="center"><?=$row['add_date'];?></td> 
+			<td align="center"><a title="删除" href="?c=hr_exp&a=sdel&id=<?=$row['id'];?>" class="del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+		</tr>
+<?php
+	} 
+?>
+    	<tr>
+        	<td colspan="12"><button type="submit" class="btn btn-submit">备案</button></td>
+        </tr>
+ <?php
+} else {
+?>
+		<tr>
+			<td align="center" colspan="10">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+    </form>
+	<p><?=$pages['pages'];?></p>
+</div>
+
+	</div>
+</div>
+
+</body>
+</html>

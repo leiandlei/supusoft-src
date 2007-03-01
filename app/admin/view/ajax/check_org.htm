@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<?php sysinfo('charset');?>" />
+<title>审核派人验证</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+
+<script type="text/javascript">
+
+$(document).ready(function(){
+
+});
+</script>
+</head>
+
+<body>
+
+<table class="grid-table">
+	<tr>
+		<th width="80"></th>
+		<th width="200">软件数据</th>
+		<th width="200">获取数据</th>
+		<th width="*">验证结果</th>
+	</tr>
+   <?php foreach($ep_info as $k=>$val){?>
+   <tr align="left">
+		<th valign="top" style="text-align:right;"><?=$titles[$k]?></th>
+		<td><?=$ep_info_s[$k]?></td>
+		<td><?=$val?></td>
+		<td align="center">
+        <?php if($ep_info_s[$k]==$val){?>
+        <img src="theme/images/success.png" width="24" />
+        <?php }else{?><img src="theme/images/error.png" width="24" />
+        <?php }?></td>
+	</tr>
+    <?php }?>
+	
+</table>
+
+</body>
+</html>

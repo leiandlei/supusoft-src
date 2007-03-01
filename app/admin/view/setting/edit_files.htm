@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>标准版本</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script>
+    $(function() {
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+    });
+</script>
+<style type="text/css">
+.edit-table{border-collapse: collapse;border-spacing: 0;}
+.edit-table td{padding:5px;border:1px solid #ccc;}
+</style>
+</head>
+
+<body>
+<form method="post" name="winput" action="?c=setting_files" onsubmit="return Validator.Validate(this,2);" >
+<input type="hidden" name="a" value="save" />
+<input type="hidden" name="parent" value="<?=$parent?>" />
+<input type="hidden" name="id" value="<?=$id?>" />
+<input type="hidden" name="lv" value="<?=$lv?>" />
+<input type="hidden" name="step" value="<?=$step?>" />
+<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal">
+	<ul>
+		<li><?=$title_tip?></li>
+	</ul>
+	<br/>
+	<div id="tab-basic">
+		<ul class="main-form">
+			<li>
+				<label class="field">目录名称：</label><em></em>
+				<span><input type='text' name='name' value='<?=$name?>' /></span>
+			</li>
+			<li>
+				<label class="field">上级目录：</label><em></em>
+				<span><?=$up_name?></span>
+			</li>
+			<li>
+				<label class="field">显示顺序：</label><em></em>
+				<span><input type='text' name='num' value='<?=$num?>' /></span>
+			</li>
+			<li>
+				<label class="field"></label><em></em>
+				<span><input type='submit' class="btn btn-submit" value='提交' /></span>
+			</li>
+		</ul>
+	</div>
+</div>
+
+</form>
+
+</body>
+</html>

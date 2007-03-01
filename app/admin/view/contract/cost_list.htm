@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同列表</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+$(function() {
+
+	$('#export-xls-btn').click(  function(){
+		var form = $('#search-form');
+		form.append($('<input type="hidden" name="export" value="1" />'));
+		form.submit();
+		form.find('input[name=export]').remove();
+	} );
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+});
+
+
+
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" id="search-form" action="" class="search-form tal" style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+<input type="hidden" id="status" name="status" value="<?=$status;?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" id="ep_name" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+			<td class="left">企业编号：</td>
+			<td class="right"><input type="text" id="code" name="code" value="<?=$code;?>" class="input finput" /></td>
+			<td class="left">合同编号：</td>
+			<td class="right"><input type="text" id="ct_code" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+			<td class="left">收费项目：</td>
+			<td class='right'><select id="cost_type" name="cost_type" class='fselect'>
+				<option value=""></option>
+				<?=$cost_type_select;?>
+			</select></td>
+		</tr>
+		<tr>
+			
+			<td class="left">合同来源：</td>
+			<td class="right"><select id="ctfrom" name="ctfrom" class='fselect' ><option value=""></option><?=$ctfrom_select;?></select></td>
+			<td class="left">省份：</td>
+			<td class="right"><select id="areacode" name="areacode" class='fselect'><option value="">--请选择--</option><?=$province_select;?></select></td>
+			<td class="left">合同登记时间</td>
+			<td class="right"><input id="create_date_s" name="create_date_s" value="<?=$create_date_s?>" class="input finput input-date"/></td>
+			<td class="left">至</td>
+			<td class="right"><input id="create_date_e" name="create_date_e" value="<?=$create_date_e?>" class="input finput input-date"/></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp; 
+		<button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>
+	</p>
+</form>
+<br/>
+
+<div style="margin:0 auto;width:1050px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">合同费用查询<span class="cnt-total"><?=$total;?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="40">操作</th>
+			<th width="40">状态</th>
+			<th width="100">合同编号</th>
+			<th width="*">企业名称</th>
+			<th width="80">合同来源</th>
+			<th width="100">收费项目</th>
+            <th width="80">收费体系</th>
+            <th width="100">收费金额</th>
+            <th width="100">收费时间</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr align='center'>
+			<td align="center"><a href="?c=cost&a=edit&ct_id=<?=$row['ct_id']?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+			<td align="center"><?=$row['status'];?></td>
+			<td align="center"><?=@$row['ct_code'];?></td>
+			<td align="left"><?=$row['ep_name'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td align="center"><?=$row['cost_type'];?></td>
+            <td align="center"><?=@join("<br/>",$row['iso']);?></td>
+            <td align="center"><?=$row['cost'];?></td>
+            <td align="center"><?=$row['sftime'];?></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="9">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+	<p><?=$pages['pages'];?></p>
+</div>
+</div>
+
+</body>
+</html>

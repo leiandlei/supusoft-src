@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>客服留言</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<include file='./Public/style/css/common/common.css.html,./Public/style/js/common/common.js.html' />
+	</head>
+
+	<body>
+		<div class="main-container" id="main-container">
+			<div class="space-4"></div>
+			<div class="space-4"></div>
+			<div class="main-container-inner">
+				<div class="main-content">
+					<!-- <div class="breadcrumbs" id="breadcrumbs">
+						<form class="form-search">
+							<table>
+								<tr>
+									<td>搜索</td>
+									<td><input type="text" placeholder="Search ..." /></td>
+								</tr>
+							</table>
+						</form>
+					</div> -->
+					<div class="page-content">
+
+						<div class="row">
+							<div class="col-xs-12" style="margin-left:9%;">
+								<!-- PAGE CONTENT BEGINS -->
+								<form id="form" class="form-horizontal" role="form" method="post" action="{:U('Other/kefuliuyan')}" >
+									<input type="hidden" name="sub" value="1">
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="name"> 姓名 </label>
+										<div class="col-sm-9">
+											<input type="text" name="name" id="name" value="{$results.name}"  class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div class="form-group">
+										<label class="col-sm-3 control-label no-padding-right" for="tel"> 联系方式 </label>
+										<div class="col-sm-9">
+											<input type="text" name="tel" id="tel" value="{$results.tel}"  class="col-xs-10 col-sm-5" />
+										</div>
+									</div>
+									<div class="space-4"></div>
+
+									<div>
+										<label for="content">内容</label>
+										<textarea id="content" name="content" class="autosize-transition form-control" style="overflow: hidden; word-wrap: break-word; height: 60px; width: 83.3333%; margin: 0px -0.208333px 0px 0px;resize: vertical;">{$results.content}</textarea>
+									</div>
+
+									
+									<div class="clearfix form-actions">
+										<div class="col-md-offset-3 col-md-9">
+											<button class="btn" type="reset">
+												<i class="icon-undo bigger-110"></i>
+												重置
+											</button>
+											&nbsp;&nbsp;
+											<button class="btn btn-info">
+												<i class="icon-ok bigger-110"></i>
+												提交
+											</button>
+										</div>
+									</div>
+
+								</form>
+							</div><!-- /.col -->
+						</div><!-- /.row -->
+
+					</div>
+				</div>
+			</div><!-- /.main-content-inner -->
+		</div><!-- /.main-container -->
+	</body>
+	<script src="__PUBLIC__/style/js/Enterprises/shenqingrenzheng.js" type="text/javascript" charset="utf-8"></script>
+</html>

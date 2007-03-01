@@ -1,0 +1,192 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>列表</title>
+		<meta name="generator" content="editplus" />
+		<meta name="author" content="" />
+		<meta name="keywords" content="" />
+		<meta name="description" content="" />
+		<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+		<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+		<script type="text/javascript" src="theme/js/jquery.js"></script>
+		<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+		<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+		<script type="text/javascript" src="theme/js/common.js"></script>
+	</head>
+
+	<body>
+		<form method="get" action="" class="search-form tal" id="search-form" style='width:1050px;margin:0 auto;'>
+			<input type="hidden" name="c" value="<?=$c;?>" />
+			<input type="hidden" name="a" value="<?=$a;?>" />
+			<input type="hidden" name="status" value="<?=$status;?>" />
+			<table>
+				<tr>
+					<td class="left">时间:</td>
+					<td class='right'>
+						<input type="text"  readonly="readonly" name="date" value="<?=$date;?>" class="input finput input-date" />
+					</td>
+					<td class="left">人员姓名:</td>
+					<td class='right'>
+						<input type="text"  name="renyuan_name" value="<?=$name_name;?>" class="input finput" />
+					</td>
+				</tr>
+			</table>
+			<br />
+			<p class="button-panel">
+				<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp;
+				<button class="btn btn-button" onclick="clearForm(this.form);">清空</button>
+				<button class="btn btn-button" type="button" id="export-xls-btn" > 导出 数据</button>
+			</p>
+		</form>
+		<br/>
+
+		<div id="toolTipLayer" style="position:absolute; visibility: hidden"></div>
+		<div style='width:1200px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+			<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+				<li class="ui-state-default ui-corner-top <?=$status_n_tab;?>">
+					<a href="javascript:;">
+						<?=$date;?>月考核情况
+						<span class="cnt-total">
+      			<?=$total;?>
+      		</span>
+					</a>
+				</li>
+			</ul>
+			<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+				<table class="grid-table tal">
+					<thead>
+						<tr>
+							<th width="">编号</th>
+							<th width="">人员姓名</th>
+							<th width="">人员编号</th>
+							<th width="">当月总分</th>
+							<th width="">考核月份</th>
+							<th width="width:70px;">操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php if( $results ):foreach( $results as $row ):
+?>
+						<tr align='center' data-id="<?=$row['id']?>" style="height:27px">
+							<td>
+								<?=$row['id'];?>
+							</td>
+							<td>
+								<?=$row['name'];?>
+							</td>
+							<td>
+								<?=$row['code'];?>
+							</td>
+							<td>
+								<?=$row['day'];?>
+							</td>
+							<td>
+								<?=$row['date'];?>
+							</td>
+							<td>
+								<a href="?c=examine&a=userinfolist&exu_id=<?=$row['id'];?>&date=<?=$date;?>&name=<?=$row['name'];?>"><img src="theme/images/b_edit.png" border=0 /></a>&nbsp;&nbsp;
+							</td>
+						</tr>
+						<?php endforeach;?>
+						<?php else:?>
+						<tr>
+							<td align="center" colspan="16">未找到相关记录</td>
+						</tr>
+						<?php endif;?>
+					</tbody>
+				</table>
+				<p>
+					<?=$pages['pages'];?>
+				</p>
+			</div>
+		</div>
+	</body>
+	<script type="text/javascript">
+$(function() {
+
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm"
+	});
+	selectRow();
+	$('#export-xls-btn').click( do_export_xls );
+});
+
+function selectRow()
+		{
+			var seleRow = [];
+			$(".sys_main input[type='checkbox']").each(function()
+			{
+				if($(this)[0].checked)
+				{
+					seleRow.push($(this).data('col'));
+					$(".col-"+$(this).data('col')).css('display','');
+				}else{
+					$(".col-"+$(this).data('col')).css('display','none');
+				}
+			});
+
+			seleRow = seleRow.length>0?seleRow.join(","):'';
+			$("#search-form input[name='rows']").val(seleRow);
+			$(".pages ul li a").each(function()
+			{
+				var pagurl = '';
+				if(  getParamsByUrl($(this).attr('href'),'rows') ){
+					pagurl = $(this).attr('href').replace(/(\\?|\\&)rows=([^\\&]+)/, "rows="+seleRow);
+				}else{
+					pagurl = $(this).attr('href')+'&rows='+seleRow;
+				}
+				$(this).attr('href',pagurl);
+			});
+		}
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function getParamsByUrl(url,name)
+		{ 
+			var theRequest = new Object(); 
+			if (url.indexOf("?") != -1)
+			{ 
+				var str = url.substr(1);strs = str.split("&"); 
+				for(var i = 0; i < strs.length; i ++)
+				{ 
+					if(strs[i].split("=")[0]=='i')continue;
+					if(strs[i].split("=")[0]=='c')continue;
+					if(strs[i].split("=")[0]=='m')continue;
+					if(strs[i].split("=")[0]=='do')continue;
+					if(strs[i].split("=")[0]=='r')continue;
+					theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]); 
+				} 
+			}
+			if(name)
+			{
+				return theRequest[name]?theRequest[name]:false;
+			}else{
+				return theRequest;
+			}
+		}
+
+
+		function clearForm(objE) {
+			$(objE).find(':input').each(
+				function() {
+					switch(this.type) {
+						case "text":
+						case "select-one":
+							$(this).val('');
+							break;
+					}
+				}
+			);
+		}
+
+	</script>
+
+</html>

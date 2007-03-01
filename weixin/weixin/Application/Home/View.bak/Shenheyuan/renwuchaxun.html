@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>任务查询</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<include file='./Public/style/css/common/common.css.html,./Public/style/js/common/common.js.html' />
+	</head>
+
+	<body>
+		<div class="space-4"></div>
+		<div class="space-4"></div>
+		<div class="main-container" id="main-container">
+			<div class="main-container-inner">
+				<div class="main-content">
+					<!-- <div class="breadcrumbs" id="breadcrumbs">
+						<form class="form-search">
+							<table>
+								<tr>
+									<td>搜索</td>
+									<td><input type="text" placeholder="Search ..." /></td>
+								</tr>
+							</table>
+						</form>
+					</div> -->
+					<div class="page-content">
+						<div class="row">
+							<div class="col-xs-12">
+								<ul class="nav nav-tabs">
+									<li class="{$extraInfo.tab_class_0}">
+								    	<a href="{:U('Shenheyuan/renwuchaxun',array('tab'=>0))}">未完成{$extraInfo.tab_0}</a>
+								   </li>
+								   <li class="{$extraInfo.tab_class_1}">
+								    	<a href="{:U('Shenheyuan/renwuchaxun',array('tab'=>1))}">已完成{$extraInfo.tab_1}</a>
+								   </li>
+								</ul>
+								<div class="table-responsive">
+									<table id="sample-table-1" class="table table-striped table-bordered table-hover">
+										<thead>
+											<tr>
+												<th>企业名称</th>
+												<th>审核类型</th>
+												<th>审核员</th>
+												<th>组内身份</th>
+												<th>开始时间</th>
+												<th>结束时间</th>
+											</tr>
+										</thead>
+
+										<tbody>
+											<notempty name="results">
+												<foreach name="results" item="vo" >
+													<tr>
+														<td>{$vo.ep_name}</td>
+														<td>{$audit_type[$vo['audit_type']]}</td>
+														<td>{$vo.name}</td>
+														<td>{$role[$vo['role']]}</td>
+														<td>{$vo.taskbegindate}</td>
+														<td>{$vo.taskenddate}</td>
+													</tr>
+												</foreach>
+											</notempty>
+										</tbody>
+									</table>
+
+									<div class="modal-footer no-margin-top" style="background-color: white;">
+										{$page}
+									</div>
+								</div><!-- /.table-responsive -->
+								
+							</div><!-- /span -->
+						</div><!-- /row -->
+					</div>
+				</div>		
+			</div><!-- /.main-content-inner -->
+		</div><!-- /.main-container -->
+	</body>
+</html>

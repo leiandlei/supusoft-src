@@ -1,0 +1,38 @@
+[
+    {
+        "name": "控制台",
+        "icon": "icon-dashboard",
+        "sys": "User:index",
+        "show": "1",
+        "next": "User/index"
+    },
+    {
+        "name": "用户管理",
+        "icon": "icon-list",
+        "sys": "User:0",
+        "show": "1",
+        "next": [
+            {
+                "name": "用户列表",
+                "icon": "",
+                "sys": "User:index",
+                "show": "1",
+                "next": "User/index"
+            },
+            {
+                "name": "用户添加",
+                "icon": "",
+                "sys": "User:eid",
+                "show": "1",
+                "next": "User/eid"
+            }
+        ]
+    },
+    {
+        "name": "微信管理",
+        "icon": "icon-list",
+        "sys": "weixin:0",
+        "show": "1",
+        "next": "Weixin/eid"
+    }
+]

@@ -1,0 +1,842 @@
+<script type="text/javascript">
+$(function(){
+	$('.c-del').click(function(){
+		if(!confirm("确定删除吗？"))
+			return false;
+	});
+	$( "#einfo-tab" ).tabs({
+		collapsible: false
+	});
+
+	$('a.down-more').bind( 'click', function() {
+		var href = '?c=ajax&a=list_attach&eid='+$(this).attr('rel');
+		$('<iframe border="0" id="frame1" frameborder="no" src="' + href + '" />').dialog({
+			title: '客户文档',
+			autoOpen: true,
+			width: 620,
+			height: 380,
+			modal: true,
+			resizable: false,
+			autoResize: true,
+			overlay: {opacity: 0.5,background: "black"},
+			close: function(ev,ui){$(this).remove();}
+			}).width(600).height(380);
+	});
+	$(".a_link").on("click",function(){
+		$(this).parent().find("span").toggle();
+		})
+
+	$('a.add-site-link').click( add_site_dialog );
+	$('#add-es-btn').click( on_add_es_btn );
+	$('#esc-es-btn').click( on_esc_es_btn );
+	$('a.lists').click(function()
+	{
+
+		var eid  = $(this).parent().parent().data('eid');
+		var href = '?c=ajax&a=soneidlist&eid='+eid;
+        $('<iframe id="iframe_yjperson" border="0" frameborder="no" src="' + href + '" />').dialog({
+			title: '分公司合同信息',
+		    autoOpen: true,
+		    width: 810,
+		    height: 650,
+		    modal: true,
+		    resizable: false,
+		    autoResize: true,
+		}).width(810);
+	});
+});
+//添加分场所
+function add_site_dialog() {
+	var $this = $(this);
+	var tr = $this.parent().parent();
+	var ep_name = tr.find('.ep-name').text();
+	var ep_link = tr.find('.ep-name').attr('href'); 
+	$.url.setUrl( ep_link ); 
+	$('#es-eid').val( $.url.param('eid') ); 
+	
+	$('#es-ep-name').attr( 'href', ep_link ).attr( 'target', '_blank').text( ep_name );
+	$('#add-site-dialog').dialog({
+		title: '添加分场所',
+		autoOpen: true,
+		width: 600,
+		height: 500,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		overlay: {opacity: 0.5,background: "black"},
+		close: function(ev,ui){$(this).dialog('destroy');}
+		});
+	return false;
+}
+//提交新增的分场所信息
+function on_add_es_btn(){
+	var es_name = $('#es-name'), es_addr = $('#es-addr'), es_tel = $('#es-tel'), es_fax = $('#es-fax'),
+		es_person = $('#es-person'), es_mobile = $('#es-mobile'),es_km = $('#es-km'),es_num= $('#es-num'),
+		es_dpart= $('#es-dpart'),es_scope = $('#es-scope');
+	var es_addr_e = $('#es-addr-e'), es_name_e = $('#es-name-e'), es_note = $('#es-note');
+	var es_type = $('#es-type'), es_eid = $('#es-eid'),es_num=$("#es-num");
+
+	var r1 = es_name.val() != '', r2 = es_addr.val() != '', r3 = es_tel.val() != '', r4 = es_fax.val() != '';
+	var r5 = es_person.val() != '', r6 = es_mobile.val() != '',r7 = es_num.val() != '';
+	
+	if( !r1 ){
+		alert( '分场所名称不可以为空！' );
+		es_name[0].select();
+		return;
+	}
+	if( !r2 ){
+		alert( '分场所地址不可以为空！' );
+		es_addr[0].select();
+		return;
+	}
+	if( !r7 ){
+		alert( '分场所人数不能为空！' );
+		es_num[0].select();
+		return;
+	}
+	
+	//异步提交分场所
+	if( r1 && r2 && r7 ){
+		$.ajax({
+			url		: '?c=enterprise&a=edit_site&step=1',
+			data	: {'es_name':es_name.val(),'es_name_e':es_name_e.val(),
+						'es_addr':es_addr.val(),'es_addr_e':es_addr_e.val(),
+						'es_tel':es_tel.val(),'es_fax':es_fax.val(),
+						'es_person':es_person.val(),'es_mobile':es_mobile.val(),
+						'es_dpart':es_dpart.val(),
+						'es_km':es_km.val(),'es_num':es_num.val(),'es_scope':es_scope.val(),
+						'es_note':es_note.val(),'es_type':es_type.val(),eid:es_eid.val()},
+			type	: 'POST',
+			dataType: 'json',
+			success	: function(j){
+				if( 'ok' == j.state ){
+ 					alert( '分场所：'+es_name.val()+' 添加成功！' );
+					on_esc_es_btn();
+					location.reload();
+				}else{
+					alert('添加失败，没有插入数据库');
+					
+				}
+			}
+
+		});
+	}
+}
+
+function on_esc_es_btn(){
+	$('#es-name').val('');
+	$('#es-addr').val('');
+	$('#es-tel').val('');
+	$('#es-fax').val('');
+	$('#es-person').val('');
+	$('#es-mobile').val('');
+	$('#es-addr-e').val('');
+	$('#es-name-e').val('');
+	$('#es-note').val('');
+	$('#es-type').val('');
+	$('#es-eid').val('');
+	$('#es-km').val('');
+	$('#es-num').val('');
+	$('#es-scope').val('');
+	$('#es-dpart').val('');
+	$('#add-site-dialog').dialog('destroy');
+} 
+</script>
+<div id="einfo-tab" style="margin:0 auto;width:<?=$args['width'];?>px;" class="tal">
+	<ul>
+<?php if($is_view['archive']):?><li><a href="#tab-archive">文档信息</a></li><?php endif;?>
+<?php if($is_view['enterprise']):?><li><a href="#tab-basic">组织信息</a></li><?php endif;?>
+<?php if($is_view['contract']):?><li><a href="#tab-contract">合同评审</a></li><?php endif;?>
+<?php if($is_view['finance']):?><li><a href="#tab-finance">财务信息</a></li><?php endif;?>
+<?php if($is_view['audit']):?><li><a href="#tab-audit">审核任务</a></li><?php endif;?>
+<?php if($is_view['cert']):?><li><a href="#tab-cert">证书信息</a></li><?php endif;?>
+<?php if($is_view['archive1']):?><li><a href="#tab-archive1">历史文档信息</a></li><?php endif;?>
+	</ul>
+	
+<?php if( $is_view['enterprise'] ):?>
+	<div id="tab-basic" style="display:none;">
+		<table width="100%" class="grid-table">
+		
+			<tr>
+				<td class='tdright'>企业编号</td>
+				<td class='tdleft'><?=$e_info['code'];?></td>
+				<td class='tdright'>组织人数</td>
+				<td class='tdleft'><span id="ep-amount"><?=$e_info['ep_amount'];?></span></td>
+			</tr>
+			<tr>
+				<td class='tdright'>组织名称</td>
+				<td class='tdleft'><?=$e_info['ep_name'];?></td>
+				<td class='tdright'>组织机构代码</td>
+				<td class='tdleft'><span id="ep-amount"><?=$e_info['work_code']?></span></td>
+				<!-- <td class='tdright'>体系覆盖职能部门数</td>
+				<td class='tdleft'><span id="ep-amount"><?=$ct_infos[$_GET['ct_id']]['zxfgznbms'];?></span></td> -->
+			</tr>
+			<tr>
+				<td class='tdright'>注册地址</td>
+				<td colspan="3" class='tdleft'><?=$e_info['ep_addr'];?></td>
+			</tr>
+			<tr>
+				<td class='tdright'>办公地址</td>
+				<td colspan="3" class='tdleft'><?=$e_info['bg_addr'];?></td>
+			</tr>
+			<tr>
+				<td class='tdright'>通讯地址</td>
+				<td colspan="3" class='tdleft'><?=$e_info['cta_addr'];?></td>
+			</tr>
+			<tr>
+				<!-- @zbzytech加入判断以规避空值为定义的情况 -->
+				<td class='tdright'><?php $arr=array("","生产地址",'服务地址','运营地址');$temp=unserialize($e_info['prod_check']); if(empty($temp)) $temp=array();foreach($temp as $v) $arr1[]=$arr[$v]; if(empty($arr1)) $arr1=array();echo join("/",$arr1);?></td>
+				<td colspan="3" class='tdleft'><?=$e_info['prod_addr'];?></td>
+			</tr>
+			<tr>
+				<td class='tdright'>县/区级地址</td>
+				<td class='tdleft'><?=$e_info['areaaddr'];?></td>
+				<td class='tdright'>县/区级代码</td>
+				<td class='tdleft'><?=$e_info['areacode'];?></td>
+			</tr>
+			<tr>
+				<td class='tdright'>合同来源</td>
+				<td class='tdleft'><?=$e_info['ctfrom'];?></td>
+				<td class='tdright'>组织联系传真</td>
+				<td class='tdleft'><?=$e_info['ep_fax'];?></td>
+			</tr>
+            <tr>
+				<td class='tdright'>联系人</td>
+				<td class='tdleft'><?=$e_info['person'];?></td>
+				<td class='tdright'>联系人职务</td>
+				<td class='tdleft'><?=$e_info['person_job'];?></td>
+			</tr> 
+             <tr>
+				<td class='tdright'>联系人手机</td>
+				<td class='tdleft'><?=$e_info['person_tel'];?></td>
+				<td class='tdright'>联系人邮箱</td>
+				<td class='tdleft'><?=$e_info['person_mail'];?></td>
+			</tr> 
+            
+			<tr>
+				<td class='tdright'>法    人</td>
+				<td class='tdleft'><?=$e_info['delegate'];?></td>
+				<td class='tdright'>管理者代表</td>
+				<td class='tdleft'><?=$e_info['manager_daibiao'];?></td>
+			</tr>
+			<tr>
+				<td class='tdright'>备注</td>
+				<td class='tdleft'><?=$e_info['note']; ?></td>
+				<td class='tdright'></td>
+				<td class='tdleft'><!--<a href="?c=enterprise&a=edit&eid=<?=$e_info['eid'];?>&type=view#tab-contract" target="_blank">查看</a>--></td>
+			</tr>
+		</table>
+<?php if( $union_enterprises ):?>
+		<table class="grid-table" style="margin-top:12px;">
+			<tr>
+				<td colspan="4">关联企业&gt;&gt;</td>
+			</tr>
+		</table>
+
+<table class="grid-table">
+        <tr>
+          <th>修改</th>
+          <th width="200"  align="center">组织注册名称</th>
+          <th width="*"  align="center">省份</th>
+          <th width="*" align="center">联系人</th>
+          <th width="*" align="center">联系人手机</th>
+          <th width="*"  align="center">组织电话</th>
+          <th width="60"  align="center">组织人数</th>
+          <!-- <th width="30"  align="center">删除</th> -->
+        </tr>
+        <?php
+if( $enterprises ){
+	foreach( $enterprises as $eid => $row ){
+?>
+      <div class="<?=$row['eid'];?> show_block">
+        <tr>
+          <!--其中href属性是用来添加分场所获取eid 用的-->
+          <td align="center">
+				<a href="?c=enterprise&a=edit&eid=<?=$row['eid'];?>&pid=<?=$_GET['eid'];?>">
+					<img src="theme/images/b_edit.png" width="16" height="16" border=0 />
+				</a>
+		  </td>
+          <td width="220px" class="ep-name" href="?eid=<?=$row['eid']?>"><?=$row['ep_name'];?></td>
+          <td align="center"><?=$row['province'];?></td>
+          <td align="center"><?=$row['person'];?></td>
+          <td align="center"><?=$row['person_tel'];?></td>
+          <td align="center"><?=$row['ep_phone'];?></td>
+          <td align="center"><?=$row['ep_amount'];?></td>
+          <!-- <td align="center"><a href="?c=enterprise&a=del&eid=<?=$eid;?>" class="icon-del c-del"></a></td> -->
+        </tr>
+      </div>
+      <?php
+    
+	}
+    
+} else {
+?>
+      <tr>
+        <td colspan="14">没有找到客户</td>
+      </tr>
+      <?php
+}
+?>
+      
+    </table>
+
+<?php endif;
+if( $sub_sites ):?>
+		<table class="grid-table" style="margin-top:12px;">
+			<tr>
+				<td colspan="36">
+					分场所&gt;&gt;
+<!-- 					<span>
+						<a title="添加分场所" class="add-site-link">
+              				<img src="theme/images/b_edit.png" border=0 />
+            			</a>
+					</span> -->
+				</td>
+			</tr>
+			<tr>
+				<th>修改</th>
+				<th>分场所名称</th>
+				<th>部门</th>
+				<th>联系人</th>
+				<th>电话</th>
+				<th>人数</th>
+				<th>距离</th>
+				<th>范围</th>
+				<th>删除</th>
+			</tr>
+<?php foreach( $sub_sites as $site ):?>
+			<tr>
+				<td align="center">
+					<a href="?c=enterprise&a=edit_site&eid=<?=$site['eid'];?>&es_id=<?=$site['es_id'];?>">
+						<img src="theme/images/b_edit.png" width="16" height="16" border=0 />
+					</a>
+				</td>
+				<td><?=$site['es_name'];?></td>
+				<td><?=$site['es_dpart'];?></td>
+				<td align='center'><?=$site['es_person'];?></td>
+				<td align='center'><?=$site['es_tel'];?></td>
+				<td align='center'><?=$site['es_num'];?></td>
+				<td align='center'><?=$site['es_km'];?></td>
+				<td align='center'>
+				<?php
+if( $site['es_scope'] ){
+?>
+<a href="javascript:;" title="<?=$site['es_scope']?>"><img src="theme/images/other.png" border="0" /></a> 
+<?php
+}
+?>
+				</td>
+				<td align="center">
+					<a href="?c=enterprise&a=del&eid=<?=$site['eid'];?>" class="icon-del c-del"></a>
+				</td>
+			</tr>
+<?php endforeach;?>
+		</table>
+<?php endif;?>
+	</div>
+<?php endif;?>
+<?php if( $is_view['contract'] ):?>
+<div id="tab-contract" style="display:none;">
+		
+<?php 
+$flag=0;
+foreach($ct_infos as $key=>$contract)
+{
+	$contract_enterprises = $db-> getOne('select * from sp_enterprises where eid='.$contract['eid']);
+$flag++;
+//@zxl 2013-11-20 18:05:21	
+?><table class="grid-table" <?php if($ct_id && $key!=$ct_id) echo "style='display:none;'";else echo "id=grid-table$ct_id";?>>
+		<tr>
+			<td class='tdleft' colspan='4'>
+				公司名称：<?=$contract_enterprises['ep_name']?>
+			</td>
+			
+		</tr>
+		<tr>
+			<td class='tdleft' colspan='4'>
+			合同编号：<?=$contract['ct_code'];?>
+			<br />合同状态: &nbsp;<?php echo r_sys_cache('contract_status',$contract['status']) ?>
+			<br/>项目组备注：<span style="color:red"><?=$contract['note'];?></span>
+			<br/>
+			<?php if(!$auditor):?>
+				市场要求：<?=$contract['mark_require'];?>
+				<br/>审核要求：<?=$contract['audit_require'];?>
+				<br/>评审备注：<?=$contract['review_note'];?>
+			<?php endif; ?>
+			 <tr>
+	          <td>结合度:</td>
+	          <td></td>
+	          <td>开始时间:</td>
+	          <td><?=$contract['start_date'];?></td>
+	       </tr>
+        </tr>
+        <tr>
+          <td>管理体系文件:</td>
+          <td ><?=$contract['gltx_jhd'];?></td>
+          <td>系统过程管理:</td>
+          <td ><?=$contract['xtgc_jhd'];?></td>
+        </tr>
+
+       <tr>
+          <td>管理评审:</td>
+          <td><?=$contract['glps_jhd'];?></td>
+          <td>内审:</td>
+          <td><?=$contract['ns_jhd'];?></td>
+        </tr>
+
+        <tr>
+          <td>方针和目标:</td>
+          <td><?=$contract['fzhmb_jhd'];?></td>
+       
+          <td>改进机制:</td>
+          <td ><?=$contract['gjjz_jhd'];?></td>
+        </tr>
+        <tr>
+          <td>管理职责和支持:</td>
+          <td><?=$contract['glzz_jhd'];?></td>
+       
+          <td>总结合度:</td>
+          <td ><?=$contract['sum_jhd'];?></td>
+        </tr>
+				</td>
+			</tr>
+		<tr>
+			<td colspan="20">
+				&nbsp;
+			</td>
+		</tr>
+
+			
+
+
+<?php 
+if($contract['items'])
+foreach($contract['items'] as $item){ ?>
+			<tr>
+				<td class='tdright'>标准版本：</td>
+				<td class='tdleft'><?=f_audit_ver($item['audit_ver']);?></td>
+				<td class='tdright'>审核类型：</td>
+				<td class='tdleft'><?=f_audit_type($item['audit_type']);?></td>
+			</tr>
+			<tr>
+				<td class='tdright'>风险等级：</td>
+				<td class='tdleft'><?=$item['risk_level'];?></td>
+				<td class='tdright'>体系人数：</td>
+				<td class='tdleft'><?=$item['total'];?></td>
+			</tr>
+			
+			<tr>
+				<td class='tdright'>基础人日：</td>
+				<td class='tdleft'><?=$item['base_num'];?></td>
+                <?php if($item['audit_type']!='1007'){ ?>
+				<td class='tdright'>一阶段现场人日：</td>
+				<td class='tdleft'><?=$item['yjdxc_num'];?></td>
+                <?php }?>
+			</tr>
+			<tr>
+				<td class='tdright'><?=$item['audit_type']=='1007'?'再认证':'二阶段';?>现场人日：</td>
+				<td class='tdleft'><?=$item['ejdxc_num'];?></td>
+				<td class='tdright'>监督现场人日：</td>
+				<td class='tdleft'><?=$item['jdxc_num'];?></td>
+			</tr>
+            <tr>
+				<td class='tdright'>下一周期再认证人日：</td>
+				<td class='tdleft'><?=$item['zrz_num'];?></td>
+				<td class='tdright'>删减条款</td>
+				<td class='tdleft'><?=$item['exc_clauses'];?></td>
+			</tr>
+            <tr>
+            <td class='tdright'>分组代码(GC)：</td>
+				<td class='tdleft'><?=$item['use_code_2017'];?></td>
+                <td class='tdright'>专业代码(GC)：</td>
+				<td class='tdleft'><?=$item['audit_code_2017'];?></td>
+				<!--<td class='tdright'>认可标志：</td>
+				<td class='tdleft'><?=f_mark($item['mark']);?></td>-->
+				
+			</tr>
+			<td class='tdright'>分组代码(TRC)：</td>
+				<td class='tdleft'><?=$item['use_code'];?></td>
+                <td class='tdright'>专业代码(TRC)：</td>
+				<td class='tdleft'><?=$item['audit_code'];?></td>
+				<!--<td class='tdright'>认可标志：</td>
+				<td class='tdleft'><?=f_mark($item['mark']);?></td>-->
+				
+			</tr>
+            <tr>
+				<td class='tdright'>审核范围：</td>
+				<td class='tdleft' colspan=3><?=$item['scope'];?></td>
+			</tr>
+	
+<?php
+}
+?>
+	<tr>
+		<td colspan="20"><b>分公司信息：</b></td>
+	</tr>
+	<tr>
+      <th align="center" colspan="3">公司名称</td>
+      <th align="center">详情</td>
+      <!-- <td align="center"><a href="?c=enterprise&a=del&eid=<?=$eid;?>" class="icon-del c-del"></a></td> -->
+    </tr>
+   <?php if( $enterprises ){ foreach( $enterprises as $eid => $row ){ ?>
+	    <div class="<?=$row['eid'];?> show_block">
+	       
+	        <tr data-eid="<?=$row['eid']?>">
+	          <td  align="center" class="ep-name" href="?eid=<?=$row['eid']?>" colspan="3"><?=$row['ep_name'];?></td>
+	          <td  align="center"><a href="###" class="lists" ><img src="theme/images/select1.gif" border="0" title="详情"></a></td>
+	        </tr>
+	    </div>
+	<?php } } else { ?>
+	    <tr>
+	    	<td colspan="14">没有找到客户</td>
+	    </tr>
+	<?php } ?>
+			
+		
+		
+     <?php if($contract['child']) {?>
+    <tr><td colspan="4">子公司</td></tr>
+    <?php foreach($contract['child'] as $v){ ?>
+    <tr><td><?=$v[name]?></td><td colspan="2">初审：<?=$v[cs]?>&nbsp;&nbsp;&nbsp;监一：<?=$v[jy]?>&nbsp;&nbsp;&nbsp;监二：<?=$v[je]?>&nbsp;&nbsp;&nbsp;再认证：<?=$v[js]?> 分组代码：<?=$v[use_code]?></td><td>范围：<?=$v[scope]?></td></tr>
+    <?php }}?>
+     <?php if($contract['site']) {?>
+    <tr><td colspan="4">分场所</td></tr>
+     <?php foreach($contract['site'] as $v){ ?>
+    <tr><td><?=$v[name]?></td><td colspan="3">初审：<?=$v[cs]?>&nbsp;&nbsp;&nbsp;监一：<?=$v[jy]?>&nbsp;&nbsp;&nbsp;监二：<?=$v[je]?>&nbsp;&nbsp;&nbsp;再认证：<?=$v[js]?></td></tr>
+    <?php }}?>
+	</table>
+	<div style="height:3px;">&nbsp;</div>
+	<?php
+}
+if($ct_id && $flag>1){
+
+?>
+<p align="right"><a href="javascript:" onclick='javascript:$("#tab-contract table[id!=grid-table<?=$ct_id?>]").toggle();'>更多</a></p>
+<?php } ?>
+</div>
+<?php endif;?>
+
+<?php if( $is_view['finance'] ):?>
+	<div id="tab-finance" style="display:none;">
+		<table class="grid-table">
+			<tr>
+				<td colspan="4">合同费用</td>
+			</tr>
+			<tr align='center'>
+				<th>合同编号</th>
+				<th>收费项目</th>
+				<th>收费类型</th>
+				<th>合同金额</th>
+			</tr>
+<?php foreach($contract_costs as $cost){ ?>
+			<tr align='center'>
+				<td><?=$cost['ct_code'];?></td>
+				<td>
+					<?php
+						$cost_iso=explode('|',$cost['iso']);
+						foreach($cost_iso as $k=>$v){
+							$cost_iso[$k]=f_iso($v);
+						}
+						echo implode('<br>',$cost_iso);
+					?></td>
+				<td><?=f_cost_type($cost['cost_type'])?></td>
+				<td><?=$cost['cost']?></td>
+			</tr>
+<?php } ?>
+		</table>
+		<table class="grid-table" style="margin-top:9px;">
+			<tr>
+				<td colspan="6">收费明细</td>
+			</tr>
+			<tr align='center'>
+				<th>体系</th>
+				<th>审核类型</th>
+				<th>发票号</th>
+				<th>发票金额</th>
+				<th>发票日期</th>
+				<th>是否交完</th>
+			</tr>
+<?php foreach($finance_datiles as $item){ ?>
+			<tr align='center'>
+				<td><?=f_iso($item['iso'])?></td>
+				<td><?=f_audit_type($item['audit_type'])?></td>
+				<td><?=$item['invoice']?></td>
+				<td><?=$item['invoice_cost']?></td>
+				<td><?=$item['invoice_date']?></td>
+				<td><?=$item['is_finance']?></td>
+			</tr>
+<?php } ?>
+		</table>
+	</div>
+<?php endif;?>
+
+
+<?php if( $is_view['audit'] ):?>
+	<div id="tab-audit" style="display:none;">
+<?php if( $t_infos ): $flag=0;foreach( $t_infos as $key => $t_info ):
+	$flag++;
+?>
+	<table class="grid-table" <?php if($tid && $key!=$tid) echo "id='grid' style='display:none;'";else echo "id=grid-table$tid";?>>
+			<tr>
+				<th>审核类型</th>
+				<td><?=join(";",$t_info['audit_type']);?></td>
+				<th>总人日</th>
+				<td><?=$t_info['tk_num'];?></td>
+			</tr>
+			<tr>
+				<th>任务开始</th>
+				<td><?=$t_info['tb_date'];?></td>
+				<th>任务结束</th>
+				<td><?=$t_info['te_date'];?></td>
+			</tr>
+			<tr>
+				<td colspan="4">
+					<?php if( $t_info['items'] ):?>
+					<table class="grid-table">
+						<tr>
+							<th>标准</th>
+							<th>审核类型</th>
+							<th>专业代码</th>
+							<th>认证范围</th>
+							<th>评定日期</th>
+							<th>评定结果</th>
+						</tr>
+						<?php foreach( $t_info['items'] as $pid => $item ):?>
+						<tr>
+							<td><?=$item['iso_V'];?></td>
+							<td><?=$item['audit_type_V'];?></td>
+							<td><?=$item['audit_code'];?></td>
+							<td><?=$item['scope'];?></td>
+							<td><?=$item['assess_date'];?></td>
+							<td><?=$item['pd_type'];?></td>
+						</tr>
+						<?php endforeach;?>
+					</table>
+					<?php  endif;?>
+					<?php if( $t_info['auditors'] ):?>
+					<table class="grid-table" style="margin-top:9px;" >
+						<tr>
+							<th>审核员</th>
+							<th>体系</th>
+							<!-- <th>是否组长</th> -->
+							<th>组内身份</th>
+							<th>注册资格</th>
+                            <th>分组(GC)</th>
+                            <th>专业代码(GC)</th>
+                            
+                            <th>分组(TRC)</th>
+                            <th>专业代码(TRC)</th>
+							<!--th>专业代码</th-->
+							<th>联系方式</th>
+                            <th width="80">审核开始</th>
+                            <th width="80">审核结束</th>
+                            <th>天数</th>
+                            <th>所属公司</th>
+						</tr>
+						<?php foreach( $t_info['auditors'] as $pid => $auditor ) { 
+							$auditor['epname'] =  $db->get_var("select ep_name from sp_enterprises where eid=".$auditor['eid']);
+							//@HBJ 2013-9-28 没有注册资格的不显示
+							if (!empty($auditor['qua_type_V']) or 1){
+							?>
+						<tr>
+							<td><?=$auditor['name'];?></td>
+							<td><?=f_iso($auditor['iso']);?></td>
+							<!-- <td><?=$auditor['is_leader'];?></td> -->
+							<td><?=f_audit_role($auditor['role']);?></td>
+							<td><?=$auditor['qua_type_V'];?></td>
+                            <td><?=$auditor['use_code_2017'];?></td>
+                            <td><?=$auditor['audit_code_2017'];?></td>
+                            
+                            <td><?=$auditor['use_code'];?></td>
+                            <td><?=$auditor['audit_code'];?></td>
+							<!--td><?=$auditor['audit_code'];?></td-->
+							<td><?=$auditor['tel'];?></td>
+                            <td><?=$auditor['taskBeginDate'];?></td>
+                            <td><?=$auditor['taskEndDate'];?></td>
+                            <td><?=$auditor['num'];?></td>
+                            <td><?=$auditor['epname'];?></td>
+                            
+						</tr>
+
+						<?php }}?>
+					</table>
+					<?php  endif;?>
+					<br/>
+				</td>
+			</tr>
+		</table>
+
+<?php endforeach; endif;?>
+<div style="height:3px;">&nbsp;</div>
+<?php
+
+if($tid && $flag>1){
+?>
+<p align="right"><a href="javascript:" onclick='javascript:$("#tab-audit table[id=grid]").toggle();'>更多</a></p>
+<?php } ?>
+	</div>
+	
+<?php endif;?>
+
+
+
+<?php if( $is_view['assess'] ):?>
+	<div id="tab-assess" style="display:none;">
+		<table width="100%" class="grid-table">
+			<tr>
+				<th width="80">证书编号</th>
+				<th width="80">认可标志</th>
+				<th width="80">发证日期</th>
+				<th width="80">到期日期</th>
+				<th width="60">换证日期</th>
+				<th width="80">证书范围</th>
+				<th width="60">状态</th>
+			</tr>
+<?php foreach($pds as $pd_id => $pd ){ ?>		
+			<tr align='center'>
+				<td><?=$value['certno'];?></td>
+				<td><?=f_mark($value['mark']);?></td>
+				<td><?=$value['s_date'];?></td>
+				<td><?=$value['e_date'];?></td>
+				<td><?=$value['e_date'];?></td>
+				<td><a href='#' title='<?=$value['cert_scope'];?>' class="a_link"><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$value['cert_scope'];?></span></a></td>
+				<td><?=$value['status'];?></td>
+			</tr>
+<?php } ?>		
+		</table>
+	</div>
+<?php endif;?>
+
+
+<?php if( $is_view['cert'] ):?>
+	<div id="tab-cert" style="display:none;">
+		<table class="grid-table">
+			<tr>
+				<th width="80">证书编号</th>
+				<th width="80">认可标志</th>
+				<th width="80">发证日期</th>
+				<th width="80">到期日期</th>
+				<th width="60">换证日期</th>
+				<th width="80">证书范围</th>
+				<th width="60">状态</th>
+			</tr>
+<?php foreach($certs as $cid => $cert ){ ?>		
+			<tr align='center'>
+				<td><?=$cert['certno'];?></td>
+				<td><?=f_mark($cert['mark']);?></td>
+				<td><?=$cert['s_date'];?></td>
+				<td><?=$cert['e_date'];?></td>
+				<td><?=$cert['e_date'];?></td>
+				<td><a href='#' title='<?=$cert['cert_scope'];?>' class="a_link"><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$cert['cert_scope'];?></span></a></td>
+				<td><?=f_certstate($cert['status']);?></td>
+			</tr>
+<?php } ?>		
+		</table>
+		<table class="grid-table" style="margin-top:9px;">
+			<tr>
+				<td><strong>证书变更记录&gt;&gt;</strong></td>
+			</tr>
+			<tr>
+				<td>
+<?php if( $certs ): foreach( $certs as $zs_id => $cert ): if(!$cert_changes[$zs_id]) continue; ?>
+					<table class="grid-table" style="margin: 5px 0 9px;">
+						<tr>
+							<td colspan="7">证书编号：<a name="<?=$cert['certno'];?>" href="javascript:;"><?=$cert['certno'];?></a></td>
+						</tr>
+						<tr>
+							<th>变更类型</th> 
+							<th>变更内容</th>
+							
+							<th>变更日期</th>
+							<th>应注销日期</th>
+                            <th>审批日期</th>
+							<th>备注</th>
+						</tr>
+		<?php if( isset( $cert_changes[$zs_id] ) ): foreach( $cert_changes[$zs_id] as $cg_id => $log ):?>
+						<tr>
+							<td><?=read_cache('certchange',$log['cg_type']);?></td> 
+							<td><?=$log['cg_content'];?></td>
+ 							<td><?=$log['cgs_date'];?></td>
+							<td><?=$log['cge_date'];?></td>
+                            <td><?=$log['pass_date'];?></td>
+							<td></td>
+						</tr>
+		<?php endforeach;endif;?>
+					</table>
+<?php endforeach;endif;?>
+				</td>
+			</tr>
+		</table>
+	</div>
+<?php endif;?>
+
+<?php if( $is_view['archive'] ):?>
+	<div id="tab-archive" style="display:none;">
+		<table width="100%" class="grid-table">
+			<tr>
+				<th>文档名</th>
+				<th>文档类型</th>
+				<th>备注</th>
+				<th>上传时间</th>
+				<th>上传人</th>
+				<th>下载</th>
+                <th>删除</th>
+			</tr>
+<?php 
+	foreach($archives as $aid => $archive ){
+?>
+			<tr>
+				<td><?=$archive['name'];?></td>
+				<td><?=$archive['ftype'];?></td>
+				<td>
+				<?php if($archive['description']){?><a href="javascript:;" title="<?=$archive['description'];?>"><img src="theme/images/other.png" border="0" /></a><?php } ?>
+				</td>
+				<td><?=$archive['create_date'];?></td>
+				<td><?=f_username($archive['create_uid']);?></td>
+				<td align="center"><a href="?c=attachment&a=down&aid=<?=$archive['id'];?>" title="下载"><img src="theme/images/down.gif" width="16" height="16" border=0 /></a></td>
+                <?php if(current_user("uid")==1 or current_user("uid")==$archive[create_uid]){ ?>
+                <td align="center"><a href="?c=enterprise&a=delattach&aid=<?=$archive['id'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+                <?php }else{ ?>
+                <td></td>
+                <?php }?>
+			</tr>
+<?php } ?>
+			
+		</table>
+        <p><?=$pages['pages'];?></p>
+	</div>
+<?php endif;?>
+
+
+<?php if( $is_view['archive1'] ):?>
+	<div id="tab-archive1" style="display:none;">
+		<table width="100%" class="grid-table">
+			<tr>
+				<th>文档名</th>
+				<th>文档类型</th>
+				<th>备注</th>
+				<th>上传时间</th>
+				<th>上传人</th>
+				<th>下载</th>
+			</tr>
+<?php 
+	foreach($archives1 as $aid => $archive ){
+?>
+			<tr>
+				<td><?=$archive['name'];?></td>
+				<td><?=$archive['ftype'];?></td>
+				<td>
+				<?php if($archive['description']){?><a href="javascript:;" title="<?=$archive['description'];?>"><img src="theme/images/other.png" border="0" /></a><?php } ?>
+				</td>
+				<td><?=$archive['create_date'];?></td>
+				<td><?=$archive['create_uid'];?></td>
+				<td align="center"><a href="?c=attachment&a=down&aid=<?=$archive['id'];?>" title="下载"><img src="theme/images/down.gif" width="16" height="16" border=0 /></a></td>
+			</tr>
+<?php } ?>
+			
+		</table>
+        
+	</div>
+<?php endif;?>
+
+</div>

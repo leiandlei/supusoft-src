@@ -1,0 +1,63 @@
+<? tpl('header')?>
+<script src="theme/loaders/script/modernizr-2.8.2.js"></script>
+<link rel="stylesheet" href="theme/loaders/css/main.css">
+<link rel="stylesheet" href="theme/loaders/css/load5.css">
+<script type="text/javascript">
+
+$(function() { 
+
+	$( "#audit-down-tab" ).tabs({
+		collapsible: false
+	});
+});
+
+</script>
+<style>
+li {
+	overflow: hidden;
+}
+.zhuyi{
+  margin-bottom: -30px;
+}
+</style>
+</head>
+
+<body style="padding-bottom:20px;">
+<br/>
+<div id="audit-down-tab" style="margin:0 auto;width:750px;height:550px" class="tal">
+  <ul>
+    <li></li>
+  </ul>
+  <div id="tab-audit" style="padding-left: 30px;padding-top: 11px;">
+    <form id='docdown_from' accept-charset="utf-8">
+      <dl class="doc-down">
+        <dd>
+          <ul class="doc-list2 clearfix">
+            <?=$a_link?>
+          </ul>
+        </dd>
+     <!--    <p color="red">6666666</P> -->
+      </dl>
+      <div class="zhuyi">
+      <span class="red"><?=$ep_name;?><?=$char;?></span></div>
+
+
+    </form>
+  </div>
+  <div id="tab-task">
+    <dd>
+      <ul class="doc-list2 clearfix">
+        <?php
+        if( $task_docs ): foreach( $task_docs as $doc ):?>
+        <li><a href="?c=attachment&a=down&aid=<?=$doc['id'];?>">
+          <?=$doc['name'];?>
+          </a></li>
+        <?php endforeach; endif;?>
+      </ul>
+    </dd>
+  </div>
+</div>
+
+
+</body>
+</html>

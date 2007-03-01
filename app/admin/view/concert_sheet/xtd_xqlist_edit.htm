@@ -1,0 +1,428 @@
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合作方项目协调单修改</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<link href="theme/js/time/jquery-ui-timepicker-addon.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/region.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript" src="theme/js/time/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="theme/js/time/jquery-ui-timepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() { 
+	var region = Region.init('data/cache/region.json');
+	window.region = region;
+
+	$('#select-region').click( region_dlg );
+	$('#select-audit_ver').click( audit_ver_dlg );
+	$('.c-del').click(function(){ 
+		confirm_dialog('确定删除配置信息？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});  
+});
+function region_dlg(){
+		$('#select-region-dialog').dialog({
+			title	: '选择行政区',
+			width	: 500,
+			height	: 150,
+			modal: true,
+			resizable: false,
+			autoResize: true,
+			buttons	:{
+				'取消'	: function(){
+					 $(this).dialog("close");
+				},
+				'确定'	: function(){
+					var r = false;
+					var country = parseInt($('#statecode').val());
+					
+					var code_city = $('#city-select').val();
+					var code_district = $('#district-select').val();
+					
+					var code = $('#district-select').val();
+					if( !code )
+						code = $('#city-select').val();
+
+					//if( (code && code.substring(4,6) != '00') || 156 != country ){
+					if( (DistrictNum==0 && code_city) || (DistrictNum!=0 && code_district) ){
+						var text = $('#province-select').find('option:selected').text() + $('#city-select').find('option:selected').text() + $('#district-select').find('option:selected').text();
+						text = text.replace('市辖区','');
+						text = text.replace('--县','');
+						text = text.replace('请选择市','');
+						text = text.replace('请选择区/县','');
+						$('#areaaddr').val(text);
+						$(this).dialog('close');
+					} else {
+						alert( '请选择行政区！' );
+					}
+				}
+			},
+			open	: function(){
+				var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+				btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+			}
+		});
+	}
+function audit_ver_dlg(){
+	// var id = $(this).parent().data('id');
+	$('<iframe src=?c=ajax&a=select_audit_ver></iframe>').dialog({
+		title	: '选择所属体系',
+		width	: 400,
+		height	: 320,
+		cache:false,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		buttons	:{
+			'取消'	: function(){
+				 $(this).dialog("close");
+			},
+			'确定'	: function(){
+				var s_str = '';
+				var old_str=$('#audit_ver').val(); 
+				$(this).contents().find('input.s-audit_ver').each(function(index){
+					if( $(this).attr( 'checked' ) && $(this).val() )
+						s_str += $(this).val() + ';';
+				});  
+				 
+				if(old_str!=0){//如果原数据不为0的情况下追加
+				s_str = s_str+old_str;
+				}
+				 
+				$('#audit_ver').val( s_str );
+				$(this).dialog('close');
+			}
+		},
+		open	: function(){
+			var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+			btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+		}
+	}).width(780);
+}
+
+
+</script>
+</head>
+<body>
+<div id="select-region-dialog" class="tal" style="display:none;">
+  <p style="margin-bottom:8px;">请选择行政区(到区/县)，完成后点确定。</p>
+  <p> <span id="prov-span">
+    <select name="province" id="province-select" style="width:130px;">
+      <option value="">选择省</option>
+    </select>
+    </span> <span id="city-span">
+    <select name="city" id="city-select" style="width:160px;">
+      <option value="">请选择市</option>
+    </select>
+    </span> <span id="dist-span">
+    <select name="district" id="district-select" style="width:150px;">
+      <option value="">请选择区/县</option>
+    </select>
+    </span> </p>
+</div>
+<form method="post" id="from" action="?c=concert_sheet&a=xtd_xqlist_edit&ctfrom=<?=$ctfrom;?>">
+	<input id="id" type="hidden" name="id" value="<?=$id;?>" />
+	<input type="hidden" name="sub" value="1">
+	<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+		<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+		    <li>修改详情单</li>
+		 </ul>
+		<div id="tab-basic">
+			<ul class="main-form">
+				<li>
+					<label class="field">企业名称</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="name" name="name" value="<?=$name;?>" dataType="Require" msg="请输入合作方名称！"   class="input"/>
+					</span> 
+					<label class="field">地点</label>
+					<em>*</em>
+					<span>
+				        <input type="text" id="areaaddr"  name="areaaddr" value="<?=$areaaddr;?>"  readOnly/>
+				        <i class="i-select" id="select-region" style="vertical-align: bottom;"></i>
+					</span>
+				
+				</li>
+				<li>
+					<label class="field">办公地址</label>
+					<em></em>
+					<span>
+						<textarea cols="44" rows="3" id="epaddr" name="epaddr" style="width:490px;"><?=$epaddr;?></textarea>
+					</span> 
+				</li>
+				<li>
+					<label class="field">联系人</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="person" name="person" value="<?=$person;?>"   class="input"/>
+					</span> 
+					<label class="field">联系电话</label>
+					<em>*</em>
+					<span>
+						<input type="text" id="person_tel" name="person_tel" value="<?=$person_tel;?>"   class="input"/>
+					</span> 
+				</li>
+				<li>
+					<label class="field">地点附近车站及路途</label>
+					<em></em>
+					<span>
+						<input type="text" id="station" name="station" value="<?=$station;?>" msg="请输入合作方地点！"   class="input"/>
+					</span>
+					<label class="field">申请体系</label>
+					<em></em>
+					<span >
+							<label>
+								<input type="text"  id="audit_ver" name="audit_ver[<?=$audit_ver;?>]" class="audit_ver" value="<?=$audit_ver;?>"  />
+	        					<i id="select-audit_ver" class="i-select" style="vertical-align: bottom;" ></i>
+	       					 </label>
+					</span>
+ 
+			    </li>
+				<li>
+					<label class="field">人数</label>
+					<em></em>
+					<span>
+						<input type="text" id="renshu" name="renshu" value="<?=$renshu;?>" class="input" />
+					</span> 
+			    </li>
+				<li>
+					<label class="field">范围</label>
+					<em></em>
+					<span>
+						<textarea cols="44" rows="3" id="scope" name="scope" style="width:490px;"><?=$scope;?></textarea>
+					</span> 
+				</li>
+				<li>
+					<label class="field">合作方备注</label>
+					<em></em>
+					<span>
+						<textarea cols="44" rows="3" id="partner_note" name="partner_note" style="width:490px;"><?=$partner_note;?></textarea>
+					</span> 
+				</li>
+				<?php if ($usertype=='stuff') { ?>	
+					<li>	
+						<label class="field">专业代码(GC)</label>
+						<em></em>
+						<span>
+							<input type="text" id="zhuanye_2017" name="zhuanye_2017" value="<?=$zhuanye_2017;?>" class="input" />
+						</span>
+						<label class="field">专业代码(TRC)</label>
+						<em></em>
+						<span>
+							<input type="text" id="zhuanye" name="zhuanye" value="<?=$zhuanye;?>" class="input" />
+						</span>
+					</li>
+				<?php } ?>
+				<?php if ($usertype=='hezuofang') { ?>	
+					<li>	
+						<label class="field">专业代码(GC)</label>
+						<em></em>
+						<span>
+							<input type="text" id="zhuanye_2017" name="zhuanye_2017" value="<?=$zhuanye_2017;?>" class="input" disabled/>
+							<input type="text" id="zhuanye_2017" name="zhuanye_2017" value="<?=$zhuanye_2017;?>" class="input" hidden/>
+						</span>
+						<label class="field">专业代码(TRC)</label>
+						<em></em>
+						<span>
+							<input type="text" id="zhuanye" name="zhuanye" value="<?=$zhuanye;?>" class="input" disabled/>
+							<input type="text" id="zhuanye" name="zhuanye" value="<?=$zhuanye;?>" class="input" hidden/>
+						</span>
+						
+					</li>
+				<?php } ?>
+					<li>
+						<label class="field">一阶段审核开始时间</label>
+						<em></em>
+						<span>
+						    <input type="text" id="yjdshsj_start" name="yjdshsj_start" value="<?=$yjdshsj_start;?>" class="input-date" style="width:130px" />
+						</span>
+						<span style="width:80px"></span>
+						<label class="field">一阶段审核结束时间</label>
+						<em></em>
+						<span>
+						    <input type="text" id="yjdshsj_end" name="yjdshsj_end" value="<?=$yjdshsj_end;?>" class="input-date" style="width:130px" />
+						</span>
+					</li>
+					<li>
+						<label class="field">二阶段审核开始时间</label>
+						<em></em>
+						<span>
+							<input type="text" id="ejdshsj_start" name="ejdshsj_start" value="<?=$ejdshsj_start;?>" class="input-date" style="width:130px" />
+						</span>
+						<span style="width:80px"></span>
+						<label class="field" >二阶段审核结束时间</label>
+						<em></em>
+						<span >
+							<input type="text" id="ejdshsj_end" name="ejdshsj_end" value="<?=$ejdshsj_end;?>" class="input-date" style="width:130px"  />
+						</span>
+				    </li>
+				
+				    <li>
+				    	<?php if ($usertype=='stuff') { ?>	
+					    	<label class="field">现场总人日</label>
+							<em></em>
+							<span>
+								<input type="text" id="total_num" name="total_num" value="<?=$total_num;?>" class="input" />
+							</span>
+						<?php } ?>
+						<label class="field">审核类型</label>
+						<em></em>
+						<span>
+							<select  style='width:167px' name="audit_type" dataType="Require" msg="请选择审核类型！" class="audit_type">
+                            <option value="">==请选择==</option>
+                            <option value="1001" <?= $audit_type=='1001'?'selected':'';?>>初审</option>
+                            <option value="1004" <?= $audit_type=='1004'?'selected':'';?>>监一</option>
+                            <option value="1005" <?= $audit_type=='1005'?'selected':'';?>>监二</option>
+                            <option value="1007" <?= $audit_type=='1007'?'selected':'';?>>再认证</option>
+                          	</select>
+						</span>
+					</li>
+			
+                <?php if ($usertype=='hezuofang') { ?>	
+					<li>
+				    	<label class="field">现场总人日</label>
+						<em></em>
+						<span>
+							<input type="text" id="total_num" name="total_num" value="<?=$total_num;?>" class="input"   disabled/>
+							<input type="text" id="total_num" name="total_num" value="<?=$total_num;?>" class="input"   hidden/>
+						</span>
+					</li>
+                <?php } ?>
+				<?php if ($userids=="98"|| $userids=="265") { ?>
+						<li>
+							<label class="field">实际安排人员</label>
+							<em></em>
+							<span>
+								<textarea cols="44" rows="3" id="sj_preson" name="sj_preson" style="width:490px;"><?=$sj_preson;?></textarea>
+							</span> 
+					    </li>
+				<?php } ?>
+				<?php if ($usertype=='stuff') { ?>
+					<li>
+						<label class="field">增减人日说明</label>
+						<em></em>
+						<span>
+							<textarea cols="44" rows="3" id="zjrr" name="zjrr" style="width:490px;"><?=$zjrr;?></textarea>
+						</span> 
+				    </li>
+				<?php } ?>
+				    <li>
+				    	<label class="field">组长</label>
+						<em></em>
+						<span>
+							<input type="text" id="leader" name="leader" value="<?=$leader;?>" class="input" />
+						</span>
+						<label class="field">组员</label>
+						<em></em>
+						<span>
+							<input type="text" id="zuyuan" name="zuyuan" value="<?=$zuyuan;?>" class="input" />
+						</span>
+				    </li>
+
+					<li>
+						<label class="field">技术专家</label>
+						<em></em>
+						<span>
+							<input type="text" id="jszj" name="jszj" value="<?=$jszj;?>" class="input" />
+						</span> 
+					</li>
+					<li>
+						<label class="field">营业范围</label>
+						<em></em>
+						<span>
+						<textarea cols="44" rows="3" id="manage_scope" name="manage_scope" style="width:490px;"><?=$manage_scope;?></textarea>
+						</span> 
+					</li>
+				<?php if ($usertype=='stuff') { ?>
+					<li>
+						<label class="field">机构备注信息</label>
+						<em></em>
+						<span>
+							<textarea cols="74" id="note" rows="3" name="note" style="width:490px;"><?=$note;?></textarea>
+						</span> 
+					</li>
+				<?php } ?>
+				<?php if ($usertype=='hezuofang') { ?>
+					<li>
+						<label class="field">机构备注信息</label>
+						<em></em>
+						<span>
+							<textarea cols="74" id="note" rows="3" name="note" style="width:490px;" disabled><?=$note;?></textarea>
+							<textarea cols="74" id="note" rows="3" name="note" style="width:490px;" hidden><?=$note;?></textarea>
+						</span> 
+					</li>
+				<?php } ?>
+				<?php if ($usertype=='stuff') { ?>
+					<li>
+						<label class="field">项目进度</label>
+							<em></em>
+							<span> 
+								<td>
+					            	<select class="status_change" name="status">
+					            		<option value="1" <?= $status=='1'?'selected':'';?>>待受理</option>
+					            		<option value="2" <?= $status=='2'?'selected':'';?>>待处理</option>
+					            		<option value="3" <?= $status=='3'?'selected':'';?>>策划中</option>
+					            		<option value="4" <?= $status=='4'?'selected':'';?>>已派组</option>
+					            		<option value="5" <?= $status=='5'?'selected':'';?>>待回卷</option>
+					            		<option value="6" <?= $status=='6'?'selected':'';?>>评定中</option>
+					            		<option value="7" <?= $status=='7'?'selected':'';?>>整改中</option>
+										<option value="8" <?= $status=='8'?'selected':'';?>>已发证</option>
+										<option value="9" <?= $status=='9'?'selected':'';?>>不受理</option>
+
+					            	</select>
+					            </td>
+				            </span>
+				        
+					</li>
+					<li>
+						<!--<label class="field">合同受理时间</label>
+						<em></em>
+						<span>
+						     <input type="text" id="contract_time" name="contract_time" value="<?=$contract_time;?>" class="input-date" />
+						</span>-->
+						<label class="field">创建时间</label>
+						<em></em>
+						<span>
+						     <input type="text" id="createTime" name="createTime" value="<?=$createTime;?>" class="input-date" disabled/>
+							<input type="text" id="createTime" name="createTime" value="<?=$createTime;?>" class="input-date" hidden/>
+						</span>
+					</li>
+				<?php } ?>
+			</ul>
+			<p>
+				<center style="margin-bottom: 10px;">
+					<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+					<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$ctfrom;?>" title="关闭窗口">返回列表</a>
+				</center>
+			</p>
+		</div>
+	</div>
+</form>
+
+</body>
+<script type="text/javascript">
+$(function(){
+	$('button.submit-btn').on('click',function(){
+    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+    $('#from').submit();
+  });
+
+	
+	 
+});
+    $("input.input-date").datetimepicker({    
+        defaultDate: $('input.input-date').val(),    
+        dateFormat: "yy-mm-dd",    
+        showSecond: true,    
+        timeFormat: 'HH:mm:ss',    
+        stepHour: 1,    
+        stepMinute: 1,    
+        stepSecond: 1    
+    })    
+   
+</script>
+</html>

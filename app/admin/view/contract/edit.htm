@@ -1,0 +1,726 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同登记</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<style type="text/css">
+.ctxm-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.ctxm-table .td {
+  padding: 5px;
+  border: 1px solid #ccc;
+}
+.txxm-table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+.txxm-table td {
+  padding: .4em .6em;
+  border: 1px solid #f2f6fb;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+
+
+// var tx_num=(document.getElementById("ep-amount").innerHTML)*2/3;
+// $("#tx_num").val(Math.floor(tx_num));
+
+
+
+  $( "#contract-tab" ).tabs({
+    collapsible: false
+  });
+  $( "input.input-date" ).datepicker({
+    changeMonth : true,
+    changeYear  : true,
+    dateFormat  : "yy-mm-dd"
+  });
+  $('#add-record').click(addRecord);
+  //$("#ct_code").on("blur",function(){
+    //$(".cti_code").val($("#ct_code").val());
+    //})
+  $("#ct_code").on("blur",function(){
+    // $(".cti_code").val($("#ct_code").val());
+    var self=$(this);
+    $.get("?c=ajax&a=contract&ct_code="+self.val(),function(data){ 
+    
+      if(data.length==4){
+        alert("合同号已存在！！"); 
+        }
+      })
+      
+    });
+
+  $(document).on("change",".banben",function(){
+//	alert(111);
+    var mydate = new Date();
+    var year = "" + mydate.getFullYear();
+    switch($(this).find("option:selected").text()){
+      case '服务认证':var banben = 'SC';break;
+      case 'QMS08':var banben = 'Q';break;
+      case 'QMS15':var banben = 'Q';break;
+      case 'EMS04':var banben = 'E';break;
+      case 'EMS15':var banben = 'E';break;
+      case 'OHSMS':var banben = 'S';break;
+      
+      default:var banben = 'Q';
+    }
+    var bianhao = $(this).data('code')+'-'+year+'-'+banben;
+    
+    $(this).parent().parent().next().find('td input.cti_code').val(bianhao);
+  });
+
+<?php
+if( !$ct_id && !$op ):
+?>
+  addRecord();
+<?php
+endif;
+?>
+  $('.mark-item').click(function(){
+    var marks = [];
+    $(this).parent().parent().find('.mark-item').each(function(){
+      if( $(this).attr('checked') ){
+        marks.push(this.value );
+      }
+    });
+    mark = $(this).parent().parent().find('.v-mark');
+    mark.val(marks.join(','));
+    //alert(mark.val());
+    
+  });
+  $('.del-item').on( 'click', delRecord );
+  $('select.is-turn').on('change', _turn );
+  $('select.audit_type').on('change',getZero);
+  turn_show();
+
+  $('input.cnt-total').bind( 'blur', check_iso_total );
+
+  $('button.submit-btn').click(function(){
+    //审核预期不能小于当前日期 
+    $pre_date=$('input[name=pre_date]').val();
+    $pre_date=new Date($pre_date.replace("-", "/"));
+    //暂时去掉 这个限制 @zxl 2014-07-21 10:01:17
+    if(0 && $pre_date< new Date()){
+      alert('预审日期不能小于当前日期');
+      return false;
+    }
+       
+    if( !Validator.Validate( document.forms[0], 2 ) ) return;
+    var ep_total = parseInt( $('#ep-amount').text() );
+    var small_total = Math.floor(ep_total*2/3);
+    var iso_totals = $('input.cnt-total');
+    for( var i = 0; i < iso_totals.length; i++ ){
+      var iso_total = parseInt( iso_totals[i].value );
+      if( iso_total > ep_total ){
+        alert( '体系人数不可以大于企业人数！' );
+        return;
+      }
+      if( iso_total < small_total ){
+        alert( '体系人数不可以小于企业人数的三分之二！' );
+        return;
+      }
+    }
+    $('#edit-contract').submit();
+  });
+  
+  
+  $('.pizhu_radio').on('change',function(event) {
+      if( $(this).val()==5 ){
+          $('.pizhu_textarea').show();
+      }else{
+          $('.pizhu_textarea').hide();
+      }
+     
+    })
+    
+  
+    
+
+});
+
+var add_cnt = 0;
+function addRecord(){
+  tbody = $('#ctxm-items');
+
+  tr = $('#ctxm-item');
+  new_tr = tr.clone();
+  new_tr.attr('id','');
+  new_tr.find('.input_date').datepicker({
+    changeMonth : true,
+    changeYear  : true,
+    dateFormat  : "yy-mm-dd"
+  });
+  new_tr.find('input[name="add[mark][]"]').each(function(){
+    $(this).attr( 'name', "add[mark]["+add_cnt+"][]" );
+  });
+  new_tr.find('a.last-copy').click( last_copy );
+  add_cnt += 1;
+  new_tr.show();
+
+  tbody.append(new_tr);
+}
+
+function last_copy(){
+  var o = $(this);
+  var tr = o.parent().parent().parent().parent().parent().parent();
+  var _tr = tr.prev();
+  if( _tr.length < 1 )
+    return;
+  
+  tr.find('.cnt-scope').val( _tr.find('.cnt-scope').val() );
+  tr.find('.cnt-total').val( _tr.find('.cnt-total').val() );
+
+}
+
+function _turn(){
+  var o = $(this).parent().parent().parent().parent();
+  tr = o.find( 'tr.old-jg' );
+  if( 1 == parseInt( $(this).val() ) ){
+    tr.show();
+    tr.find("input").attr("dataType","Require");
+  } else {
+    tr.hide();
+    tr.find("input").attr("dataType","");
+  }
+}
+
+function getZero(){
+  var v = $(this).val();
+  if(v == '1001'){
+    var t =$(this).parent().parent().parent();
+    t.find("input.cnt-renum").attr("value","0");
+  }
+}
+//edit
+function turn_show(){
+  $('select.is-turn').each(function(){
+    var o = $(this).parent().parent().parent().parent();
+    tr = o.find( 'tr.old-jg' );
+    if( 1 == parseInt( $(this).val() ) ){
+      tr.show();
+      tr.find("input").attr("dataType","Require");
+    } else {
+      tr.hide();
+      tr.find("input").attr("dataType","");
+    }
+  });
+}
+
+function delRecord(){
+  tr = $(this).parent().parent();
+  id = tr.attr( 'cti' );
+  if( id == undefined || id == '' ){
+    tr.remove();
+  } else {
+    $.get("?c=ajax&a=contract&cti_id="+id,function(data){
+      if(data=='ok')
+      tr.remove();
+      
+      })
+  }
+}
+
+function check_iso_total(){
+  var iso_total = parseInt( this.value );
+  var ep_total = parseInt( $('#ep-amount').text() );
+  if( ep_total < iso_total )
+    alert( '体系人数不可以大于企业人数！' );
+  
+}
+/*function check(){
+  var self=$("#ct_code");
+  $.get("?c=ajax&a=contract&ct_code="+self.val(),function(data){ 
+    if(data){
+      confirm("合同号已存在！！");
+      self.focus();
+      return false;
+      }
+    })
+
+}*/
+
+
+
+
+
+</script>
+</head>
+
+<body>
+<?php  echo einfo("ct_id=$ct_id&eid=$eid");//@zxl2013-11-20 18:09:21?>
+
+<br/>
+<!-- 合同查询 -->
+<form method="post" id="edit-contract" action="<?=$REAUEST_URI;?>" >
+  <input type="hidden" name="step" value="1" />
+  <?php if( $ct_id && !$op ):?>
+  <input type="hidden" name="ct_id" value="<?=$ct_id;?>" />
+  <?php endif;?>
+  <div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+      <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">合同登记</a></li>
+    </ul>
+    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+      <table width="100%">
+        <tr>
+          <td width="80">合同编号</td>
+          <td width="250"><input type="text" style=" width: 190px" id="ct_code" name="ct_code"  <?php if($ct_code){?>value="<?=$ct_code;?>"<?php }else{?> value="<?=$num;?>"<?php }?>/></td>
+          <td  <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?> width="80">是否初次</td>
+          <td  <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?> width="250">
+            <label>
+              <input type="radio" name="is_first" value="n" <?=$is_first_N;?>/>
+              否
+            </label>
+            &nbsp; &nbsp;
+            <label>
+              <input type="radio" name="is_first" value="y" <?=$is_first_Y;?>/>
+              是
+              </label>
+            </td>
+        </tr>
+        <tr>
+          <td  <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>受理日期</td>
+          <td  <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>><input type="text" name="accept_date"  msg="请输入受理日期！" value="<?=$accept_date;?>" <?=$approval_disabled;?> class="input input-date" style=" width: 190px"/>
+            <span class="cRed">*</span></td>
+          <td>审核预期</td>
+          <td><input type="text" name="pre_date" dataType="Require" msg="请输入审核预期！" value="<?=$pre_date;?>" class="input input-date" style=" width: 190px" />
+            <span class="cRed">*</span></td>
+        </tr>
+        <tr>
+          <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>合同负责人</td>
+          <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>><select name="signe_name" style=" width: 190px">
+              <option value="">--请选择--</option>
+              <?=$signe_select;?>
+            </select>
+          </td>
+           <td>体系覆盖职能部门数</td>
+          <td>
+            <input type="text"  msg="体系覆盖职能部门数!" id="" name="zxfgznbms" value="<?=$zxfgznbms;?>" class="input" style="width:190px" />
+            <span class="cRed"></span>
+          </td>
+        </tr>
+        </tr>
+        <tr>
+          <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>市场要求</td>
+          <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>><textarea name="mark_require" rows="2" style=" width: 190px"><?=$mark_require;?>
+</textarea></td>
+      
+          <td>审核要求</td>
+          <td ><textarea name="audit_require" rows="2" style=" width: 190px"><?=$audit_require;?>
+</textarea></td>
+        </tr>
+        <tr>
+          <td>财务要求</td>
+          <td  ><textarea name="finance_require" rows="2" style=" width: 190px"><?=$finance_require;?>
+</textarea></td>
+       
+          <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>项目组备注</td>
+          <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>><textarea name="note" rows="2" style=" width: 190px"><?=$note;?>
+</textarea></td>
+        </tr>
+      <tr>
+          <td>企业资质</td>
+          <td  ><textarea name="zizhi_require" rows="2" style=" width: 190px"><?=$zizhi_require;?>
+</textarea></td>
+          <td>开始日期</td>
+          <td><input type="text" name="start_date" value="<?=$start_date;?>" class="input input-date" style=" width: 190px" />
+        
+          
+        </tr>
+
+        <tr>
+          <td>结合度:</td>
+        </tr>
+        <tr>
+        </tr>
+        <tr>
+          <td>管理体系文件:</td>
+          <td  ><input type="text"   style='width:100px' name="gltx_jhd" value="<?=($gltx_jhd=='')?'':(($gltx_jhd=='0')?'0':$gltx_jhd);?>" /> %</td>
+       
+          <td>系统过程管理:</td>
+          <td ><input type="text"   style='width:100px'  value="<?=($xtgc_jhd=='')?'':(($xtgc_jhd=='0')?'0':$xtgc_jhd);?>"  name="xtgc_jhd" /> %</td>
+        </tr>
+       <tr>
+          <td>管理评审:</td>
+          <td  ><input type="text"   style='width:100px' name="glps_jhd" 
+                  value="<?=($glps_jhd=='')?'':(($glps_jhd=='0')?'0':$glps_jhd);?>" /> %</td>
+       
+          <td>内审:</td>
+          <td ><input type="text"   style='width:100px'  name="ns_jhd" 
+          value="<?=($ns_jhd=='')?'':(($ns_jhd=='0')?'0':$ns_jhd);?>" /> %</td>
+        </tr>
+        <tr>
+          <td>方针和目标:</td>
+          <td  ><input type="text"   style='width:100px' name="fzhmb_jhd" 
+                       value="<?=($fzhmb_jhd=='')?'':(($fzhmb_jhd=='0')?'0':$fzhmb_jhd);?>" /> %</td>
+       
+          <td>改进机制:</td>
+          <td ><input type="text"  style='width:100px'   name="gjjz_jhd" 
+          value="<?=($gjjz_jhd=='')?'':(($gjjz_jhd=='0')?'0':$gjjz_jhd);?>" /> %</td>
+        </tr>
+        <tr>
+          <td>管理职责和支持:</td>
+          <td  ><input type="text"   style='width:100px' name="glzz_jhd" 
+                       value="<?=($glzz_jhd=='')?'':(($glzz_jhd=='0')?'0':$glzz_jhd);?>" /> %</td>
+       
+          <td>总结合度:</td>
+          <td ><input type="text"   style='width:100px'   name="sum_jhd" 
+          value="<?=($sum_jhd=='')?'':(($sum_jhd=='0')?'0':$sum_jhd);?>" /> %</td>
+        </tr>
+
+
+        <tr>
+          <td valign="top">体系项目<br/>
+            <button <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?> class="btn btn-submit" type="button" id="add-record"<?=$save_disabled;?>>添加</button></td>
+          <td colspan="3"><table width="100%" class="ctxm-table">
+              <tbody id="ctxm-items">
+                <?php
+if( $projects && !$op ){
+  foreach( $projects as $cti_id => $project ){
+?>
+                <tr id="tr-<?=$cti_id;?>" cti='<?=$cti_id;?>'>
+                  <td class="td" style="position:relative;"><table id="<?=$cti_id;?>" width="100%" class="txxm-table" >
+                      <tr>
+                        <td>标准版本</td>
+                        <td><select style="width:167px" name="audit_ver[<?=$cti_id;?>]" class="banben" data-code="<?=$enterList['code'];?>" dataType="Require" msg="请选择标准版本！" >
+                            <option value="">==请选择==</option>
+                            <?=$project['audit_ver_select'];?>
+                          </select>
+                          <span class="cRed">*</span>(<a href="javascript:;" class="last-copy">同上</a>)</td>
+                        <td>审核类型</td>
+                        <td><select  style='width:167px' name="audit_type[<?=$cti_id;?>]" dataType="Require" msg="请选择审核类型！" class="audit_type">
+                            <option value="">==请选择==</option>
+                            <?=$project['audit_type_select'];?>
+                          </select>
+                          <span class="cRed">*</span></td>
+                      </tr>
+                      <tr>
+                        <td>项目编号</td>
+                        <td><input type="text" class="cti_code"   style='width:160px' dataType="Require" msg="请输入项目编号！" name="cti_code[<?=$cti_id;?>]" 
+                        value="<?=$project['cti_code'];?>" />
+                          <span class="cRed">*</span></td>
+                        <td>体系人数</td>
+                        <td><input type="text"  style='width:160px' dataType="Require" msg="请输入体系人数！" name="total[<?=$cti_id;?>]" value="<?=floor($project['total']);?>" class="cnt-total" />
+                          <span class="cRed">*</span></td>
+                      </tr>
+
+                      <tr>
+                        <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>复评次数</td>
+                        <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>><input  style='width:160px' type="text" dataType="Require" msg="请输入复评次数！" name="renum[<?=$cti_id;?>]" value="<?=$project['renum'];?>" class="cnt-renum"/>
+                          <span class="cRed">*</span></td>
+                        <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>机构转入</td>
+                        <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>><select  style='width:167px' name="is_turn[<?=$cti_id;?>]" class="is-turn">
+                            <option value="0" <?=$project['is_turn_0'];?>>否</option>
+                            <option value="1" <?=$project['is_turn_1'];?>>是</option>
+                          </select></td>
+                      </tr>
+                      <tr>
+                        <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>>是否获证</td>
+                        <td <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?>><select style='width:167px' name="is_obtain[<?=$cti_id;?>]" class="is-obtain">
+                            <option value="0" <?=$project['is_obtain_0'];?>>否</option>
+                            <option value="1" <?=$project['is_obtain_1'];?>>是</option>
+                          </select></td>
+                      </tr>
+                      <tr>
+                        <td>申请范围</td>
+                        <td colspan="3">
+                          <textarea  dataType="Require" msg="请输入申请范围！" name="scope[<?=$cti_id;?>]" rows="3" style=" width: 496px" class="cnt-scope"><?=empty($project['new_scope'])?$project['scope']:$project['new_scope'];?></textarea>
+                          <span class="cRed">*</span>
+                        </td>
+                      </tr>
+                      <tr style="display:none;" class="old-jg">
+                        <td colspan="4"><table width="100%">
+                            <tr>
+                              <td width="80">原颁证机构：</td>
+                              <td width="200"><input type="text" name="old_name[<?=$cti_id;?>]" dataType="Require" msg="请输入原颁证机构！" value="<?=$project['old_name'];?>" class="input" />
+                                <span class="cRed">*</span></td>
+                              <td width="80">原注册日期：</td>
+                              <td><input type="text" name="old_sdate[<?=$cti_id;?>]" dataType="Require" msg="请输入注册日期！" value="<?=$project['old_sdate'];?>" class="input input-date" size="12" />
+                                <span class="cRed">*</span></td>
+                            </tr>
+                            <tr>
+                              <td>原证书号：</td>
+                              <td><input type="text" name="old_cert_no[<?=$cti_id;?>]" dataType="Require" msg="请输入原证书号！" value="<?=$project['old_cert_no'];?>" class="input" />
+                                <span class="cRed">*</span></td>
+                              <td>原截止日期：</td>
+                              <td><input type="text" name="old_edate[<?=$cti_id;?>]" dataType="Require" msg="请输入原截止日期！" value="<?=$project['old_edate'];?>" class="input input-date" size="12" />
+                                <span class="cRed">*</span></td>
+                            </tr>
+                            <tr>
+                              <td>原审核日：</td>
+                              <td><input type="text" name="old_pddate[<?=$cti_id;?>]" dataType="Require" msg="请输入原审核日！" value="<?=$project['old_pddate'];?>" class="input input-date" size="12" />
+                                <span class="cRed">*</span></td>
+                              <td>原审核类型：</td>
+                              <td><select  style='width:100px' name="old_autype[<?=$cti_id;?>]" >
+                                  <option value="">==请选择==</option>
+                                  <?=$project['old_autype_select'];?>
+                                </select>
+                                <span class="cRed">*</span></td>
+                            </tr>
+                          </table></td>
+                      </tr>
+                    </table>
+                    <span <?php if(current_user('usertype')==2)echo 'style="display: none;"' ?> class="del-item" style="position:absolute;top:12px;right:12px;cursor:pointer;"><img src="theme/images/b_drop.png" border=0 /></span></td>
+                </tr>
+                <?php
+  }
+} elseif( $projects && $op ){
+  foreach( $projects as $cti_id => $project ){
+?>
+                <tr>
+                  <td class="td" style="position:relative;"><table width="100%" class="txxm-table" >
+                      <tr>
+                        <td>标准版本</td>
+                        <td><select style="width:167px" class="banben" name="add[audit_ver][<?=$cti_id;?>]"  data-code="<?=$enterList['code'];?>" dataType="Require" msg="请选择标准版本！" >
+                            <option value="">==请选择==</option>
+                            <?=$project['audit_ver_select'];?>
+                          </select>
+                          <span class="cRed">*</span>(<a href="javascript:;" class="last-copy">同上</a>)</td>
+                        <td>审核类型</td>
+                        <td><select  style='width:167px' name="add[audit_type][<?=$cti_id;?>]" dataType="Require" msg="请选择审核类型！" class="audit_type">
+                            <option value="">==请选择==</option>
+                            <?=$project['audit_type_select'];?>
+                          </select>
+                          <span class="cRed">*</span></td>
+                      </tr>
+                      <tr>
+                        <td>项目编号</td>
+                        <td><input type="text"  style='width:160px' class="cti_code" dataType="Require" msg="请输入项目编号！" name="add[cti_code][<?=$cti_id;?>]" value="" />
+                          <span class="cRed">*</span></td>
+                        <td>体系人数</td>
+                        <td><input type="text"  style='width:160px' dataType="Require" msg="请输入体系人数！" name="add[total][<?=$cti_id;?>]" value="<?=floor($project['total']);?>" class="cnt-total" />
+                          <span class="cRed">*</span></td>
+                      </tr>
+                      <tr>
+                        <td>复评次数</td>
+                        <td><input  style='width:160px' type="text" dataType="Require" msg="请输入复评次数！" name="add[renum][<?=$cti_id;?>]" value="<?=floor($project['renum']);?>" class="cnt-renum"/>
+                          <span class="cRed">*</span></td>
+                        <td>机构转入</td>
+                        <td><select  style='width:167px' name="add[is_turn][<?=$cti_id;?>]" class="is-turn">
+                            <option value="0" <?=$project['is_turn_0'];?>>否</option>
+                            <option value="1" <?=$project['is_turn_1'];?>>是</option>
+                          </select></td>
+                      </tr>
+
+                      <tr>
+                        <td>是否获证</td>
+                        <td><select style='width:167px' name="add[is_obtain][<?=$cti_id;?>]" class="is-obtain">
+                            <option value="0" <?=$project['is_obtain_0'];?>>否</option>
+                            <option value="1" <?=$project['is_obtain_1'];?>>是</option>
+                          </select></td>
+                      </tr>
+                        <td>申请范围</td>
+                        <td colspan="3">
+                          <textarea dataType="Require" msg="请输入申请范围！" name="add[scope][<?=$cti_id;?>]" rows="3" style=" width: 496px" class="cnt-scope"><?=$project['scope'];?></textarea>
+                          <span class="cRed">*</span>
+                        </td>
+                      </tr>
+                      <tr style="display:none;" class="old-jg">
+                        <td colspan="4"><table width="100%">
+                            <tr>
+                              <td width="80">原颁证机构：</td>
+                              <td width="200"><input type="text" name="add[old_name][<?=$cti_id;?>]" dataType="Require" msg="请输入原颁证机构！" value="<?=$project['old_name'];?>" class="input" />
+                                <span class="cRed">*</span></td>
+                              <td width="80">原注册日期：</td>
+                              <td><input type="text" name="add[old_sdate][<?=$cti_id;?>]" dataType="Require" msg="请输入原注册日期！" value="<?=$project['old_sdate'];?>" class="input input-date" size="12" />
+                                <span class="cRed">*</span></td>
+                            </tr>
+                            <tr>
+                              <td>原证书号：</td>
+                              <td><input type="text" name="add[old_cert_no][<?=$cti_id;?>]" dataType="Require" msg="请输入原证书号！" value="<?=$project['old_cert_no'];?>" class="input" />
+                                <span class="cRed">*</span></td>
+                              <td>原截止日期：</td>
+                              <td><input type="text" name="add[old_edate][<?=$cti_id;?>]" dataType="Require" msg="请输入原截止日期！" value="<?=$project['old_edate'];?>" class="input input-date" size="12" />
+                                <span class="cRed">*</span></td>
+                            </tr>
+                            <tr>
+                              <td>原审核日：</td>
+                              <td><input type="text" name="add[old_pddate][<?=$cti_id;?>]" dataType="Require" msg="请输入原审核日！" value="<?=$project['old_pddate'];?>" class="input input-date" size="12" />
+                                <span class="cRed">*</span></td>
+                              <td>原审核类型：</td>
+                              <td><select  style='width:100px' name="old_autype[<?=$cti_id;?>]" >
+                                  <option value="">==请选择==</option>
+                                  <?=$project['old_autype_select'];?>
+                                </select>
+                                <span class="cRed">*</span></td>
+                            </tr>
+                          </table></td>
+                      </tr>
+                    </table>
+                    <span class="del-item" style="position:absolute;top:12px;right:12px;cursor:pointer;"><img src="theme/images/b_drop.png" border=0 /></span></td>
+                </tr>
+                <?php
+  }
+}
+?>
+              </tbody>
+            </table></td>
+        </tr>
+      </table>
+      <br/>
+     
+    <p class="button-panel tac">
+      <?php
+        if(current_user('usertype')==1 && !empty($_GET['ct_id'])){
+      ?>
+          <label <?=$approval_hidden;?>><input checked type="radio" class='pizhu_radio' name="status" value="5" <?= $approval_checked;?> <?=$save_disabled;?>/>交回企业修订</label> &nbsp;
+          <label <?=$approval_hidden;?>><input type="radio" class='pizhu_radio' name="status" value="1" <?= $approval_checked;?><?=$save_disabled;?> />已受理</label> &nbsp;
+      <?php
+        }
+      ?>
+       <button type="button" class="btn btn-submit submit-btn" 2014-07-16 10:20:13<?=$save_disabled;?>> 保 存 </button>
+    </p>
+        
+      <!-- <p class="button-panel tac">
+        <label>
+          <input type="checkbox" name="status" value="<?=$status;?>" <?=$checked;?> />
+          已登记</label>
+        &nbsp;
+        <button type="button" class="btn btn-submit submit-btn" > 保 存 </button>
+         </p> -->
+        <?php
+            //$pizhu = '批注批注批注批注批注批注批注批注批注批注批注批注批注批注';
+           if(current_user('usertype')==1 && !empty($_GET['ct_id'])){
+        ?>
+          <p style="margin-top:15px" class="pizhu_textarea tac">
+            <label>
+                修订批注
+            </label>
+            &nbsp;
+            <span>
+              <textarea rows="4" name='pizhu' style="width: 628px;margin-left: 23px;height: 200px;" class="cnt-scope"><?=$pizhu;?></textarea>
+            </span>
+         </p>
+        <?php
+        }else if( !empty($pizhu) && current_user('usertype')==2 ){
+        ?>
+          <p style="margin-top:15px" class="tac">
+            <label>
+                修订批注
+            </label>
+            &nbsp;
+            <span>
+              <textarea disabled rows="4" style="width: 628px;margin-left: 23px;height: 200px;" class="cnt-scope"><?=$pizhu;?></textarea>
+            </span>
+         </p>
+        <?php
+        }
+        ?>
+         
+    </div>
+  </div>
+</form>
+
+
+
+
+
+
+
+
+
+<!-- 新合同登记 -->
+<table style="display:none;">
+  <tr id="ctxm-item" style="display:none;">
+    <td class="td" style="position:relative;"><table width="100%" class="txxm-table">
+        <tr>
+          <td>标准版本</td>
+          <td>
+          <select style='width:167px' class="banben" data-code="<?=$enterList['code'];?>" dataType="Require" msg="请选择标准版本！" name="add[audit_ver][]">
+              <option value="">==请选择==</option>
+              <?=$audit_ver_select;?>
+            </select>
+            <span class="cRed">*</span>(<a href="javascript:;" class="last-copy">同上</a>)</td>
+          <td>审核类型</td>
+          <td><select style='width:167px' dataType="Require" msg="请选择审核类型！" name="add[audit_type][]" class="audit_type">
+              <option value="">==请选择==</option>
+              <?=$audit_type_select;?>
+            </select>
+            <span class="cRed">*</span></td>
+        </tr>
+        <tr>
+          <td>项目编号</td>
+          <td>
+            <input type="text" style='width:160px' class="cti_code" dataType="Require" msg="请输入项目编号！" name="add[cti_code][]" value="" />
+            <span class="cRed">*</span></td>
+          <td>体系人数</td>
+          <td><input type="text" style='width:160px' dataType="Require"   id="tx_num"   msg="请输入体系人数！" name="add[total][]" class="cnt-total" value="" />
+            <span class="cRed">*</span></td>
+        </tr>
+        <tr>
+          <td>复评次数</td>
+          <td><input type="text" style='width:160px' name="add[renum][]" dataType="Require" msg="请输入复评次数！" class="cnt-renum" value="0" />
+            <span class="cRed">*</span></td>
+          <td>机构转入</td>
+          <td><select style='width:167px' name="add[is_turn][]" class="is-turn">
+              <option value="0">否</option>
+              <option value="1">是</option>
+            </select></td>
+        </tr>
+
+        <tr>
+          <td>是否获证</td>
+          <td><select style='width:167px' name="add[is_obtain][]" class="is-obtain">
+              <option value="0">否</option>
+              <option value="1">是</option>
+            </select></td>
+        </tr>
+        <tr>
+          <td>申请范围</td>
+          <td colspan="3">
+            <textarea dataType="Require" msg="请输入申请范围！" name="add[scope][]" rows="3" style=" width: 496px" class="cnt-scope"></textarea>
+            <span class="cRed">*</span>
+          </td>
+        </tr>
+        <tr style="display:none;" class="old-jg">
+          <td colspan="4"><table width="100%">
+              <tr>
+                <td width="80">原颁证机构：</td>
+                <td width="200"><input type="text" name="add[old_name][]" dataType="Require" msg="请输入原颁证机构！" value="" class="input" />
+                  <span class="cRed">*</span></td>
+                <td width="80">原注册日期：</td>
+                <td><input type="text" name="add[old_sdate][]" dataType="Require" msg="请输入原注册日期！" value="" class="input input_date" size="12" />
+                  <span class="cRed">*</span></td>
+              </tr>
+              <tr>
+                <td>原证书号：</td>
+                <td><input type="text" name="add[old_cert_no][]" dataType="Require" msg="请输入原证书号！" value="" class="input" />
+                  <span class="cRed">*</span></td>
+                <td>原截止日期：</td>
+                <td><input type="text" name="add[old_edate][]" dataType="Require" msg="请输入原截止日期！" value="" class="input input_date" size="12" />
+                  <span class="cRed">*</span></td>
+              </tr>
+              <tr>
+                <td>原审核日：</td>
+                <td><input type="text" name="add[old_pddate][]" dataType="Require" msg="请输入原审核日！" value="" class="input input_date" size="12" />
+                  <span class="cRed">*</span></td>
+                <td>原审核类型：</td>
+                <td><select  style='width:100px' name="add[old_autype][]">
+                    <option value="">==请选择==</option>
+                    <?=$audit_type_select;?>
+                  </select>
+                  <span class="cRed">*</span></td>
+              </tr>
+            </table></td>
+        </tr>
+      </table>
+      <span class="del-item" style="position:absolute;top:12px;right:12px;cursor:pointer;"><img src="theme/images/b_drop.png" border=0 /></span></td>
+  </tr>
+</table>
+</body>
+</html>

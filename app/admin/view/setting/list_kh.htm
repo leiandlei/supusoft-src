@@ -1,0 +1,156 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>系统配置</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script>
+$(function(){
+	$('.c-del').click(function(){ 
+		confirm_dialog('确定删除配置信息？', $(this).attr( 'href' ), 'warning' );
+		return false;
+
+	});
+	$(".fenzhi").on('change',function()
+	{
+		var qujian    = $(this).parent().parent().find('.fw option:selected').val();
+		var value     = $(this).val();
+		console.log(value);
+		console.log(qujian);
+		if(qujian!='1' && qujian!='2'){
+			$(this).val('');
+			alert('请先选择是否为区间值');
+			return false;
+		}else{
+		if(qujian=='1')
+		{
+			reg = /^(\+|\-)?\d+(\.\d+)?$/;
+		}else{
+			reg = /^[\d]+[-]{1}[\d]+$/;
+		}
+		if( !reg.test(value) )
+		{
+			$(this).val('');
+			alert('输入值不是区间范围');
+			return false;
+		}
+		}
+	})
+})
+</script>
+</head>
+<body>
+	<div style="margin:0 auto;width:800px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+		<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+			<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">系统设置</a></li>
+		</ul>
+		<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+			<form method="post" action="?c=setting&a=save_sh">
+				<input type="hidden" name="type" value="<?=$type;?>" />
+				<input type="hidden" name="source" value="<?=$a;?>" />
+				
+				<table class="form-table tal">
+					<tr>
+						<th style="width:50px">排序</th>
+						<th style="width:100px">内容</th>
+						<th style="width:100px">类型</th>
+						<th style="width:100px">分值</th>
+						<th style="width:50px">是否为区间值</th>
+						<th style="width:50px">考核方式</th>						
+						<th style="width:120px">状态</th>
+						<th >删除</th>
+					</tr>
+					<?php
+					if( $results ){
+						foreach( $results as $id => $row ){
+							$row['stop_Y'] = $row['is_stop'] ? 'checked' : '';
+							$row['stop_N'] = $row['is_stop'] ? '' : 'checked';
+							// $row['xinyong'] = $row['stypes'] ? 'checked' : '';
+							// $row['nengli'] = $row['stypes'] ? '' : 'checked';
+					?>
+					<tr align="center">
+					    <td><input size="2" type="text" name="vieworder[<?=$row['id'];?>]" value="<?=$row['vieworder'];?>" class="input" /></td>
+						<td><input size="20" type="text" name="name[<?=$row['id'];?>]" value="<?=$row['name'];?>" class="input" /></td>
+				        <td align="center">	                        
+							<select  name="types_s[<?=$row['id'];?>]" class='fselect' > 
+								 <option <?php if($row['types']==0)echo 'selected';?> value="0">能力类</option>
+                    			 <option <?php if($row['types']==1)echo 'selected';?> value="1">信用类</option>
+							</select>
+				        </td>
+						<td><input size="6" type="text" name="day[<?=$row['id'];?>]" value="<?=$row['day'];?>" class="input fenzhi" /></td>
+                        
+                        <td align="center">	                        
+							<select  name="fanwei_s[<?=$row['id'];?>]" class='fw' > 
+								 <option <?php if($row['fanwei']==1)echo 'selected';?> value="1">否</option>
+                    			 <option <?php if($row['fanwei']==2)echo 'selected';?> value="2">是</option>
+							</select>
+				        </td>
+
+				        <td align="center">	                        
+							<select  name="operation_s[<?=$row['id'];?>]" class='fselect' > 
+								 <option <?php if($row['operation']==1)echo 'selected';?> value="1">加分</option>
+                    			 <option <?php if($row['operation']==2)echo 'selected';?> value="2">减分</option>
+							</select>
+				        </td>
+
+						<td>
+							<input type="radio" id="stop-{<?=$row['id'];?>}-N" name="is_stop[<?=$row['id'];?>]" value="0" <?=$row['stop_N'];?>/><label for="stop-{<?=$id;?>}-N"> 启用</label>
+							<input type="radio" id="stop-{<?=$row['id'];?>}-Y" name="is_stop[<?=$row['id'];?>]" value="1" <?=$row['stop_Y'];?>/><label for="stop-{<?=$id;?>}-Y"> 停用</label>
+						</td>
+						<td><img src="theme/images/b_drop.png" border=0 /></td>
+					</tr>
+					<?php
+						}
+					}
+					?>
+					<tr align="center">
+					    <td><input size="2" type="text" name="new[vieworder][]" value="" class="input" /></td>
+						<td><input size="20" type="text" name="new[name][]" value="" class="input" /></td>
+						<td align="center">
+				        	<select  name="new[types_s][]" value="" class='fselect' >
+							     <option>请选择</option>
+								 <option value="0">能力类</option>
+                    			 <option value="1">信用类</option>
+							</select>
+				        </td>
+ 	                <td><input size="6" type="text" name="new[day][]" value="" class="input fenzhi" /></td>
+					
+                    <td align="center">
+				        	<select  name="new[fanwei_s][]" value="" class='fselect fw' >
+							     <option>请选择</option>
+								 <option value="1">否</option>
+                    			 <option value="2">是</option>
+							</select>
+				    </td>
+
+                    <td align="center">
+				        	<select  name="new[operation_s][]" value="" class='fselect' >
+							     <option>请选择</option>
+								 <option value="1">加分</option>
+                    			 <option value="2">减分</option>
+							</select>
+				    </td>
+
+						<td>
+							<label><input size="2" type="radio" name="new[is_stop][]" value="0" /> 启用</label>
+							<label><input size="2" type="radio" name="new[is_stop][]" value="1" /> 停用</label>
+						</td>
+						<td></td>
+					</tr>
+					<tr>
+						<td colspan="5" class="cRed">说明：请谨慎修改以上设置，CNAS设定的请不要修改。
+						</td>
+					</tr>
+					<tr>
+						<td colspan="5"><center><button class="btn btn-submit" type="submit"> 保 存 </button></center></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</body>
+</html>

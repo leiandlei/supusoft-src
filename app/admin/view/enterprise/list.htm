@@ -1,0 +1,409 @@
+<? tpl('header');?> 
+<script>
+$(function() {
+	$('.c-del').click(function(){
+		var tr = $(this).parent().parent();
+		var ep_name = tr.find('.ep-name').text();
+		confirm_dialog('要删除客户：'+ep_name+'？本操作将删除企业所有合同以及审核项目！', $(this).attr( 'href' ), 'warning' );
+		return false;
+	}); 
+	$('table.list').find('tbody').find('tr:odd').addClass('two'); 
+	$('a.add-site-link').click( add_site_dialog );
+	$('#add-es-btn').click( on_add_es_btn );
+	$('#esc-es-btn').click( on_esc_es_btn );
+	$('#export-xls-btn').click( do_export_xls );
+});
+
+//添加分场所
+function add_site_dialog() {
+	var $this = $(this);
+	var tr = $this.parent().parent();
+	var ep_name = tr.find('.ep-name').text();
+	var ep_link = tr.find('.ep-name').attr('href'); 
+	$.url.setUrl( ep_link ); 
+	$('#es-eid').val( $.url.param('eid') ); 
+	
+	$('#es-ep-name').attr( 'href', ep_link ).attr( 'target', '_blank').text( ep_name );
+	$('#add-site-dialog').dialog({
+		title: '添加分场所',
+		autoOpen: true,
+		width: 600,
+		height: 500,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		overlay: {opacity: 0.5,background: "black"},
+		close: function(ev,ui){$(this).dialog('destroy');}
+		});
+	return false;
+}
+//提交新增的分场所信息
+function on_add_es_btn(){
+	var es_name = $('#es-name'), es_addr = $('#es-addr'), es_tel = $('#es-tel'), es_fax = $('#es-fax'),
+		es_person = $('#es-person'), es_mobile = $('#es-mobile'),es_km = $('#es-km'),es_num= $('#es-num'),
+		es_dpart= $('#es-dpart'),es_scope = $('#es-scope');
+	var es_addr_e = $('#es-addr-e'), es_name_e = $('#es-name-e'), es_note = $('#es-note');
+	var es_type = $('#es-type'), es_eid = $('#es-eid'),es_num=$("#es-num");
+
+	var r1 = es_name.val() != '', r2 = es_addr.val() != '', r3 = es_tel.val() != '', r4 = es_fax.val() != '';
+	var r5 = es_person.val() != '', r6 = es_mobile.val() != '',r7 = es_num.val() != '';
+	
+	if( !r1 ){
+		alert( '分场所名称不可以为空！' );
+		es_name[0].select();
+		return;
+	}
+	if( !r2 ){
+		alert( '分场所地址不可以为空！' );
+		es_addr[0].select();
+		return;
+	}
+/*	if( !r3 ){
+		alert( '分场所联系电话不可以为空！' );
+		es_tel[0].select();
+		return;
+	}
+	if( !r4 ){
+		alert( '分场所传真不可以为空！' );
+		es_fax[0].select();
+		return;
+	}
+	if( !r5 ){
+		alert( '联系人不可以为空！' );
+		es_person[0].select();
+		return;
+	}
+	if( !r6 ){
+		alert( '联系人手机不可以为空！' );
+		es_mobile[0].select();
+		return;
+	}
+*/	if( !r7 ){
+		alert( '分场所人数不能为空！' );
+		es_num[0].select();
+		return;
+	}
+	
+	//异步提交分场所
+	if( r1 && r2 && r7 ){
+		$.ajax({
+			url		: '?c=enterprise&a=edit_site&step=1',
+			data	: {'es_name':es_name.val(),'es_name_e':es_name_e.val(),
+						'es_addr':es_addr.val(),'es_addr_e':es_addr_e.val(),
+						'es_tel':es_tel.val(),'es_fax':es_fax.val(),
+						'es_person':es_person.val(),'es_mobile':es_mobile.val(),
+						'es_dpart':es_dpart.val(),
+						'es_km':es_km.val(),'es_num':es_num.val(),'es_scope':es_scope.val(),
+						'es_note':es_note.val(),'es_type':es_type.val(),eid:es_eid.val()},
+			type	: 'POST',
+			dataType: 'json',
+			success	: function(j){
+				if( 'ok' == j.state ){
+ 					alert( '分场所：'+es_name.val()+' 添加成功！' );
+					on_esc_es_btn();
+					location.reload();
+				}else{
+					alert('添加失败，没有插入数据库');
+					
+				}
+			}
+
+		});
+	}
+}
+
+function on_esc_es_btn(){
+	$('#es-name').val('');
+	$('#es-addr').val('');
+	$('#es-tel').val('');
+	$('#es-fax').val('');
+	$('#es-person').val('');
+	$('#es-mobile').val('');
+	$('#es-addr-e').val('');
+	$('#es-name-e').val('');
+	$('#es-note').val('');
+	$('#es-type').val('');
+	$('#es-eid').val('');
+	$('#es-km').val('');
+	$('#es-num').val('');
+	$('#es-scope').val('');
+	$('#es-dpart').val('');
+	$('#add-site-dialog').dialog('destroy');
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+
+</script>
+</head>
+
+<body  style=" width:1300px;  margin: 9px auto 0;" >
+<!--添加分场所-->
+<div id="add-site-dialog" style="display: none;">
+  <input type="hidden" id="es-eid" />
+  <table class="grid-table tal">
+    <tr>
+      <th colspan="4">分场所信息登记</th>
+    </tr>
+    <tr>
+      <td width="180" align="right">主公司名称：</td>
+      <td colspan="3">
+         <a id="es-ep-name" href=""><?=$ep_name;?></a>
+      </td>
+    </tr>
+    <tr>
+      <td align="right">分场所类型：</td>
+      <td colspan="3">
+         <select id="es-type"><?=$site_type_select;?></select>
+      </td>
+    </tr>
+    <tr>
+      <td align="right">分场所名称：</td>
+      <td colspan="3">
+         <input type="text" id="es-name" value="" class="input" style="width: 380px;" />
+        <font class="cRed">*</font>
+      </td>
+    </tr>
+    <tr>
+      <td align="right">分场所名称(英)：</td>
+      <td colspan="3">
+         <input type="text" id="es-name-e" value="" class="input" style="width: 380px;" />
+      </td>
+    </tr>
+    <tr>
+      <td align="right">地址：</td>
+      <td colspan="3">
+         <input type="text" id="es-addr" value="" class="input" style="width: 380px;" />
+         <font class="cRed">*</font>
+      </td>
+    </tr>
+    <tr>
+      <td align="right">地址(英)：</td>
+      <td colspan="3">
+         <input type="text" id="es-addr-e" value="" class="input" style="width: 380px;" />
+      </td>
+    </tr>
+    <tr>
+      <td align="right">联系电话：</td>
+      <td>
+         <input type="text" id="es-tel" value=""	class="input" style="width: 117px;" />
+         <font class="cRed"></font>
+      </td>
+      <td width="110" align="right">传真：</td>
+      <td>
+         <input type="text" id="es-fax"  value=""class="input" style="width: 117px;" />
+         <font class="cRed"></font>
+      </td>
+    </tr>
+    <tr>
+      <td align="right">联系人：</td>
+      <td>
+         <input type="text" id="es-person"  value=""	class="input" style="width: 117px;" />
+         <font class="cRed"></font>
+      </td>
+      <td align="right">联系人手机：</td>
+      <td>
+        <input type="text" id="es-mobile" value=""class="input" style="width: 117px;" />
+        <font class="cRed"></font>
+      </td>
+    </tr>
+    <tr>
+      <td align="right">分现场人数：</td>
+      <td>
+         <input type="text" id='es-num'  value="<?=$es_num;?>"	class="input" style="width: 117px;" />
+         <font class="cRed">*</font>
+      </td>
+      <td align="right">距总部距离：</td>
+      <td>
+         <input type="text" id='es-km'  value="<?=$es_km;?>"	class="input" style="width: 117px;" />
+         <font class="cRed"></font>
+      </td>
+    </tr>
+    <tr>
+      <td align="right">职能部门：</td>
+      <td colspan='3'>
+         <input type="text" id='es-dpart' value="<?=$es_dpart;?>" class="input" style="width: 117px;" />
+         <font class="cRed"></font>
+      </td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">分场所范围：</td>
+      <td colspan="3" valign="top">
+         <textarea id='es-scope' rows="3" style="width: 395px;"><?=$es_scope;?></textarea>
+      </td>
+    </tr>
+    <tr>
+      <td align="right" valign="top">备注信息：</td>
+      <td colspan="3" valign="top"><textarea id="es-note" rows="3" style="width: 395px;"></textarea></td>
+    </tr>
+  </table>
+  <p style="margin-top: 9px;">
+    <button type="button" id="add-es-btn" class="btn btn-submit"> 保存</button>
+    &nbsp; &nbsp;
+    <button type="button" id="esc-es-btn" class="btn btn-button"> 取消</button>
+  </p>
+</div>
+
+<!-- 顶部搜索 -->
+<form method="get" id="search-form" class="search-form tal" >
+  <input type="hidden"
+	name="c" id="mode-m" value="<?=$c;?>" />
+  <input type="hidden"
+	name="a" id="action-a" value="<?=$a;?>" />
+  <table>
+    <tr>
+      <td class="left">组织名称：</td>
+      <td class="right"><input type="text" id="ep_name_s" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+      <td class="left">组织人数：</td>
+      <td class="right">
+          <select name="ep_amount"> <option value="">--请选择--</option><?=$ep_amount_select;?> </select>
+      </td>
+      <td class="left">组织代码：</td>
+      <td class="right">
+          <input type="text" id="work_code"	name="work_code" value="<?=$work_code;?>" class="input finput" />
+      </td> 
+    </tr>
+    <tr>
+      <td class="left">合同来源：</td>
+      <td class="right">
+          <select id="ctfrom" name="ctfrom"	class='fselect' <?=($hezuofang=='1')?'disabled':'';?>>
+              <option value="">--请选择--</option>
+              <?=$ctfrom_select;?>
+          </select>
+      </td>
+      <td class="left">省份：</td>
+      <td class="right">
+          <select id="areacode" name="areacode"	class='fselect'>
+              <option value="">--请选择--</option>
+             <?=$province_select;?>
+         </select>
+      </td>
+      <td class="left">客户级别：</td>
+      <td class="right">
+          <select id="ep_level" name="ep_level"	class='fselect'>
+            <option value="">--请选择--</option>
+            <?=f_select("ep_level");?>
+          </select>
+      </td>
+        
+    </tr>
+    <tr>
+      <td class="left">联系人：</td>
+      <td class="right"><input type="text" id="person" name="person" value="<?=$person;?>" class="input finput" /></td>
+      <td class="left">联系手机：</td>
+      <td class="right"><input type="text" name="person_tel" value="<?=$person_tel;?>" /></td>
+      <td class="left">组织电话：</td>
+      <td class="right"><input type="text" name="ep_phone" value="<?=$ep_phone;?>" /></td></tr>
+  </table>
+  <p class="button-panel">
+    <button class="btn btn-submit" type="submit">搜 索</button>
+    &nbsp;
+    <button id="reset-btn" class="btn btn-button" onClick="clearForm(this.form);" >清空</button>
+    &nbsp;
+    <button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出</button>
+  </p>
+</form>
+<br />
+<!-- 搜索部分结束 -->
+
+
+<!-- 信息列表 -->
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+  <ul
+	class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li	class="ui-state-default ui-corner-top ui-tabs-active ui-state-active">
+        <a href="javascript:;">客户信息查询 <span class="cnt-total"> <?=$total;?></span></a>
+    </li>
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <table class="grid-table">
+      <thead>
+        <tr>
+          <th width="60"   align="center">组织编号</th>
+          <th width="200"  align="center">组织注册名称</th>
+          <th width="*"    align="center">省份</th>
+          <th width="*"    align="center">合同来源</th>
+          <th width="*"    align="center">客户级别</th>
+          <th width="*"    align="center">联系人</th>
+          <th width="*"    align="center">联系人手机</th>
+          <th width="*"    align="center">组织电话</th>
+          <th width="*"    align="center">组织传真</th>
+          <th width="*"    align="center">组织邮箱</th>
+          <th width="60"   align="center">组织人数</th>
+        </tr>
+      </thead>
+      <tbody>
+        <?php
+if( $enterprises ){
+	foreach( $enterprises as $eid => $row ){
+?>
+      <div class="<?=$row['eid'];?> show_block">
+        <tr>
+<!--           <td align="center"><a href="?c=<?=$c;?>&a=edit&eid=<?=$row['eid'];?>" title="编辑组织信息"><img src="theme/images/b_edit.png" border=0 /></a></td>
+          <td width="30" align="center">
+          
+          <?php if(!$row['parent_id']){?>
+            <a
+				href="?c=<?=$c;?>&a=add&parent_id=<?=$row['eid'];?>"
+			title="添加关联公司"><img src="theme/images/b_edit.png" border=0 /></a>
+            <?php } ?></td>
+            
+            
+          <td width="30" align="center"><?=$row['union_count_V'];?></td>
+          <td width="30" align="center"><?php if(!$row['parent_id']){?>
+            <a title="添加分场所" class="add-site-link"><img
+				src="theme/images/b_edit.png"
+			border=0 /></a>
+            <?php } ?></td>
+          <td width="30" align="center"><?=$row['site_count_V'];?></td> -->
+          <td align="center"><?=$row['code'];?></td>
+          <!--其中href属性是用来添加分场所获取eid 用的-->
+          <td class="ep-name" href="?eid=<?=$row['eid']?>"><?=$row['ep_name'];?></td>
+          <td align="center"><?=$row['province'];?></td>
+          <td align="center"><?=$row['ctfrom'];?></td>
+          <td align="center"><?=read_cache('ep_level',$row['ep_level']);?></td>
+          <td align="center"><?=$row['person'];?></td>
+          <td align="center"><?=$row['person_tel'];?></td>
+          <td align="center"><?=$row['ep_phone'];?></td>
+          <td align="center"><?=$row['ep_fax'];?></td>
+          <td align="center"><?=$row['person_mail'];?></td>
+          <td align="center"><?=$row['ep_amount'];?></td>
+<!--           <td align="center"><a href="?c=enterprise&a=del&eid=<?=$eid;?>" class="icon-del c-del"></a></td> -->
+        </tr>
+      </div>
+      <?php
+    
+	}
+    
+} else {
+?>
+      <tr>
+        <td colspan="14">没有找到客户</td>
+      </tr>
+      <?php
+}
+?>
+        </tbody>
+      
+    </table>
+    <?=$pages['pages'];?>
+  </div>
+</div>
+</body>
+</html>

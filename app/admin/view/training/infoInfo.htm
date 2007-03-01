@@ -1,0 +1,364 @@
+<? tpl('header')?>
+<script type="text/javascript" src="theme/js/common.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$( ".certificate-tab" ).tabs({
+		collapsible: false
+	});
+});
+</script>
+<body>
+    <div style="margin: 0 auto; width: 750px;" class="tal certificate-tab">
+		<ul>
+			<li><a href="#tab-info">培训信息</a></li>
+			<li><a href="#tab-lession">课程信息</a></li>
+			<li><a href="#tab-student">学员信息</a></li>
+		</ul>
+
+		<div id="tab-info" style="100%">
+			<table style="100%" class='grid-table'>
+				<tbody>
+					<tr>
+						<td style="text-align:right">学员名称</td>
+						<td class="tdleft"><?=$results_student['s_name'];?></td> 
+
+						<td style="text-align:right">培训课程</td>
+						<td align="tdleft"><?=$results_lesson['l_name'];?></td>
+					</tr>
+					
+					<tr>
+						<td style="text-align:right">课程费用</td>
+						<td class="tdleft"><?=$results_info['l_money'];?></td> 
+						<td style="text-align:right">缴费方式</td>
+						<td align="tdleft"><?=$results_info['i_type'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">是否回执</td>
+						<td class="tdleft"><?=($results_info['i_huizhi']==1)?'是':'否';?></td> 
+
+						<td style="text-align:right">意向确认</td>
+						<td align="tdleft"><?=($results_info['i_yixiang']==1)?'是':'否';?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">是否代办注册</td>
+						<td class="tdleft"><?=($results_info['i_zhuce']==1)?'是':'否';?></td> 
+
+						<td style="text-align:right">是否通过</td>
+						<td align="tdleft"><?=($results_info['i_tongguo']==1)?'是':'否';?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">是否开发票</td>
+						<td class="tdleft"><?=($results_info['i_fapiao']==1)?'是':'否';?></td> 
+
+						<td style="text-align:right">考试成绩</td>
+						<td align="tdleft"><?=$results_info['i_chengji'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">证书类型</td>
+						<td class="tdleft"><?=($results_info['i_zstype']==1)?'服务认证审查员培训证书':'内审员证书';?></td> 
+
+						<td style="text-align:right">证书号</td>
+						<td align="tdleft"><?=$results_info['i_zsnum'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">备注信息</td>
+						<td class="tdleft" colspan="4"><?=$results_info['i_note'];?></td> 
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div id="tab-lession" style="100%">
+			<table style="100%" class='grid-table'>
+				<tbody>
+					<tr>
+						<td style="text-align:right">培训名称</td>
+						<td class="tdleft"><?=$results_lesson['l_name'];?></td> 
+
+						<td style="text-align:right">教师</td>
+						<td align="tdleft"><?=$results_lesson['l_teacher'];?></td>
+					</tr>
+					
+					<tr>
+						<td style="text-align:right">培训地址</td>
+						<td class="tdleft" colspan="4"><?=$results_lesson['l_addresss'];?></td> 
+					</tr>
+
+					<tr>
+						<td style="text-align:right">开始时间</td>
+						<td class="tdleft"><?=$results_lesson['l_st_time'];?></td> 
+
+						<td style="text-align:right">结束时间</td>
+						<td align="tdleft"><?=$results_lesson['l_en_time'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">带队老师</td>
+						<td class="tdleft"><?=$results_lesson['l_daiban_teacher'];?></td> 
+
+						<td style="text-align:right">带队老师联系方式</td>
+						<td align="tdleft"><?=$results_lesson['l_daiban_teacher_tel'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">报名手机号</td>
+						<td class="tdleft"><?=$results_lesson['l_baoming_tel'];?></td> 
+
+						<td style="text-align:right">报名QQ</td>
+						<td align="tdleft"><?=$results_lesson['l_baoming_qq'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">报名邮箱</td>
+						<td class="tdleft"><?=$results_lesson['l_baoming_email'];?></td> 
+
+						<td style="text-align:right">费用</td>
+						<td align="tdleft"><?=$results_lesson['l_subject_money'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">备注信息</td>
+						<td class="tdleft" colspan="4"><?=$results_lesson['l_note'];?></td> 
+					</tr>
+				</tbody>
+			</table>
+		</div>
+
+		<div id="tab-student" style="100%">
+			<table style="100%" class='grid-table'>
+				<tbody>
+					<tr>
+						<td style="text-align:right">学院姓名</td>
+						<td class="tdleft"><?=$results_student['s_name'];?></td> 
+
+						<td style="text-align:right">性别</td>
+						<td align="tdleft">
+						<?php
+							switch ($results_student['s_sex']) {
+								case '1':
+									$sex = '男';
+									break;
+								case '2':
+									$sex = '女';
+									break;
+								
+								default:
+									$sex = '其他';
+									break;
+							}
+							echo $sex;
+						?>
+						</td>
+					</tr>
+					
+					<tr>
+						<td style="text-align:right">身份证号</td>
+						<td class="tdleft"><?=$results_student['s_card'];?></td> 
+						<td style="text-align:right">年龄</td>
+						<td align="tdleft"><?=$results_student['s_age'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">联系方式</td>
+						<td class="tdleft"><?=$results_student['s_tel'];?></td> 
+
+						<td style="text-align:right">联系地址</td>
+						<td align="tdleft"><?=$results_student['s_address'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">邮箱</td>
+						<td class="tdleft"><?=$results_student['s_email'];?></td> 
+
+						<td style="text-align:right">qq</td>
+						<td align="tdleft"><?=$results_student['qq'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">毕业学校</td>
+						<td class="tdleft"><?=$results_student['s_school'];?></td> 
+
+						<td style="text-align:right">专业</td>
+						<td align="tdleft"><?=$results_student['s_zhuanye'];?></td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">学历</td>
+						<td class="tdleft">
+						<?php
+							switch ($results_student['s_xueli']) {
+								case '1':
+									$xueli = '专科以下';
+									break;
+								case '2':
+									$xueli = '专科';
+									break;
+								case '3':
+									$xueli = '本科';
+									break;
+								case '4':
+									$xueli = '研究生';
+									break;
+								case '5':
+									$xueli = '博士生';
+									break;
+								default:
+									$xueli = '其他';
+									break;
+							}
+							echo $xueli;
+						?>
+						</td> 
+
+						<td style="text-align:right">学位</td>
+						<td align="tdleft">
+						<?php
+							switch ($results_student['s_xuewei']) {
+								case '1':
+									$xuewei = '无';
+									break;
+								case '2':
+									$xuewei = '学士';
+									break;
+								case '3':
+									$xuewei = '硕士';
+									break;
+								case '4':
+									$xuewei = '博士';
+									break;
+								default:
+									$xuewei = '其他';
+									break;
+							}
+							echo $xuewei;
+						?>
+						</td>
+					</tr>
+
+					<tr>
+						<td style="text-align:right">备注信息</td>
+						<td class="tdleft" colspan="4"><?=$results_student['s_note'];?></td> 
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+	<br/>
+	<div style="margin: 0 auto; width: 750px;" class="tal certificate-tab">
+		<ul>
+			<li><a href="#tab-basic">文件管理</a></li>
+		</ul>
+		<div id="tab-basic" style="100%">
+			<table style="100%" class='grid-table'>
+				<tr>
+					<th>文件名称</th>
+					<th>上传人</th>
+					<th>上传时间</th>
+					<th style="width:60px;">类型</th>
+					<th style="width:60px;">操作</th>
+				</tr>
+				<?php if(!empty($file_results)):foreach($file_results as $file):?>
+				<tr align="center" data-fileid="<?=$file['id'];?>" data-id="<?=$_GET['id'];?>">
+					<td><?=$file['name']?></td>
+					<td><?=$file['createUserName']?></td>
+					<td><?=$file['createTime']?></td>
+					<td>
+						<?php
+							switch ($file['type']) {
+								case '101'://培训-课程-教材 
+									$type = '教材';
+									break;
+
+								case '102'://培训-课程-试卷 
+									$type = '试卷';
+									break;
+
+								case '103'://培训-课程-培训计划  
+									$type = '培训计划';
+									break;
+
+								case '104'://培训-课程-培训通知  
+									$type = '培训通知';
+									break;
+
+								case '105'://培训-课程-课程表  
+									$type = '课程表';
+									break;
+
+								case '106'://培训-课程-台账  
+									$type = '台账';
+									break;
+
+								case '107'://培训-课程-其他
+									$type = '其他';
+									break;
+
+								default:
+									$type = '其他';
+									break;
+							}
+							echo $type;
+						?>
+					</td>
+					<td>
+						<a href="?c=training&a=down&url=<?=$file['url']?>"><img src="theme/images/down.gif"  border=0 /></a>
+						<a href="javascript:0" class="del"><img src="theme/images/b_drop.png" border=0 /></a>
+					</td>
+				</tr>
+				<?php endforeach;?>
+				<?php else:?>
+	            <tr>
+	              	<td align="center" colspan="5">未找到相关记录</td>
+	            </tr>
+				<?php endif;?>
+			</table>
+		</div>
+	</div>
+	<br/>
+	<div style="margin: 0 auto; width: 750px;" class="tal certificate-tab">
+		<ul>
+			<li><a href="#tab-upload">文件上传</a></li>
+		</ul>
+		<div id="tab-upload" style="100%">
+			<form  id="from" action="?c=training&a=infoInfo&id=<?=$id?>" method="post" enctype="multipart/form-data">
+				<table style="100%" class='grid-table'>
+					<tr>
+						<td style="text-align:right" style="width:130px;">文件类型：</td>
+						<td style="width:130px;">
+							<select name="type" style="width:100%;">
+								<option value="301">培训回执</option>
+								<option value="302">其他</option>
+							</select>
+						</td>
+						<td><input type="file" name="file" ></td>
+						<td align="center">
+							<button class="btn btn-submit btn-submit-from" type="submit"> 上  传 </button>
+						</td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+</body>
+<script ype="text/javascript" charset="utf-8">
+	$(function(){
+		$('.del').on('click', function(event) {
+			var fileid      = $(this).parent().parent().data('fileid');
+			var id      = $(this).parent().parent().data('id');
+			var data    = {'id':id,'fileid':fileid};
+			var results = ajax(data,'infoInfoFiledel');
+			if(results.errorCode==0){
+				alert('成功');
+				window.location.href="?c=training&a=infoInfo&id="+id; 
+			}else{
+				alert('失败');
+			}
+		});
+	})
+</script>
+</html>

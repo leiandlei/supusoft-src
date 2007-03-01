@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>月报</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+
+<link rel="stylesheet" type="text/css" href="theme/js/w2ui-1.2/w2ui-1.2.min.css" />
+<script type="text/javascript" src="theme/js/w2ui-1.2/w2ui-1.2.min.js"></script>
+
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	$( "#month-59" ).tabs({
+		collapsible: false
+	});
+	$( "#month-change" ).tabs({
+		collapsible: false
+	});
+	
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#btn-new').click( do_export_new );
+	$('#btn-change').click( do_export_change );
+});
+function do_export_new(){
+	var export_xls_url = '?c=xls&a=report1';
+	var param = '';
+	param += '&s_date='+$('#s_date').val();
+	param += '&e_date='+$('#e_date').val();
+	var s_date = $('#s_date').val();
+	var e_date = $('#e_date').val();
+	if(s_date>e_date){
+		alert('开始时间不能大于结束时间');
+		return;
+	}else if(!s_date || !e_date){
+		alert('请输入时间');
+		return;
+	}
+	$('#load-status').css('display','inline-block');
+	$('#btn-new').attr('disabled','disabled');
+
+	$.post( export_xls_url + param, function(result) {
+		$("#load-status").css('background-image','');
+		$("#load-status").html('恭喜, 生成Access表成功! 请点击' + '<a style="color:red" href="' + result + '" target="_blank">此处</a>' + '下载');
+		$('#btn-new').attr('disabled', false);
+	});
+
+}
+
+function do_export_change(){
+	var export_xls_url = '?c=xls&a=report1';
+	var param = '';
+	param += '&s_date='+$('#s_date2').val();
+	param += '&e_date='+$('#e_date2').val();
+	var s_date = $('#s_date2').val();
+	var e_date = $('#e_date2').val();
+	if(s_date>e_date){
+		alert('开始时间不能大于结束时间');
+		return;
+	}else if(!s_date || !e_date){
+		alert('请输入时间');
+		return;
+	}
+	$('#load-status2').css('display','inline-block');
+	$('#btn-change').attr('disabled','disabled');
+
+	$.post( export_xls_url + param, function(result) {
+		$("#load-status2").css('background-image','');
+		$("#load-status2").html('恭喜, 生成Access表成功! 请点击' + '<a style="color:red" href="' + result + '" target="_blank">此处</a>' + '下载');
+		$('#btn-change').attr('disabled', false);
+	});
+
+}
+</script>
+</head>
+<body>
+<div id="month-59" style="margin: 0 auto; width: 750px;" class="tal">
+	<ul>
+		<li><a href="#tab-basic">59项月报</a></li>
+	</ul>
+	<div id="tab-basic" style="100%">
+		<table style="100%" class='grid-table'>
+			<thead>
+			<tr align='center'>
+				<th width="150" align='center'>开始时间</th>
+				<th width="150">结束时间</th>
+				<th width="*">生成59项月报</th>
+			</tr>
+			</thead>
+			<tr align='center'>
+				<td width="150"><input type='text' id='s_date' name='s_date' value='<?=$s_date?>' class="input input-date"/></td>
+				<td width="150"><input type='text' id='e_date' name='e_date' value='<?=$e_date?>' class="input input-date"/></td>
+				<td><button id="btn-new" class="btn btn-button" type="button">生成Access表</button></td>
+			</tr>
+			<tr>
+				<td colspan="3" height="54" align="center" valign="middle">
+				<span id="load-status" style="padding-left:40px;height:54px;line-height:54px;background:url(theme/images/loading.gif) 0 8px no-repeat;display:none;">Access表生成中，请您稍等...</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+<br/>
+<!--
+<div id="month-change" style="margin: 0 auto; width: 750px;" class="tal">
+	<ul>
+		<li><a href="#tab-change">变更月报</a></li>
+	</ul>
+	<div id="tab-basic" style="100%">
+		<table style="100%" class='grid-table'>
+			<thead>
+			<tr align='center'>
+				<th width="150" align='center'>开始时间</th>
+				<th width="150">结束时间</th>
+				<th width="*">生成59项月报</th>
+			</tr>
+			</thead>
+			<tr align='center'>
+				<td width="150"><input type='text' id='s_date2' name='s_date' value='<?=$s_date?>' class="input input-date"/></td>
+				<td width="150"><input type='text' id='e_date2' name='e_date' value='<?=$e_date?>' class="input input-date"/></td>
+				<td><button id="btn-change" class="btn btn-button" type="button">生成Access表</button></td>
+			</tr>
+			<tr>
+				<td colspan="3" height="54" align="center" valign="middle">
+				<span id="load-status2" style="padding-left:40px;height:54px;line-height:54px;background:url(theme/images/loading.gif) 0 8px no-repeat;display:none;">Access表生成中，请您稍等...</span>
+				</td>
+			</tr>
+		</table>
+	</div>
+</div>
+-->
+
+</body>
+</html>

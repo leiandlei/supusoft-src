@@ -1,0 +1,39 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>考核情况表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr style="height:30px;width: 150px;">
+			<th style=" font-size: 15;">姓名</th>
+			<th style=" font-size: 15;">考核项目</th>
+            <th style=" font-size: 15;">变更分值</th>
+			<th style=" font-size: 15;">创建时间</th>
+			
+		</tr>
+		</thead>
+		<tbody>
+         <?php if( $results ):foreach( $results as $row ):?>
+		<tr>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['ename'];?></td>
+            <td align="center"><?=$row['day'];?></td>
+			<td align="center"><?=$row['createTime'];?></td>
+		
+		</tr>
+        <?php endforeach;?>
+		<?php else:?>
+		<?php endif;?>
+		</tbody>
+	</table>
+</body>
+</html>

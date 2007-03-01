@@ -1,0 +1,326 @@
+
+<? tpl('header');?>
+
+
+<script type="text/javascript">
+$(function() {
+	$('.c-del').click(function(){
+		confirm_dialog('确认要删除该项目？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#audit-form').submit( check_submit );
+
+	$('#export-xls-btn').click( do_export_xls );
+	
+	$('#add_rerevoked_btn').click(add_rerevoked_btn);
+});
+
+function check_submit(){
+	var e_name = '', audit = '';
+	var e = true, t = true;
+
+	var pids = $('input[type=checkbox]:checked');
+	if( 1 > pids.length ){
+		alert('请选择要安排的项目！');
+		return false;
+	}
+	//不用企业不能结合审核
+ 	$('.ep-name').each(function(){
+		if( $(this).parents('tr').find('input[type=checkbox]').attr('checked') ){ 
+			if( e_name == '' )	
+				e_name = $(this).text();
+			else if( e_name != $(this).text() )
+				e = false;
+		}
+	}); 
+	$('.audit-type').each(function(){
+		if( $(this).parents('tr').find('input[type=checkbox]').attr('checked') ){
+			if( audit == '' )
+				audit = $(this).text();
+			else 
+				audit += '|' + $(this).text();
+		}
+	});
+	if( audit.indexOf('一阶段') >= 0 && audit.indexOf('二阶段') >= 0 )
+		t = false;
+
+	if( e && t ){
+		return true;
+	} else {
+		if( !e )
+			alert( '不同企业不能结合审核！' );
+		if( !t )
+			alert( '一阶段与二阶段不能结合审核！' );
+		return false;
+	}
+}
+
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+//弹出退回维护窗口
+function dialog(pid){   
+		$('#pid').val(pid); 
+		$('#rerevoked').dialog({
+		title: '退回原因',
+		autoOpen: true,
+		width: 300,
+		height: 200, 
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		overlay: {opacity: 0.5,background: "black"},
+		close: function(ev,ui){$(this).dialog('destroy');}
+		});
+	return false;
+}
+//退出维护操作
+function add_rerevoked_btn(){
+	var sv_note=$('#sv_note').val();
+	var pid=$('#pid').val();
+ 	$.ajax({
+			url		: '?c=audit&a=rerevoked&pid='+pid,
+			data	: {	'sv_note':sv_note 
+					 },
+			type	: 'POST',
+			dataType: 'json',
+			success	: function(j){
+				if( 'ok' == j.state ){ 
+ 					 alert( '退回成功！' );
+					 $('#rerevoked').dialog('destroy');
+					window.location.reload();
+ 				}
+			}
+	}) 
+}
+function checkall(){
+	$(".checkbox").each(function(){
+		if($(this).attr("checked")){
+		  $(this).removeAttr("checked");
+		}else{
+		 $(this).attr("checked",'true');
+		}
+	})
+	 
+}
+
+</script>
+</head>
+
+<body>
+
+
+<!--添加退回原因-->
+<div id="rerevoked" style="display:none;">
+  <textarea style="width:200px; height:100px;" id="sv_note" name="sv_note"></textarea>
+  <input type="hidden"  id="pid" value="" />
+  <p style="margin-top:9px;">
+    <button type="submit" id="add_rerevoked_btn" class="btn btn-submit">保存</button>
+  </p>
+</div>
+<!--搜索-->
+<form method="get" id="search-form" action="" class="search-form tal" style='width:1100px;margin:0 auto;'>
+  <input type="hidden" name="c" value="<?=$c;?>" />
+  <input type="hidden" name="a" value="<?=$a;?>" />
+  <table>
+    <tr>
+      <td class="left">企业名称：</td>
+      <td class="right"><input type="text" id="ep_name" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+       <td class="left">项目编号：</td>
+      <td class="right"><input type="text" id="cti_code" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+       <td class="left">合同编号：</td>
+      <td class="right"><input type="text" id="ct_code" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+      <td class="left">省份：</td>
+      <td class="right"><select id="areacode" name="areacode"
+			class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$province_select;?>
+        </select></td>
+     
+     
+     
+    </tr>
+    <tr>
+      <td class="left">合同来源：</td>
+      <td class="right"><select id="ctfrom" name="ctfrom" class='fselect'>
+          <option value=""></option>
+          <?=$ctfrom_select;?>
+        </select></td>
+      <td class="left">审核类型：</td>
+      <td class="right"><select id="audit_type" name="audit_type" class='fselect'>
+          <option value=""></option>
+          <?=$audit_type_select;?>
+        </select></td>
+      <td class="left">认证体系：</td>
+      <td class="right"><select id="iso" name="iso" class='fselect'>
+          <option value=""></option>
+          <?=$iso_select;?>
+        </select></td>
+      <td class='left'>标准版本：</td>
+      <td class='right'><select id="audit_ver" name="audit_ver" class='fselect'>
+          <option value=""></option>
+          <?=$audit_ver_select;?>
+        </select></td>
+    </tr>
+    <tr>
+      <td class="left">计划日期：</td>
+      <td class="right"><input type="text" id="pre_date_start" name="pre_date_start" value="<?=$pre_date_start;?>" class="input finput input-date" /></td>
+      <td class="left">至</td>
+      <td class="right"><input type="text" id="pre_date_end" name="pre_date_end" value="<?=$pre_date_end;?>"  class="input finput input-date" /></td>
+      <td class="left">监察日期：</td>
+      <td class="right"><input type="text" id="final_date_start" name="final_date_start" value="<?=$final_date_start;?>"  class="input finput input-date" /></td>
+      <td class="left">至</td>
+      <td class="right"><input type="text" id="final_date_end" name="final_date_end" value="<?=$final_date_end;?>" class="input finput input-date" /></td>
+    </tr>
+    <tr>
+       <td class="left">企业地址：</td>
+      <td class="right" colspan="7"><input type="text" id="ep_addr" name="ep_addr" value="<?=$ep_addr;?>" style="width:800px;" /></td>
+    </tr>
+  </table>
+  <p class="button-panel">
+    <button class="btn btn-submit" type="submit"> 搜 索 </button>
+    &nbsp;
+    <button  class="btn btn-button" onClick="clearForm(this.form);" >清空</button>
+    &nbsp;
+    <button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出 </button>
+  </p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1500px;margin:0 auto;'>
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top <?=$tag_status[mouth]?>">
+    <a href="?c=audit&a=list_wait_arrange&status=mouth<?php gettourl();?>">当月未安排
+    <span class="cnt-total">
+      <?=$total[mouth];?>
+      </span></a></li>
+    <li class="ui-state-default ui-corner-top <?=$tag_status[all]?>">
+    <a href="?c=audit&a=list_wait_arrange&status=all<?php gettourl();?>">未安排 
+    <span class="cnt-total">
+      <?=$total[all];?>
+      </span></a></li>
+    
+    <!--<li class="ui-state-default ui-corner-top"><a href="?c=task&a=list_project&status=2">待审批 <span class="cnt-total"><?=$state_total[2];?></span></a></li>
+		<li class="ui-state-default ui-corner-top"><a href="?c=task&a=list_project&status=3">已审批 <span class="cnt-total"><?=$state_total[3];?></span></a></li>-->
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <div class="list-table tal">
+      <form method="post" action="?c=task&a=edit" id="audit-form">
+        <table class="grid-table">
+          <thead>
+            <tr>
+              <th width="30">详细</th>
+              <th width="30"><a href="javascript:checkall()" style="cursor:pointer">选择</a></th>
+              <th width="80">审核类型</th>
+              <th width="50">状态</th>
+              <th width="70">合同编号</th>
+              <th width="70">项目编号</th>
+              <th width="40">省份</th>
+              <th width="200">企业名称</th>
+              <th width="100">审核要求</th>
+              <th width="50">审核人日</th>
+              <th width="50">联系人</th>
+              <th width="50">联系人手机</th>
+              <th width="50">企业电话</th>
+              <th width="50">企业传真</th>
+               <th width="60">负责人</th>
+              <th width="80">标准</th>
+              <th width="80">财务收费</th>
+              <th width="80">计划开始</th>
+              <th width="80">最晚审核日</th>
+              <th width="80">证书到期日</th>
+              <th width="40">合同来源</th>
+              <th width="60">退回维护</th>
+              <th width="30">客户级别</th>
+              <th width="30">删除</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php
+if( $projects ){
+	foreach( $projects as $pid => $row ){
+?>
+            <tr >
+              <td align="center" ><a href="?c=contract&a=show&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/select1.gif" border=0 /></a></td>
+              <td align="center"><input type="checkbox" name="pid[]" class="checkbox" value="<?=$row['id'];?>" /></td>
+              <td align="center"><span class="audit-type"><?=$row['audit_type_V'];?></span>
+              </td>
+              <td align="center" ><a href="?c=task&a=edit&pid[]=<?=$pid;?>&eid=<?=$row['eid'];?>"><?=${'status_'.$row['status']};?></a></td>
+              <td align="center"><?=$row['ct_code'];?></td>
+              <td align="center"><?=$row['cti_code'];?></td>
+              <td><?=$row['province'];?></td>
+              <td class="ep-name" <?=$row[style];?>><?=$row['ep_name'];?></td>
+              <td align="center"><?=$row['audit_require'];?></td>
+              <td align="center"><?=$row['st_num'];?></td>
+              <td align="center"><?=$row['person'];?></td>
+              <td align="center"><?=$row['person_tel'];?></td>
+              <td align="center"><?=$row['ep_phone'];?></td>
+              <td align="center"><?=$row['ep_fax'];?></td>
+              <td align="center"><?=$row['signe_name'];?></td>
+              <td align="center"><?=$row['audit_ver_V'];?></td>
+              <td align="center"><?=$row['cost_status'];?></td>
+              <td align="center"><?=$row['pre_date'];?></td>
+              <td align="center"><?=$row['final_date'];?></td>
+              <td align="center"><?=$row['cert_date'];?></td>
+              <td align="center"><?=$row['ctfrom_V'];?></td>
+              <td align="center"><?php
+if( in_array( $row['audit_type'], array( '1004', '1005' ) ) ){
+?>
+                
+                <!--<a href="?c=audit&a=rerevoked&pid=<?=$pid;?>" title="退回监督维护"><img src="theme/images/button_sv.gif" border="0" />--> 
+                <a  onclick="return dialog(<?=$pid?>)" title="退回监督维护"><img src="theme/images/button_sv.gif" border="0" /></a>
+                <?php
+} 
+?></td>
+<td class="center"><?=read_cache('ep_level',$row['ep_level']);?></td>
+              <td align="center"><a title="删除" href="?c=audit&a=del&pid=<?=$pid;?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+            </tr>
+            <?php
+	}?>
+     <tr>
+              <td align="center" colspan="14"><span class="red">注：企业名称红色表示该项目有 项目组备注</span></td>
+            </tr>
+    <?php
+} else {
+?>
+            <tr>
+              <td align="center" colspan="14">未找到相关记录</td>
+            </tr>
+            <?php
+}
+?>
+          </tbody>
+          <tr>
+            <td colspan="2"></td>
+            <td colspan="12"><button class="btn btn-submit" type="submit" id="audit-btn">审核安排</button></td>
+          </tr>
+        </table>
+      </form>
+      <p>
+        <?=$pages['pages'];?>
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,269 @@
+<?php tpl('header')?>
+<body>
+	<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+		<input type="hidden" name="c" value="<?=$c;?>" />
+		<input type="hidden" name="a" value="<?=$a;?>" />
+		<input type="hidden" name="status" value="<?=$status;?>" />
+		<table>
+		    <tr>
+		        <td class="left">月份:</td>
+		        <td class='right'>
+		            <input type='text' value="<?=$month?>" name="month" class="input-date" />
+		        </td>
+		    </tr>
+		</table>
+	  	<p class="button-panel">
+	    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+	    	&nbsp;
+	    	<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+		</p>
+	</form>
+	<br/>
+
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top ui-state-active">
+		    	<a href="?c=development&a=shenheyuan">
+		    		审核员项目结算
+		      	</a>
+		    </li>
+	  	</ul>
+  	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+  	   		<form method="post" id="from" action="?c=development&a=save_shenheyuan">
+			    <table class="grid-table tal">
+					<thead>
+						<tr><th colspan="14">审核基础费用</th></tr>
+						<tr>
+							<th>企业名称</th>
+							<th>审核标准</th>
+							<th width="100px">审核类型</th>
+							<th>审核开始时间</th>
+							<th>审核结束时间</th>
+							<th>一阶段是否现场</th>
+							<th>单人日费用</th>
+							<th>文审/报告费</th>
+							<th>审核人日</th>
+							<th>其他人日</th>
+							<th>合计人日</th>
+							<th>交通费</th>
+							<th>总费用</th>
+						</tr>
+					</thead>
+					<tbody>
+							<?php 
+								$heji = $shiji = $qita = 0;
+								$rt   = $results['waichuday']+$results['shenheday'];
+								foreach($results as $key=> $vo)
+								{
+									if(is_string($key))continue;
+									$heji = $heji+$vo['zfy'];
+							?>
+								<tr>
+									<td><?=$vo['ep_name'];?></td>
+									<td><?=$vo['tixis'];?></td>
+									<td><?=$arr_audit_type[$vo['audit_type']];?></td>
+									<td><?=$vo['taskBeginDate'];?></td>
+									<td><?=$vo['taskEndDate'];?></td>
+									<td><?=$vo['issite'];?></td>
+									<td><?=$vo['rtf'];?></td>
+									<td><?=$vo['ws'];?></td>
+									<td><?=$vo['rt'];?></td>
+									<td><?=$vo['qtrt'];?></td>
+									<td><?=$vo['hjrt'];?></td>
+									<td><?=$vo['jtf'];?></td>
+									<th><?=$vo['zfy'];?></th>
+								</tr>
+							<?php }?>
+
+							<?php
+								if($results['extend']['hr']['audit_job']==1)
+								{
+									$butietotal = $butie = 0;$tixi = array();
+									$kaohe = $results['extend']['kaohe']['day']?$results['extend']['kaohe']['day']:10;
+									foreach($results['extend']['qualification'] as $tmp)
+									{
+										
+											$qualification[] = $iso_array[$tmp['iso']]['name'];
+										
+									}
+									$qualification = array_unique($qualification);
+
+									if( $results['extend']['hr']['is_office']!='1' && $kaohe>0 )
+									{
+										//计算补贴
+										if( $rt>=5 && $rt<=7.5 ){
+											$butie = 100;
+										}elseif( $rt>=8 && $rt<=11.5 ){
+											$butie = 200;
+										}elseif( $rt>=12 && $rt<=14.5 ){
+											$butie = 350;
+										}elseif( $rt>=15 && $rt<=17.5 ){
+											$butie = 500;
+										}elseif( $rt>=18 && $rt<=19.5 ){
+											$butie = 800;
+										}elseif( $rt>=20 ){
+											$butie = 1000;
+										}
+										$count      = count($results['extend']['qualification']);
+										$count      = $count>3?3:$count;
+										$butietotal = $butie*$count;
+									}
+							?>
+									<tr><th colspan="14">补助费用</th></tr>
+									<tr>
+										<td>
+											<label>是否专职管理人员:</label>
+											<span><?=$results['extend']['hr']['is_office']?'是':'否'?></span>
+										</td>
+										
+										<td>
+											<label>现场审核人日:</label>
+											<span><?=$rt?></span>
+										</td>
+										
+										<td>
+											<label>资格:</label>
+											<span><?=implode(';',$qualification)?></span>
+										</td>
+										
+										<td>
+											<label>当月考核总分:</label>
+											<span><?=$kaohe?></span>
+										</td>
+										
+										<td colspan='9'>
+											<label>补助金额</label>
+											<input type="number" value="<?=$butietotal?>"  class="butie" />
+										</td>
+									</tr>
+							<?php
+								}	
+							?>
+								
+							<?php
+								$jibenjine  = !empty($results['extend']['hrcost']['jibenjine'])?$results['extend']['hrcost']['jibenjine']:$heji;
+								$buzhujine  = !empty($results['extend']['hrcost']['buzhujine'])?$results['extend']['hrcost']['buzhujine']:$butietotal;
+								$hejijine   = !empty($results['extend']['hrcost']['hejijine'])?$results['extend']['hrcost']['hejijine']:($heji+$butietotal);
+								$qitajine   = !empty($results['extend']['hrcost']['qitajine'])?$results['extend']['hrcost']['qitajine']:0;
+								$shuijine   = !empty($results['extend']['hrcost']['shuijine'])?$results['extend']['hrcost']['shuijine']:0;
+								$shijijine  = !empty($results['extend']['hrcost']['shijijine'])?$results['extend']['hrcost']['shijijine']:($hejijine+$qitajine-$shuijine);
+							?>
+							<input type="hidden" name="id"     value="<?=$results['extend']['hrcost']['id'];?>">
+							<input type="hidden" name="uid"    value="<?=$uid;?>">
+							<input type="hidden" name="month"  value="<?=$month;?>">
+							<tr><th colspan="14">合计费用</th></tr>
+							<tr>
+								<td>基本费用：</td>
+								<td>
+									<input type="text" name="jibenjine" value="<?=$jibenjine?>" class="jibenjine" disabled>
+								</td>
+								<td>补助金额：</td>
+								<td colspan='10'>
+									<input type="text" name="buzhujine" value="<?=$butietotal?>" class="buzhujine" disabled>
+								</td>
+							</tr>
+
+							<tr>
+								<td>合计金额：</td>
+								<td colspan='12'>
+									<input type="text" name="hejijine" value="<?=$hejijine?>" class="hejijine" disabled>
+								</td>
+							</tr>
+							<tr>
+								<td>其他金额：</td>
+								<td colspan='12'>
+									<input type="text" name="qitajine" value="<?=$qitajine?>" class="qitajine">
+								</td>
+							</tr>
+							<tr>
+								<td>税金：</td>
+								<td colspan='12'>
+									<input type="text" name="shuijine" value="<?=$shuijine?>" class="shuijine">
+								</td>
+							</tr>
+							<tr>
+								<td>实付金额：</td>
+								<td colspan='12'>
+									<input type="text" name="shijijine" value="<?=$shijijine?>" class="shijijine">
+								</td>
+							</tr>
+					</tbody>
+				</table>
+				<p>
+					<center style="margin-bottom: 10px;">
+						<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+						<a href="?c=<?=$c;?>&a=shenheyuan" title="关闭窗口">返回列表</a>
+					</center>
+				</p>
+			</form>
+
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+	    $('button.submit-btn').on('click',function(){
+	    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+	    	$('#from').submit();
+	  	});
+
+	  	$( ".input-date" ).datepicker({
+			changeMonth	: true,
+			changeYear	: true,
+			dateFormat	: "yy-mm"
+		});
+  	})
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    //补助金额
+    $(document).on("change",".butie",function()
+    {
+    	var butie      = $(this).val()||0;
+    	$(this).parent().parent().parent().find('tr td input.buzhujine').val(butie)||0;
+    	var buzhujine  = $(this).parent().parent().parent().find('tr td input.buzhujine').val()||0;
+    	var jibenjine  = $(this).parent().parent().parent().find('tr td input.jibenjine').val()||0;
+    	var qitajine   = $(this).parent().parent().parent().find('tr td input.qitajine').val()||0;
+    	var shuijine   = $(this).parent().parent().parent().find('tr td input.shuijine').val()||0;
+    	var hejijine   = parseFloat(jibenjine)+parseFloat(buzhujine);
+    	var shijijine  = parseFloat(hejijine)+parseFloat(qitajine)-parseFloat(shuijine);
+    	$(this).parent().parent().parent().find('tr td input.hejijine').val(hejijine)||0;
+    	$(this).parent().parent().parent().find('tr td input.shijijine').val(shijijine)||0;
+
+    });
+    //其他金额
+    $(document).on("keyup",".qitajine",function()
+    {	
+    	var qitajine = $(this).val()||0;
+    	var buzhujine  = $(this).parent().parent().parent().find('tr td input.buzhujine').val()||0;
+    	var jibenjine  = $(this).parent().parent().parent().find('tr td input.jibenjine').val()||0;
+    	var shuijine   = $(this).parent().parent().parent().find('tr td input.shuijine').val()||0;
+    	var hejijine   = parseFloat(jibenjine)+parseFloat(buzhujine);
+    	var shijijine  = parseFloat(hejijine)+parseFloat(qitajine)-parseFloat(shuijine);
+    	$(this).parent().parent().parent().find('tr td input.hejijine').val(hejijine);
+    	$(this).parent().parent().parent().find('tr td input.shijijine').val(shijijine);
+    })
+    //税金
+    $(document).on("keyup",".shuijine",function(){
+    	var shuijine   = $(this).val()||0;
+    	var qitajine   = $(this).parent().parent().parent().find('tr td input.qitajine').val()||0;
+    	var buzhujine  = $(this).parent().parent().parent().find('tr td input.buzhujine').val()||0;
+    	var jibenjine  = $(this).parent().parent().parent().find('tr td input.jibenjine').val()||0;
+    	var hejijine   = parseFloat(jibenjine)+parseFloat(buzhujine);
+    	var shijijine  = parseFloat(hejijine)+parseFloat(qitajine)-parseFloat(shuijine);
+    	$(this).parent().parent().parent().find('tr td input.hejijine').val(hejijine);
+    	$(this).parent().parent().parent().find('tr td input.shijijine').val(shijijine);
+    })
+    </script>
+</html>
+

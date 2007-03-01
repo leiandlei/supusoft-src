@@ -1,0 +1,76 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>企业列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<thead>
+		<tr>
+		
+			<th>人员编号</th>
+			<th>姓名</th>
+            <th>帐号</th>
+			<th>性别</th>
+			<th>联系手机</th>
+			<th>人员来源</th>
+			<th>行程进度</th>
+			<th>合作方</th>
+			<th>客户管理</th>
+			<th>合同评审</th>
+			<th>客服维护</th>
+			<th>审核方案</th>
+			<th>审核员</th>
+			<th>评定管理</th>
+			<th>证书管理</th>
+			<th>变更管理</th>
+			<th>财务收费</th>
+			<th>培训管理</th>
+			<th>人力资源</th>
+			<th>报表管理</th>
+			<th>文档管理</th>
+			<th>微信管理</th>
+			<th>系统管理</th>
+			<th>公告管理</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php if( $users ): foreach( $users as $row ):?>
+		<tr>
+            <td align="center"><?=$row['code'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+            <td align="center"><?=$row['username'];?></td>
+			<td align="center"><?=$row['sex'];?></td>
+			<td align="center"><?=$row['tel'];?></td>
+			<td align="center"><?=$row['ctfrom'];?></td> 
+			<td align="center"><?=$row['single'];?></td>
+			<td align="center"><?=$row['hezuofang'];?></td>
+			<td align="center"><?=$row['enterprise'];?></td>
+			<td align="center"><?=$row['contract'];?></td>
+			<td align="center"><?=$row['preserve'];?></td>
+			<td align="center"><?=$row['auditarrange'];?></td>
+			<td align="center"><?=$row['auditor'];?></td>
+			<td align="center"><?=$row['assess'];?></td>
+			<td align="center"><?=$row['cert'];?></td>
+			<td align="center"><?=$row['change'];?></td>
+			<td align="center"><?=$row['finance'];?></td>
+			<td align="center"><?=$row['training'];?></td>
+			<td align="center"><?=$row['people'];?></td>
+			<td align="center"><?=$row['export'];?></td>
+			<td align="center"><?=$row['docmanage'];?></td>
+			<td align="center"><?=$row['weixin'];?></td>
+			<td align="center"><?=$row['system'];?></td>
+			<td align="center"><?=$row['notice'];?></td>
+		</tr>
+<?php endforeach; endif;?>
+	</tbody>
+</table>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<? tpl('header')?>
+	<script type="text/javascript" src="theme/js/validator.js"></script>
+	<script type="text/javascript" src="theme/js/region.js"></script>
+	</head>
+
+	<body>
+		<form method="post" id="from" action="?c=examine&a=usercreate">
+			<input id="id" type="hidden" name="id" value="<?=$detail['id'];?>" />
+			<input id="id" type="hidden" name="save" value="1" />
+			<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+				<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+					<li>创建考核</li>
+				</ul>
+				<div id="tab-basic">
+					<ul class="main-form">
+						<li>
+							<label class="field">选择考核月份</label>
+							<em>*</em>
+							<span>
+								<input type="text" name='date' dataType="Require" readonly="readonly" msg="请选择创建时间！" class="input input-date"/>
+							</span>
+							<button style="margin-left: 200px;" class="btn btn-submit submit-btn" type="button"> 保 存 </button>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</form>
+	</body>
+	<script type="text/javascript">
+		$(function() {
+			$('button.submit-btn').on('click', function() {
+				if(!Validator.Validate(document.forms[0], 2)) return;
+				$('#from').submit();
+			});
+			$( "input.input-date" ).datepicker({
+				changeMonth	: true,
+				changeYear	: true,
+				dateFormat	: "yy-mm"
+			});
+		});
+	</script>
+
+	</html>

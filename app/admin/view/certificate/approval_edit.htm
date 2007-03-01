@@ -1,0 +1,301 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>证书登记</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	$('select.is_change').on('change', _turn );
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+	$( "#certificate-tab" ).tabs({
+		collapsible: false
+	});
+	$( "#certificate1-tab" ).tabs({
+		collapsible: false
+	});
+	$( "#certificate2-tab" ).tabs({
+		collapsible: false
+	});
+	$( "#certificate3-tab" ).tabs({
+		collapsible: false
+	});
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	if(1==$(".is_change").val()){
+		$("#old_cert_name").val("南方认证有限公司");
+		
+		}
+	/*$("#selecteid").click(function(){
+		var value = $("#selecteid").val();
+		$.getJSON('?c=ajax&a=get_en_info&eid='+value, function(json){
+			$("#cert_name").val(json.ep_name);
+			$("#zc_addr").val(json.ep_addr);
+			$("#zc_addr_e").val(json.ep_addr_e);
+			$("#zc_addr_post").val(json.ep_addrcode);
+			$("#tx_addr").val(json.cta_addr);
+			$("#tx_addr_e").val(json.cta_addr_e);
+			$("#tx_addr_post").val(json.cta_addrcode);
+			$("#sc_addr").val(json.prod_addr);
+			$("#sc_addr_e").val(json.prod_addr_e);
+			$("#sc_addr_post").val(json.prod_addr_addrcode);
+			$("#cert_addr").val(json.ep_addr+'\r\n'+json.cta_addr);
+			$("#new_eid").val(json.eid);
+			$("#is_change").val(json.is_change);
+		});
+	});*/
+	
+});
+
+function _turn(){
+	if(1==$(".is_change").val())
+	{
+		$(".change").show();
+		$("#old_cert_name").val('<?=$old_cert_name?$old_cert_name:get_option("zdep_name")?>');
+	}else{
+		$(".change").hide();
+		$("#old_cert_name").val('');
+	}
+}
+
+function set_e_date(){
+	var s_date = $("#s_date").val();
+	if(!s_date || s_date=='0000-00-00'){
+		alert('请输入注册时间');
+		$("#s_date").focus();
+		return false;
+	}else{
+		$.getJSON('?c=ajax&a=get_addday&s_date='+s_date+'&month=36&day=-1', function(json){
+			$("#e_date").val(json.day);
+		});
+	}
+}
+function set_c_date(){
+	 $("#firstDate").val($("#s_date").val());
+}
+function check_form(obj,num){
+	var rdate = $("#report_date").val();
+	var sdate = $("#s_date").val();
+	var edate = $("#e_date").val();
+	var is_change = $(".is_change").val();
+	if(!$("#certno").val()){
+		alert('证书编号不能空');
+		return false;
+	/* }else if(!rdate || rdate=='0000-00-00'){
+		alert('上报日期不能空');
+		return false; */
+	}else if(!sdate || sdate=='0000-00-00'){
+		alert('注册日期不能空');
+		return false;
+	}else if(!edate || edate=='0000-00-00'){
+		alert('注册到期日期不能空');
+		return false;
+	}
+	if(parseInt(is_change) != 0 && $("#audit_type").val() != '1003' ){
+		var change_date = $("#change_date").val();
+		var change_type = $("#change_type").val();
+		if(!change_date){
+			alert('换证日期不能空');
+			return false;
+		}
+		if(!change_type){
+			alert('换证原因不能空');
+			return false;
+		}
+	}
+
+	if(Validator.Validate(this,2)){
+		return true;
+	}else{
+		return false;
+	}
+}
+</script>
+</head>
+<body>
+
+<?php echo einfo("ct_id=$ct_id&eid=$eid&width=750");?>
+<br/>
+
+
+<div id="certificate-tab" style="margin: 0 auto; width: 750px;" class="tal">
+	<ul>
+		<li><a href="#tab-basic">证书审批</a></li>
+	</ul>
+<div id="tab-basic" style="100%">
+<form name="winput" method="post" action="" >
+<input type="hidden"  name="id" value="<?=$id;?>" />
+ 	<ul class="main-form">
+    	
+		<li>
+			<label class="field">打印：</label><em></em>
+			<span  style="width: 100px;"><a href="?c=doc&a=ZS-001&zsid=<?=$id?>"><font color="#0000FF"><u>证书</u></font></a></span>
+			<span  style="width: 100px;"><a href="?c=doc&a=ZS-001-E&zsid=<?=$id?>"><font color="#0000FF"><u>证书(英)</u></font></a></span>
+			<span  style="width: 100px;"><a href="?c=doc&a=ZS-002&zsid=<?=$id?>"><font color="#0000FF"><u>多场所</u></font></a></span>
+			<span  style="width: 100px;"><a href="?c=doc&a=ZS-002-E&zsid=<?=$id?>"><font color="#0000FF"><u>多场所(英)</u></font></a></span>
+<!--        <span  style="width: 100px;"><a href="?c=doc&a=ce&id=<?=$id?>"><font color="#0000FF"><u>英文证书</u></font></a></span>
+            <span  style="width: 100px;"><a href="?c=doc&a=c_f&id=<?=$id?>"><font color="#0000FF"><u>打印附件</u></font></a></span>
+            <span  style="width: 160px;"><a href="?c=doc&a=BG-31&id=<?=$id?>"><font color="#0000FF"><u>证书打印通知书</u></font></a></span> -->
+		</li>
+		<li>
+			<label class="field">证书编号：</label><em></em>
+			<span><input name="certno" id="certno" type="text" style="width: 160px;" value="<?=$certno?>" class='finput' dataType="Require" msg="证书编号不能为空！"/><em>*</em></span> 
+			<label class="field2" style="padding-left:20px;">主证书编号：</label><em></em>
+			<span><input name="main_certno" id="main_certNo" style="width: 160px;" value="<?=$main_certno?>"class='finput' /></span> 
+		</li>
+        <li>
+			<label class="field">注册日期：</label><em></em>
+			<span><input id='s_date' name="s_date" value="<?=$s_date?>" type="text" style="width:160px;" class="input input-date"/><em>*</em></span> 
+			<!-- <label class="field2" style="padding-left:24px;">上报日期： </label><em></em>
+			<span><input type="text" id='report_date' name="report_date" value="<?=$report_date?>" style="width:160px;" class="input input-date finput"/><em>*</em></span> -->
+		</li>
+		
+		<li>
+			<label class="field"><a href='javascript:void(0)' onclick='javascript:set_e_date()' style='color:blue'>(默认)</a>注册到期：</label><em></em>
+			<span><input id="e_date" name="e_date" value="<?=$e_date?>"  style="width: 160px;" type="text" class="input input-date" /><em>*</em></span> 
+			<label class="field2" style="padding-left:12px;width:102px"><a href='javascript:void(0)' onclick='javascript:set_c_date()' style='color:blue'>(默认)</a></>初评证日：</label><em></em>
+			<span><input id="firstDate" name="first_date" value="<?=$first_date?>" type="text" style="width:156px;" class="input input-date"/></span>
+		</li>
+		<li>
+			<label class="field">认可标志：</label><em></em>
+			<span style="width:170px;"><?=$mark_array[$mark]['name']?><input type="hidden" name="mark" value="<?=$mark?>" /></span> 
+			<label class="field2" style="padding-left:34px;">是否换证：</label><em></em>
+			<span>
+						<select  style='width:167px' name="is_change" class="is_change">
+								<?=$is_change_select?>
+						</select>
+			</span>
+		</li>
+		
+		<li class="change" <?php if(!$is_change){ ?>style="display:none"<?php }?>>
+			<label class="field">原注册号：</label><em></em>
+			<span><input name="old_certno" style="width: 160px;" value="<?=$old_certno?>" /></span>
+			<label class="field2" style="padding-left:40px;">原颁证机构：</label><em></em>
+			<span><input name="old_cert_name" value="<?=$old_cert_name?>" type="text"  id="old_cert_name" /></span>
+		</li>
+		<li class="change" <?php if(!$is_change){ ?>style="display:none"<?php }?>>
+			<label class="field">换证日期：</label><em></em>
+			<span><input id = 'change_date' name="change_date" value="<?=$change_date?>" type="text" class="input input-date finput"  style="width:160px;"/></span>
+			<label class="field2" style="padding-left:44px;">换证原因：</label><em></em>
+			<span><select name="change_type" id="change_type" style="width: 165px;" class='fselect'>
+					<option value=""></option>
+					<?=$certreplace_select?>
+					</select>
+			</span>
+		</li>
+		<li>
+			<label class="field">组织名称：</label><em></em>
+			<span><input type="text" id='cert_name' name="cert_name" value="<?=$cert_name?>" style="width:540px;" dataType="Require" msg="组织名称不能为空！"/><em>*</em></span> 
+		</li>
+		<li>
+			<label class="field">组织名称(英文)：</label><em></em>
+			<span><input type="text" name="cert_name_e" value="<?=$cert_name_e?>" style="width:540px;"/><em>*</em></span>
+		</li>
+		 
+		<!-- <li>
+			<label class="field">证书地址：</label><em></em>
+			<span> 
+			<textarea id="cert_addr" name="cert_addr" style="width: 540px; height: 100px;" dataType="Require" msg="证书地址不能为空！"><?=$cert_addr?></textarea><em>*</em></span> 
+			<label class="field2" style="width:30px;"></label>
+		</li>
+		<li>
+			<label class="field">证书地址(英文)：</label><em></em>
+			<span>
+            <textarea id='cert_addr_e' style="width:540px; height:100px;" name="cert_addr_e"><?=$cert_addr_e?></textarea> <em>*</em></span> 
+		</li> -->
+
+		<li>
+			<label class="field">注册地址：</label><em></em>
+			<span> 
+			<input type="text" name="ep_addr" value="<?=$ep_addr?>"  style="width: 540px;" dataType="Require" msg="注册地址不能为空！"><em>*</em></span> 
+		</li>
+		<li>
+			<label class="field">注册地址(英文)：</label><em></em>
+			<span>
+            <input type="text" name="ep_addr_e" value="<?=$ep_addr_e?>" style="width: 540px;" dataType="Require" msg="注册地址不能为空！"><em>*</em></span> 
+			<label class="field2" style="width:30px;"></label>
+		</li>
+
+		<!-- <li>
+			<label class="field">通讯地址：</label><em></em>
+			<span> 
+			<input type="text" name="cta_addr" value="<?=$cta_addr?>" style="width: 540px;" dataType="Require" msg="注册地址不能为空！"><em>*</em></span> 
+		</li>
+		<li>
+			<label class="field">通讯地址(英文)：</label><em></em>
+			<span>
+            <input type="text" name="cta_addr_e" value="<?=$cta_addr_e?>" style="width: 540px;" dataType="Require" msg="注册地址不能为空！"><em>*</em></span> 
+			<label class="field2" style="width:30px;"></label>
+		</li> -->
+
+		<li>
+			<label class="field">办公地址：</label><em></em>
+			<span>
+			<input type="text" name="bg_addr" value="<?=$bg_addr;?>" style="width: 540px;" dataType="Require" msg="办公地址不能为空！"><em>*</em></span> 
+		</li>
+		<li>
+			<label class="field">办公地址(英文)：</label><em></em>
+			<span>
+            <input type="text" name="bg_addr_e" value="<?=$bg_addr_e;?>" style="width: 540px;" dataType="Require" msg="办公地址不能为空！"><em>*</em></span> 
+			<label class="field2" style="width:30px;"></label>
+		</li>
+		<?php if($prod_check==1):?>
+			<li>
+			<label class="field">生产地址：</label><em></em>
+			<span>
+			<input type="hidden" name="prod_check" value="1">
+			<input type="text" name="prod_addr" value="<?=$prod_addr;?>" style="width: 540px;" dataType="Require" msg="生产地址不能为空！"><em>*</em></span> 
+		</li>
+		<li>
+			<label class="field">生产地址(英文)：</label><em></em>
+			<span>
+            <input type="text" name="prod_addr_e" value="<?=$prod_addr_e;?>" style="width: 540px;" dataType="Require" msg="生产地址不能为空！"><em>*</em></span> 
+			<label class="field2" style="width:30px;"></label>
+		</li>
+		<?php endif;?>
+ 
+
+		<li>
+			<label class="field">证书范围(中文)：</label><em></em>
+			<span><textarea name="cert_scope" style="width: 540px; height: 100px;" dataType="Require" msg="证书范围(中文)不能为空！"><?=$cert_scope?></textarea><em>*</em></span> 
+		</li>
+		<li>
+			<label class="field">证书范围(英文)：</label><em></em>
+			<span><textarea name="cert_scope_e" style="width: 540px; height: 100px;" ><?=$cert_scope_e?></textarea></span>
+		</li>
+		<li>
+			<label class="field">备注：</label><em></em>
+			<span><textarea name="note" style="width: 540px; height: 100px;"><?=$note?></textarea></span> 
+		</li>
+        
+		<li>
+			<label class="field"> </label><em></em>
+			<p><center><label><input type="checkbox" name="is_check" value="1" <?=$is_check=='y'?'checked':'';?> />已审批</label>&nbsp;&nbsp;&nbsp;<button class="btn btn-submit" type="submit"> 审 批 </button></center></p> 
+		</li>
+		
+		<li>
+        	<a href="?c=doc&a=PB004-1&zsid=<?=$id;?>">[认证证书审批表]</a>
+		</li>
+		<!-- <li>
+			<a href="?c=doc&a=PB-003&zsid=<?=$id;?>&pid=<?=$pid;?>">[认证注册决定审批表]</a>
+		</li> -->
+
+        
+</ul>
+</form>
+</div>
+</div>
+
+</body>
+</html>

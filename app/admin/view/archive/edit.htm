@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>资料回收</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$( "#contract-tab" ).tabs({
+		collapsible: false
+	});
+
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+});
+
+
+</script>
+</head>
+
+<body>
+
+<?php echo einfo("tid=$tid");?>
+<br/>
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">文档下载</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<table class="grid-table" width='700'>
+			<tr>
+				
+				<th>文档名</th>
+				<th width='80'>文档类型</th>
+				<th>备注</th>
+				<th width='140'>上传时间</th>
+				<th width='60'>上传人</th>
+				<th width='40'>操作</th>
+			</tr>
+			<tbody id="attach-list">
+<?php
+if( $enterprises_archives ){
+	foreach( $enterprises_archives as $row ){
+?>
+			<tr>
+				
+				<td align="center"><?=$row['name'];?></td>
+				<td align="center"><?=read_cache('auditor_arctype',$row[ftype])?></td>
+				<td align="center">
+<?php
+if( $row['description'] ){
+?>
+<a href="javascript:;" title="<?=$row['description'];?>"><img src="theme/images/other.png" border="0" /></a> 
+<?php
+}
+?>
+				</td>
+				<td align="center"><?=$row['create_date'];?></td>
+				<td align="center"><?=$row['uid'];?></td>
+				<td align="center">
+					  
+					<a href="?c=attachment&a=down&aid=<?=$row['id'];?>" title="下载"><img src="theme/images/down.gif" border=0 /></a>
+				</td>
+			</tr>
+<?php
+	}
+}
+?>			</tbody>
+		</table>
+</div>
+</div>
+<br/>
+<!--<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">计划审批</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <form method="post" action="<?=$REAUEST_URI;?>">
+<input type="hidden" name="step" value="1" />
+<input type="hidden" name="eid" value="<?=$eid;?>" />
+<input type="hidden" name="tid" value="<?=$tid;?>" />
+<input type="hidden" name="url" value="<?=$url;?>" />
+<table class="grid-table">
+			<tr>
+				<th width='100'>计划审批时间</th>
+				<td width='200'><input type="text" name="jh_sp_date" value="<?=$jh_sp_date;?>" size="12" class="input input-date" /></td>
+				<td></td>
+			</tr>
+			<tr>
+				<th width='110'>计划审批信息沟通</th>
+				<td colspan="3"><textarea name="jh_sp_note"  cols="60" rows="3"><?=$jh_sp_note;?></textarea></td>
+			</tr>
+            
+            </table>
+		
+    </div>
+    <p class="button-panel tac"><button class="btn btn-submit" type="submit"> 提 交 </button></p>
+</form>
+    </div>
+    <br />-->
+<form method="post" action="<?=$REAUEST_URI;?>">
+<input type="hidden" name="step" value="1" />
+<input type="hidden" name="eid" value="<?=$eid;?>" />
+<input type="hidden" name="tid" value="<?=$tid;?>" />
+<input type="hidden" name="url" value="<?=$url;?>" />
+
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">资料回收</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<?php
+if( $task_projects ){
+	foreach( $task_projects as $row ){
+?>
+		<input type="hidden" name="pid[]" value="<?=$row['id'];?>" />
+		<table class="grid-table">
+			<tr>
+				<th width='100'>体系</th>
+				<td width='200'><?=$row['iso'];?>(<?=$row[cti_code]?>)</td>
+				<th width='100'>审核类型</th>
+				<td><?=$row['audit_type_V'];?>(<?=$tb_date;?>至<?=$te_date;?>)</td>
+			</tr>
+			<tr>
+				<th>资料收回日期</th>
+				<td><input type="text" name="redata_date[]" value="<?=$row['redata_date'];?>" size="12" class="input input-date" /></td>
+				<th>转技委会日期</th>
+				<td><input type="text" name="to_jwh_date[]" value="<?=$row['to_jwh_date'];?>" size="12" class="input input-date" /></td>
+			</tr> 
+			<tr>
+				<td valign="top">资料回收备注</td>
+				<td colspan="3"><textarea name="redata_note[]" cols="60" rows="3"><?=$row['redata_note'];?></textarea></td>
+			</tr>
+		</table><br/>
+<?php
+	}
+}
+?>
+	<p class="button-panel tac"><span><input type="checkbox" name="huishouStatus" value="1">回收</span>&nbsp;&nbsp;&nbsp;<button class="btn btn-submit" type="submit"> 提 交 </button></p>
+	</div>
+    </form>
+    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+	<table class="grid-table" style='display:<?=$display?>'>
+	
+		
+	<tr>
+		<th width="120" height="30" >文档上传：</th>
+		<td>
+			<ul class="doc-list" style='padding-left:20px'>
+				<li><a title="上传文档" target='_blank' href="?c=contract&a=upload&eid=<?=$eid;?>&ct_id=<?=$task_projects[0][ct_id];?>"><img src="theme/images/up.gif" border=0 /></a></li>
+			</ul>
+		</td>
+	</tr>
+	
+	</table>
+	</div>
+</div>
+
+
+</body>
+</html>

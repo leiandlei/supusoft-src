@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>劳务费列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table class="grid-table">
+	<thead>
+	<tr>
+			
+			<th width="*">合同编号</th>
+			<th width="*">项目编号</th>
+			<th width="*">姓名</th>
+		 
+            <th width="*">是否文审</th>
+			<th width="*">验证</th>
+			<th width="*">组织名称</th>
+			<th width="*">合同来源</th>
+			<th width="*">认证版本</th>
+			<th width="*">审核类型</th>
+			<th width="*">注册资格</th>
+			<th width="*">审核开始时间</th>
+			<th width="*">审核结束时间</th>
+			<th width="*">组长天数</th>
+			<th width="*">组员天数</th>
+			<th width="*">总经理审批</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $auditors ){
+	foreach( $auditors as $row ){
+?>
+		<tr>
+			
+			<td align="center"><?=$row['ct_code'];?></td>
+            <td align="center"><?=$row['cti_code'];?></td>
+			<td align="center"><?=$row['name'];?></td>
+		 
+			
+            <td align="center"><?=$row['wenshen'];?></td>
+			<td align="center"><?=$witness_array[$row['witness']];?></td>
+			<td><?=$row['ep_name'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+       
+			<td align="center"><?=$row['audit_ver'];?></td>
+			<td align="center"><?=$row['audit_type'];?></td>
+			<td align="center"><?=$row['qua_type'];?></td>
+			<td align="center"><?=$row['taskBeginDate'];?></td>
+			<td align="center"><?=$row['taskEndDate'];?></td>
+			 <td align="center"><?=$row['role_num'];?></td>
+            <td align="center"><?=$row['num'];?></td>
+			<td align="center"><?=$row['sp_date'];?></td>
+		</tr>
+<?php
+	}
+} 
+?>
+	
+
+	</tbody>
+</table>
+</body>
+</html>

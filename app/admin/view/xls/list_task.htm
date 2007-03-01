@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>任务列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell; }
+</style>
+</head>
+
+<body>
+<table>
+	<tr>
+    <th width="40">序号</th>
+		<th width="200" >组织名称</th>
+
+			<th width="100" >企业人数</th>
+			<th width="100" >合同来源</th>
+			<th width="100" >分组代码</th>
+            <th width="100" >专业代码</th>
+			<th width="50" >标准</th>
+			<th width="50" >审核类型</th>
+			<th width="30" align="center">总人日</th>
+			<th width="70" align="center">审核开始时间</th>
+			<th width="70" align="center">审核结束时间</th>
+            <th width="70" align="center">上次审核时间</th>
+            <th width="*"  >组长</th>
+			<th width="*" >组员</th>
+             <th width="*" >联系人</th>
+            <th width="*" >电话</th>
+            <th width="*" >手机</th>
+            <th width="*" >传真</th>
+	</tr>
+	<tbody>
+<?php
+if( $tasks ){
+$i=1;
+	foreach( $tasks as $tid => $row ){
+?>
+	<tr>
+    <td align="center"><?=$i++;?></td>
+			<td class="ep-name" align="left"><?=$row['ep_name'];?></td>
+
+			<td align="center"><?=$row['total'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td align="left"><?php echo @ implode('<br/>',$row['use_codes']);?></td>
+            <td align="left"><?php echo @ implode('<br/>',$row['audit_codes']);?></td>
+			<td align="left"><?php echo @ implode('<br/>',$row['audit_vers']);?></td>
+			<td align="left"><?php echo @ implode('<br/>',$row['audit_types']);?></td>
+			<td align="center"><?=$row['tk_num'];?></td>
+			<td align="center"><?=$row['tb_date'];?></td>
+			<td align="center"><?=$row['te_date'];?></td>
+            <td align="center"><?=$row['last_date'];?></td>
+			<td align="left">
+<?php
+if($row[audit])
+foreach($row[audit] as $k=>$v){
+	if($v[role] == '01'){
+		echo $v[name]."(".f_iso($v['iso']).":".f_qua_type($v[qua_type]).$v[use_code]."；";
+	}
+}
+
+				
+?>
+			</td>
+			<td align="left">
+<?php
+if($row[audit])
+foreach($row[audit] as $k=>$v){
+	if($v[role] == '02'){
+		echo $v[name]."(".f_iso($v['iso']).":".f_qua_type($v[qua_type]).$v[use_code]."；";
+	}
+}
+
+				
+?>
+			</td>
+            <td align="left"><?=$row['person'];?></td>
+            <td align="left"><?=$row['tel'];?></td>
+            <td align="left"><?=$row['person_tel'];?></td>
+            <td align="left"><?=$row['fax'];?></td>
+	</tr>
+<?php
+	}
+}
+?>
+	</tbody>
+</table>
+</body>
+</html>

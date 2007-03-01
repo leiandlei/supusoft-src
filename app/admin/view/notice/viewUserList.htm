@@ -1,0 +1,121 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>查看公告列表</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+    $(function() {
+		//var tooltips = $( "[title]" ).tooltip({position:{my:"left+6 center", at:"right center"}});
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+        $( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+    });
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</head>
+
+<body>
+<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+			<input type="hidden" name="c" value="<?=$c;?>" />
+			<input type="hidden" name="a" value="<?=$a;?>" />
+			<input type="hidden" name="id" value="<?=$_GET['id'];?>" />
+			<table >
+				<tr>
+		
+			        <td class="left">姓名：</td>
+			        <td class='right'>
+			            <input type="text" name="seach_name" value="<?=$name;?>" class="input finput"/>
+			        </td>
+			        <td class="left">是否已阅：</td>
+			        <td class='right'>
+			            <select name="seach_ifread"class='fselect'>
+			            	<option value="">--请选择--</option>
+			                <option value="1">--已查阅--</option>
+			                <option value="2">--未查阅--</option>
+			            </select>
+			        </td>
+				</tr>
+			</table>
+			<br />
+		  	<p class="button-panel">
+		    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+		    	&nbsp;
+		    	<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+			 	</p>
+		</form>
+
+<br/>
+<div style="margin: 9px auto 0; width: 1050px;"  class="tal ui-tabs ui-widget  ui-corner-all">
+	<p ><font size="3"><b>文章标题：</b><?=$userlist['title']?></font> </p>
+</div>
+
+<div style="margin: 9px auto 0; width: 1050px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+		
+<ul
+	class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+	<li
+		class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a
+		href="javascript:;"> 查看列表　<?=$total?> <span class="cnt-total"></span></a></li>
+</ul>
+
+		
+		
+			
+			
+
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+	<table class="grid-table">
+		<thead>
+		
+		<tr>
+			<th>姓名</th>
+			<th width="80px">是否已阅</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $results ){
+	foreach( $results as $row ){
+?>
+		<tr>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['read'];?></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="6">没有找到数据</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+</div>
+</div>
+</body>
+</html>

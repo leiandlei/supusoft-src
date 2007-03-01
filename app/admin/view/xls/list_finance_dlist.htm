@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>财务收费明细列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr>
+			 <th width="">合同编号</th>
+             <!-- <th width="">项目编号</th>-->
+              <th width="">企业名称</th>
+              <th width="">合同来源</th>
+             <!-- <th width="">体系</th>
+              <th width="80">审核类型</th>-->
+              <th width="">收费体系</th>
+              <th width="80">收费类型</th>
+              <th>登记金额</th>
+              <th width="">发票号码</th>
+              <th width="">发票金额</th>
+              <th width="">发票日期</th>
+              <th width="">到款金额</th>
+              <th width="">到款日期</th>
+              <th width="">备注</th>
+		</tr>
+		</thead>
+		
+		<tbody>
+	
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr align='center'>
+			  <td><?=$row['ct_code'];?></td>
+              <!--<td><?=$row['cti_code'];?></td>-->
+              <td align="left"><?=$row['ep_name'];?></td>
+              <td><?=$row['ctfrom'];?></td>
+             <!-- <td><?=$row[iso];?></td>
+              <td><?=$row['audit_type'];?></td>-->
+              <td><?=$row['cost_iso'];?></td>
+              <td><?=$row['cost_type'];?></td>
+              <td><?=$row['cost']?></td>
+              <td><?=$row['invoice'];?></td>
+              <td><?=$row['invoice_cost'];?></td>
+              <td><?=$row['invoice_date'];?></td>
+              <td><?=$row['dk_cost'];?></td>
+              <td><?=$row['dk_date'];?></td>
+              
+			<td><?=$row['note'];?></td>
+		</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

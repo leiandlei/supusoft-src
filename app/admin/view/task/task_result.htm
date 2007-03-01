@@ -1,0 +1,65 @@
+<!--评分-->
+
+<form method="post">
+  <table class="grid-table" width='700'>
+    <? foreach($cti_ids as $cti_id){
+    	//判断是否评分过
+        $is_cti_id=$db->getField('access_result',id,array('cti_id'=>$cti_id)); 
+        $cti_info=$db->find_one('contract_item',array('cti_id'=>$cti_id));  
+        if(!$is_cti_id){//从配置里面去数据 
+        	 $datas=$db->find_results('access_set_ver',array(iso=>$cti_info[iso])); 
+        }else{ //从评分表取数据
+        	$datas=$db->find_results('access_result',array(cti_id=>$cti_id));  
+     	 }  
+    ?>
+    <tr>
+      <th>内容</th>
+      <th>选项</th>
+      <? if($a=='edit'){ ?>
+      	<th>分数</th>
+      <? } ?>
+    </tr>
+    <?  foreach($datas as $item){
+        	//计算评定项目   
+             if($item['access_set_ver_id']){ //修改的时候
+           		 $item['id']=$item['access_set_ver_id']; 
+               
+             } 
+               //计算当前分数
+                 $item_active_arr=explode('-',$item['item_active']);
+                 $item['tmp_num']=$item_active_arr[1];
+                 
+            $my_item=explode('-',$item['item']);
+            $box=array(); 
+            foreach($my_item as $a=>$b){ 
+            	 if($a%2==0){ $box[$b]=$my_item[$a+1];};
+           	}  
+           
+        ?>
+    <tr>
+      <!-- 内容-->
+      <td><?=$item['name']?></td>
+      <td>
+     <!-- 选项-->
+      <? 
+ foreach($box as $op_k=>$op_v){ 
+           ?>
+        <input type="radio" name="access[<?=$cti_info['cti_id']?>][<?=$item['id']?>][active]" value="<?=$op_k.'-'.$op_v?>" <? if($item_active_arr['0']==$op_k){ ?>checked <? } ?>>
+        <?=$op_k?>
+        <? } 
+         ?>
+         </td>
+        <?  
+        if($_GET[a]=='edit'){?> 
+        	<td> 
+            <input type="text" size="2" name="access[<?=$cti_info['cti_id']?>][<?=$item['id']?>][num]" value="<?=$item[tmp_num]?>" /> 
+            </td>
+        <? } ?>
+    </tr>
+    <?} } ?> 
+  </table>
+  <br>
+  <p align="center">
+    <button class="btn btn-submit" type="submit"> 提 交 </button>
+  </p>
+</form>

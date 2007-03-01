@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=<?php sysinfo('charset');?>" />
+<title>已审批</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/style/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/style/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('.c-del').click(function(){
+		confirm_dialog( '您确认要删除该任务？', $(this).attr( 'href' ) )
+		return false;
+	});
+
+	$('#export-xls-btn').click( do_export_xls );
+	$('#batch-approval-btn').click( changes_online );
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+});
+
+function change_online(tid){
+	if(!tid){
+		alert('计划ID为空，请联系维护人员');
+		return;	
+	}
+	if(!confirm('是否转移到已上报')){
+		return ;
+	}
+	
+	$.post("?c=ajax&a=bao",{'tid' : tid},function(r){
+		if(r=='ok'){
+				location.reload();
+				
+			}
+		
+		
+		});
+}
+function changes_online(){
+	var str = '';
+	if(!confirm('是否转移到已上报')){
+		return ;
+	}
+	$("input[type=checkbox]").each(function() {
+		if ($(this).attr("checked")) { 
+			if(str){
+				str +=','+$(this).val(); 
+			}else{
+				str +=$(this).val(); 
+			} 
+        }
+     });
+	$.post("?c=ajax&a=bao",{'tid' : str},function(r){
+		if(r=='ok'){
+				location.reload();
+				
+			}
+		
+		});
+	
+}
+function approval(){
+	iframe_dialog( '审核任务审批', $(this).attr('href'), 500, 230 );
+	return false;
+}
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function checkall(){
+	$(".checkbox").each(function(){
+		if($(this).attr("checked")){
+		  $(this).removeAttr("checked");
+		}else{
+		 $(this).attr("checked",'true');
+		}
+	})
+	 
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1400px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" id="is_bao" name="is_bao" value="<?=$is_bao;?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" id="ep_name" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+			<td class="left">合同编号：</td>
+			<td class="right"><input type="text" id="ct_code" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+			<td class="left">认证体系：</td>
+			<td class="right"><select name="iso" id="iso" class='fselect'><option value=""></option><?=$iso_select;?></select></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			<td class="left">项目编号：</td>
+			<td class="right"><input type="text" id="cti_code" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+			<td class="left">合同来源：</td>
+			<td class="right"><select id="ctfrom" name="ctfrom" class='fselect'><option value=""></option><?=$ctfrom_select;?></select></td>
+			<td class="left">审核类型：</td>
+			<td class="right"><select id="audit_type" name="audit_type" class='fselect'><option value=""></option><?=$audit_type_select;?></select></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			<td class="left">审核开始：</td>
+			<td class="right"><input type="text" id="audit_start_start" name="audit_start_start" value="<?=$audit_start_start;?>" class="input finput input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" id="audit_start_end" name="audit_start_end" value="<?=$audit_start_end;?>" class="input finput input-date" /></td>
+			<td class="left">审核结束：</td>
+			<td class="right"><input type="text" id="audit_end_start" name="audit_end_start" value="<?=$audit_end_start;?>" class="input finput input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" id="audit_end_end" name="audit_end_end" value="<?=$audit_end_end;?>"  class="input finput input-date" /></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+        		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+
+		<button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出 </button>
+	</p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style="width:1400px;">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_is_bao_0?>"><a href="?c=audit&a=audit_plan_reoprt&is_bao=0<?php gettourl();?>">未报 <span class="cnt-total"><?=$state_total[0];?></span></a></li>
+		<li class="ui-state-default ui-corner-top <?=$status_is_bao_1?>"><a href="?c=audit&a=audit_plan_reoprt&is_bao=1<?php gettourl();?>">已报 <span class="cnt-total"><?=$state_total[1];?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<div>
+	<table class="grid-table">
+		<thead>
+		<tr>
+		<?php if(!$is_bao){ ?>
+			<th width="30"><a href="javascript:checkall()" style="cursor:pointer">全选</a></th>
+			<th width="30">操作</th>
+		<?php }else{ ?>
+			<th width="*">上报时间</th>
+			<th width="*">上报人</th>
+		<?php } ?>
+			<th width="*">机构代码</th>
+			<th width="200">组织名称</th>
+			
+			<th width="*">联系人</th>
+			<th width="*">联系电话</th>
+			<th width="*">审核类型</th>
+			<th width="*">活动类型</th>
+			<th width="*">审核开始时间</th>
+			<th width="*">审核结束时间</th>
+			<th width="*">行政区域</th>
+			<th width="*">详细地址</th>
+			<th width="*">审核组成员</th>
+			<th width="*">技术专家</th>
+            <th width="*">合同来源</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $task_projects ){
+	foreach( $task_projects as $pid => $row ){
+?>
+		<tr>
+		<?php if(!$is_bao){ ?>
+			<td align="center"><input type="checkbox" class="checkbox" name="tid[]" value="<?=$row['id'];?>" /></td>
+			<td align="center"><a href="javascript:change_online('<?=$row['id']?>')" style='color:blue'>上报</a></td>
+		<?php }else{ ?>
+			<td align="center"><?=$row['bao_date'];?></td>
+			<td align="center"><?=f_username($row['bao_uid']);?></td>
+		<?php } ?>
+			<td align="center"><?=$row['work_code'];?></td>
+			<td style="<?=$row['style']?>"><?=$row['ep_name'];?></td>
+			
+			<td align="center"><?=$row['person'];?></td>
+			<td align="center"><?=$row['ep_phone'];?></td>
+			<td align="center"><?=f_iso($row['iso']);?></td>
+			<td align="center"><?=$row['audit_type'];?></td>
+			<td align="center"><?=$row['tb_date'];?></td>
+			<td align="center"><?=$row['te_date'];?></td>
+			<td align="center"><?=$row['areacode'];?></td>
+			<td align="center"><?=$row['ep_addr'];?></td>
+			<td><?php echo @implode(',',array_unique($row['s']));?></td>
+			<td><?php echo @implode(';',array_unique($row['z']));?></td>
+            <td align="center"><?=f_ctfrom($row['ctfrom']);?></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="14">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+		<?php if(!$is_bao){ ?>
+		<tr>
+			<td align="center"></td>
+			<td align="left" colspan="8">
+				<button id="batch-approval-btn" class="btn btn-submit" type="button"> 批量上报 </button>
+			</td>
+            <td align="left" colspan="9">
+				<span class='red'>注：红色表示 审核开始时间 小于当前时间 7天</span>
+			</td>
+		</tr>
+		<?php } ?>
+	</table>
+	<p><?=$pages['pages'];?></p>
+</div>
+
+	</div>
+</div>
+</body>
+</html>

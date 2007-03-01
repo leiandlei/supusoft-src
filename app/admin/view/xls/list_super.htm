@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>监督维护列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th>状态</th>
+			<th width="80">合同编号</th>
+            <th width="80">项目编号</th>
+			<th width="*">组织名称</th>
+            <th width="30">客户级别</th>
+            <th width="50">联系人</th>
+            <th width="50">电话</th>
+            <th width="50">联系邮箱</th>
+            <th width="50">手机</th>
+			<th width="60">审核类型</th>
+			<th width="80">最后监审日</th>
+			<th width="80">证书到期</th>
+			<th width="60">证书编号</th>
+			<th width="70">产品/范围</th>
+			<th width="80">计划开始</th>
+			<th width="80">合同来源</th>
+			<th width="70">上次审核时间</th>
+			<th width="70">上次审核组长</th>
+			<th width="70">上次审核组成员</th>
+			<th width="90">省份</th>
+			<th width="60">标准</th>
+            <th width="70">分组代码</th>
+			<th width="80">专业代码</th>
+			<th width="80">维护时间</th>
+			<th width="80">备注</th> 
+			<th width="80">三个月以前</th> 
+			<th width="80">一周以前</th> 
+			<th width="80">三天以前</th> 
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $resdb ){
+	foreach( $resdb as $pid => $row ){
+?>
+		<tr>
+			<td><?=$row['status'];?></td>
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['cti_code'];?></td>
+			<td><?=$row['ep_name'];?></td>
+            <td><?=read_cache('ep_level',$row['ep_level']);?></td>
+            <td align="center"><?=$row['person'];?></td>
+            <td align="center"><?=$row['ep_phone'];?></td>
+            <td align="center"><?=$row['person_mail'];?></td>      
+            <td align="center"><?=$row['person_tel'];?></td>
+			<td align="center"><?=$row['audit_type_V'];?></td>
+			<td align="center"><?=$row['final_date'];?></td>
+			<td align="center"><?=$row['e_date'];?></td>
+			<td align="center"><?=$row['certno'];?></td>
+			<td align="center"><?=$row['scope'];?></td>
+			<td align="center"><?=$row['pre_date'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+            <td align="center"><?=$row['last_date'];?></td>
+            <td align="center"><?=$row['team_lead'];?></td>
+            <td align="center"><?=$row['team_member'];?></td>
+			<td align="center"><?=$row['province'];?></td>
+			<td align="center"><?=$row['audit_ver_V'];?></td>
+            <td align="center"><?=$row['use_code'];?></td>
+			<td align="center"><?=$row['audit_code'];?></td>
+			<td align="center"><?=$row['up_date'];?></td>
+			<td align="center"><?=$row['sv_note'];?></td>
+			<td align="center"><?=$row['tms_ago'];?></td>
+			<td align="center"><?=$row['ow_ago'];?></td>
+			<td align="center"><?=$row['td_ago'];?></td>
+		</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

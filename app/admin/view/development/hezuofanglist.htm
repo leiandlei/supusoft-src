@@ -1,0 +1,148 @@
+<?php tpl('header')?>
+<body>
+	<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+		<input type="hidden" name="c" value="<?=$c;?>" />
+		<input type="hidden" name="a" value="<?=$a;?>" />
+		<input type="hidden" name="status" value="<?=$status;?>" />
+		<table>
+		    <tr>
+		        <td class="left">月份:</td>
+		        <td class='right'>
+		            <input type='text' value="<?=$month?>" name="month" class="input-date" />
+		        </td>
+		    </tr>
+		</table>
+	  	<p class="button-panel">
+	    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+	    	&nbsp;
+	    	<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+		</p>
+	</form>
+	<br/>
+
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top <?=($type=='unlist')?'ui-state-active':'';?>">
+		    	<a href="?c=development&a=hezuofang&month=<?=$month?>&ctfrom=<?=$ctfrom?>&type=unlist">
+		    		未结算
+		      	</a>
+		    </li>
+		    <li class="ui-state-default ui-corner-top <?=($type=='list')?'ui-state-active':'';?>">
+		    	<a href="?c=development&a=hezuofang&month=<?=$month?>&ctfrom=<?=$ctfrom?>&type=list">
+		    		已结算
+		      	</a>
+		    </li>
+	  	</ul>
+  	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+  	    	<form method="post" id="from" action="?c=development&a=save_hezuofang">
+		    	<table class="grid-table tal" style="text-align: center">
+					<thead>
+						<tr>
+							<th>项目名称</th>
+							<th>企业规模</th>
+							<th>结算单价</th>
+							<th>体系</th>
+							<th>结算价</th>
+							<th>是否带标</th>
+							<th>认证认可年度管理费</th>
+							<th>结算总金额</th>
+							<th>审核成本</th>
+							<th>其他费用</th>
+							<th>合同金额</th>
+							<th>实收金额</th>
+							<th>额定税收</th>
+							<th>返款金额</th>
+							<th>金额结算</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($results as $vo):?>
+						<?php
+							//带标志
+							$daibiao = 0;
+							foreach ($vo['item'] as $item)
+							{
+								if($item['mark']!=0)$daibiao=$daibiao+1;
+							}
+							
+						?>
+							<tr>
+								<input type="hidden" name="id[]" value="<?=$vo['id'];?>" size='5'>
+								<td><?=$vo['ep_name'];?></td>
+								<td><?=$vo['ep_amount'];?></td>
+								<td><?=$vo['jiesuandian'];?></td>
+								<td><?=count($vo['item']);?></td>
+								<td>
+									<?=$vo['jiesuandian']*count($vo['item']);?>
+								</td>
+								<td><?=$daibiao?></td>
+								<td>
+									<input type="text" name="nianduguanlifei[]" value="<?=$vo['nianduguanlifei'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="jiesuanzongjine[]" value="<?=$vo['jiesuanzongjine'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="shenhechengben[]" value="<?=$vo['shenhechengben'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="qitafeiyong[]"    value="<?=$vo['qitafeiyong'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="ctcost[]" value="<?=$vo['ctcost'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="sscost[]" value="<?=$vo['sscost'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="edingshuishou[]" value="<?=$vo['edingshuishou'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="fankuanjine[]" value="<?=$vo['fankuanjine'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="jiesuanjine[]" value="<?=$vo['jiesuanjine'];?>" size='5'>
+								</td>
+							</tr>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+				<p>
+					<center style="margin-bottom: 10px;">
+						<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+						<a href="?c=<?=$c;?>&a=hezuofang" title="关闭窗口">返回列表</a>
+					</center>
+				</p>
+			</form>
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+	    $('button.submit-btn').on('click',function(){
+	    	
+	    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+	    	$('#from').submit();
+	  	});
+		
+	  	$( ".input-date" ).datepicker({
+			changeMonth	: true,
+			changeYear	: true,
+			dateFormat	: "yy-mm"
+		});
+  	})
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</html>
+

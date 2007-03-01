@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>工作经历</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<tr>
+	    <td width="200">姓名</td>
+		<td width="80">状态</td> 
+		<td width="130">开始时间</td>
+		<td width="50">结束时间</td>
+		<td width="*">工作单位</td>
+		<td width="80">部门</td>
+		<td width="40">职务</td>
+		<td width="90">证明人</td>
+		<td width="60">联系电话</td>
+		<td width="110">创建日期</td>
+		<td width="110">描述</td>
+		
+	</tr>
+	<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $pid => $row ){
+?>
+	<tr>	<td align="center"><?=$row['add_hr'];?></td>
+			<td align="center"><?=$online_arr[$row['online']];?></td> 
+			<td align="center"><?=$row[s_date]?></td>
+			<td align="center"><?=$row[e_date]?></td>
+			<td align="left"><?=$row[area]?></td>
+			<td align="center"><?=$row['department'];?></td>
+			<td align="center"><?=$row['position'];?></td>
+			<td align="center"><?=$row['certifier'];?></td>
+			<td align="center"><?=$row['certifier_tel'];?></td>
+			<td align="center"><?=substr($row['create_date'],0,10);?></td>
+			<td align="center"><?=$row['note'];?></td>
+			
+	</tr>
+<?php
+	}
+}
+?>
+	</tbody>
+</table>
+</body>
+</html>

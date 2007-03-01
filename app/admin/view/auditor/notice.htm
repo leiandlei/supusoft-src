@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>审核员公告</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<style type="text/css">
+body {
+}
+</style>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+</head>
+
+<body>
+<div style="margin:0 auto 12px;width:1050px;">
+  <div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+      <li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="#">审核员公告 [<?=$total;?>]</a></li>
+    </ul>
+    <div style="min-height:180px;" class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+      <table width="100%" class="grid-table">
+        <tr>
+          <th>公告标题</th>
+          <th width="40">附件</th>
+          <th width="130">发布时间</th>
+          <th width="60">发布人</th>
+        </tr>
+        <?php if( $notices ):foreach( $notices as $row ):?>
+        <tr>
+            <td ><?=$row['title'];?></td>
+			<td align="center">
+             	<?php if($row['filename']):?>
+          		<a target='_blank' href="<?php sysinfo('url');?>/?c=notice&a=download&id=<?=$row['id']?>">
+            		下载
+            	</a>
+            	<?php endif;?>
+           	</td>
+          	<td align="center"><?=$row['update_date'];?></td>
+          	<td align="center"><?=$row['author'];?></td>
+        </tr>
+        <?php endforeach;else:?>
+        <tr>
+         	<td colspan="5">当前没有公告内容</td>
+        </tr>
+        <?php endif;?>
+      </table>
+	  <p><?=$pages['pages'];?></p>
+    </div>
+  </div>
+</div>
+ 
+</body>
+</html>

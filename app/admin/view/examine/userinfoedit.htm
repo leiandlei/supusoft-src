@@ -1,0 +1,85 @@
+<? tpl('header')?>
+	<script type="text/javascript" src="theme/js/validator.js"></script>
+	<script type="text/javascript" src="theme/js/region.js"></script>
+	</head>
+
+	<body>
+
+		<form method="post" id="from" action="?c=examine&a=userinfoedit">
+			<input id="id" type="hidden" name="id"     value="<?=$detail['id'];?>" />
+			<input id="id" type="hidden" name="exu_id" value="<?=$detail['exu_id'];?>" />
+			<input id="id" type="hidden" name="userID" value="<?=$detail['userID'];?>" />
+			<input id="id" type="hidden" name="save"   value="1" />
+			<div id="enterprise-tab" style="margin:0 auto;width:1000px;" class="tal ui-widget-content">
+				<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+					<li>考核登记</li>
+				</ul>
+				<div id="tab-basic">
+					<ul class="main-form">
+						<li>
+							<label class="field">考核：</label>
+							<em>*</em>
+							<span >
+								<select name="ex_id" class="fselect" style="width: 160px;">
+										<option>----请选择----</option>
+									<?php foreach($examines as $examine):?>
+										<option value="<?=$examine['id']?>" data-leixing="<?=$examine['fanwei'];?>" data-qujian="<?=$examine['day'];?>" <?=($detail['ex_id']==$examine['id'])?'selected':''?> ><?=$examine['name']?></option>
+									<?php endforeach;?>
+								</select>
+							</span>
+						</li>
+						<li id="receivefenzhi-li" style="display: none;">
+							<label class="field">分值：</label>
+							<em>*</em>
+							<span>
+								<input type="text" id="fenzhi"  name="fenzhi"  size="10" />(区间为<span id='qujian'></span>)
+							</span>
+						</li>
+						<li>
+						    <label class="field">内容：</label>
+						    <span>
+						    <em>*</em>
+						    <textarea style="width: 250px;" rows="6px" name="content"></textarea>
+						    </span>
+						</li>
+					</ul>
+					<p>
+						<center style="margin-bottom: 10px;">
+							<button class="btn btn-submit submit-btn" type="button"> 保 存 </button>&nbsp;&nbsp;&nbsp;
+							<a href="?c=<?=$c;?>&a=userinfolist&exu_id=<?=$exu_id;?>" title="关闭窗口">返回列表</a>
+						</center>
+					</p>
+				</div>
+			</div>
+
+		</form>
+	</body>
+	<script type="text/javascript">
+		$(function() {
+			$('button.submit-btn').on('click', function() {
+				if(!Validator.Validate(document.forms[0], 2)) return;
+				$('#from').submit();
+			});
+			$('select[name=ex_id]').on('change',function()
+			{
+				var qujian = $("select option:selected").data("qujian");
+				$("#qujian").html(qujian); 
+				$('#receivefenzhi-li')[0].style.display= $("select option:selected").data("leixing")=='2'?'':'none';
+			})
+			$("#fenzhi").on('change',function()
+			{
+				var qujian    = $("select option:selected").data("qujian");
+				var qujianarr = qujian.split('-');qujianarr.sort;
+				var value     = $(this).val();
+				if( value<qujianarr[0]||value>qujianarr[1] )
+				{
+					$(this).val('');
+					alert('输入值不在区间范围内');
+					return false;
+				}
+			})
+
+		});
+	</script>
+
+	</html>

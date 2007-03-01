@@ -1,0 +1,72 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>编辑企业信息</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.url.js"></script> 
+<script type="text/javascript" src="theme/js/validator.js"></script>
+
+<script type="text/javascript">
+
+$(function() {
+	$( "#enterprise-tab" ).tabs({
+		collapsible: false
+	});
+
+	$('#add-btn').click( addRecord );
+	addRecord();
+
+});
+function addRecord(){
+	tbody = $('#add-attachs');
+	tr = $('#add-attach');
+	new_tr = tr.clone();
+	new_tr.attr('id','');
+	new_tr.show();
+	tbody.append(new_tr);
+}
+
+
+
+
+</script>
+</head>
+
+<body>
+
+<div style="margin: 9px auto 0; width: 1050px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+	<li
+		class="ui-state-default ui-corner-top "><a
+		href="javascript:;">文档上传<span class="cnt-total"> </span></a></li>
+</ul>
+<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<form method="post" action="?c=files&a=save" enctype="multipart/form-data">
+		<table  class="form-table" style='width:900px'>
+			<tr>
+				<td width="110">文档类型</td>
+				<td width="230">上传</td>
+				<td width="100">备注</td>
+			</tr>
+			<tbody id="add-attachs">
+			</tbody>
+			<tr id="add-attach" style="display:none;">
+				<td><select name="ftype[]"><?=$files_select?></select></td>
+				<td><input type="file" name="archive[]" /></td>
+				<td><input type="text" class="input" name="note[]" size="60" /></td>
+			</tr>
+		</table>
+		<br/>
+		<p>
+			<center><button class="btn btn-button" type="button" id="add-btn"> 添加 </button> &nbsp; <button class="btn btn-submit" type="submit"> 上传 </button></center>
+		</p>
+		</form>
+	</div>
+</div>
+
+</body>
+</html>

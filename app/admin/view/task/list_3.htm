@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>已审批</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('.c-del').click(function(){
+		ep_name=$(this).parent().parent().find(".ep-name").html();
+		confirm_dialog('您确认要删除('+ep_name+')该审核计划？', $(this).attr( 'href' ), 'warning' );		return false;
+		return false;
+	});
+
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	//$('a.task-approval').click( approval );
+	$('#export-xls-btn').click( do_export_xls );
+	$(".a_link").on("click",function(){
+		$(this).parent().find("span").toggle();
+		})
+		//合同上报
+	$('.status_sb_class').on('change',function(event) {
+        var id = $(this).parent().data('id');
+        var status_sb = $(this).val();
+        $.ajax({
+             type: "POST",
+             url: "./app/admin/control/ajax/configAjax.php?event=eidStatus_sb",
+             data: {
+                 data_params:{
+                  id:id,
+                  status:status_sb
+                 }
+              },
+             dataType: "json",
+             success: function(data){
+                          if( data.errorCode == 0 ){
+                            alert('修改成功');
+                          }else{
+                            alert(data.errorStr);
+                          }
+                      }
+        });
+  })
+	$('.status_if_push').on('change',function(event) {
+        var id = $(this).parent().data('id');
+        var if_push = $(this).val();
+        $.ajax({
+             type: "POST",
+             url: "./app/admin/control/ajax/configAjax.php?event=eidif_push",
+             data: {
+                 data_params:{
+                  id:id,
+                  status:if_push
+                 }
+              },
+             dataType: "json",
+             success: function(data){
+                          if( data.errorCode == 0 ){
+                            alert('修改成功');
+                          }else{
+                            alert(data.errorStr);
+                          }
+                      }
+        });
+  })
+	
+	
+});
+//点击微信推送事件
+ function iftuisong(obj){
+	var $tr    = $(obj).parents("tr");
+    var id     = $tr.attr('id');
+	if (!confirm("确认要推送？")) 
+			{
+            	window.event.returnValue = false;
+	        }else{
+	        	window.location.href='?c=ajax&a=weixin_sendmsg&tid='+id; 
+	        }
+
+ }
+
+
+function approval(){
+	iframe_dialog( '审核任务审批', $(this).attr('href'), 500, 230 );
+	return false;
+}
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+
+
+function batch_unapproval(){
+	var tids = $('input[type=checkbox]:checked');
+	if( 1 > tids.length ){
+		message_dialog( '请选择要退回的项目！', 'error' );
+		return false;
+	}
+	var tids = '';
+	$('input[type=checkbox][name="tid[]"]').each(function(){
+		var $this = $(this);
+		if( $this.attr('checked') )
+			tids += $this.val()+',';
+	});
+	tids = tids.substring(0,tids.length - 1);
+
+	
+	
+	var url = '?c=ajax&a=task_batch_unapproval&tids='+tids;
+	$.ajaxSetup({cache:false,async:false});
+	$.getJSON( url, function(json){
+		if( 'ok' == json.state ){
+			message_dialog( '操作成功！', 'success' );
+			window.location.reload();
+		} else {
+			message_dialog( json.msg, 'error' );
+		}
+	});
+
+	return false;
+}
+
+
+</script>
+</head>
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1300px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+<input type="hidden" id="status" name="status" value="<?=$status;?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" id="ep_name" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+			<td class="left">项目编号：</td>
+			<td class="right"><input type="text" id="cti_code" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+            <td class="left">合同编号：</td>
+			<td class="right"><input type="text" id="ct_code" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+			<td class="left">省份：</td>
+      <td class="right"><select id="areacode" name="areacode"
+			class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$province_select;?>
+        </select></td>
+           
+		</tr>
+		<tr>
+			
+			<td class="left">合同来源：</td>
+			<td class="right"><select id="ctfrom" name="ctfrom" class='fselect' <?=($hezuofang=='1')?'disabled':'';?>><option value=""></option><?=$ctfrom_select;?></select></td>
+			<td class="left">认证体系：</td>
+			<td class="right"><select id="iso" name="iso" class='fselect'><option value=""></option><?=$iso_select;?></select></td>
+			<td class='left'>标准版本：</td>
+			<td class='right'><select id="audit_ver" name="audit_ver" class='fselect'><option value=""></option><?=$audit_ver_select;?></select></td>
+			<td class="left">审核类型：</td>
+			<td class="right"><select id="audit_type" name="audit_type" class='fselect'><option value=""></option><?=$audit_type_select;?></select></td>			
+		</tr>
+		<tr>
+			<td class="left">审核开始：</td>
+			<td class="right"><input type="text" id="audit_start_start" name="audit_start_start" value="<?=$audit_start_start;?>" class="input finput input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" id="audit_start_end" name="audit_start_end" value="<?=$audit_start_end;?>" class="input finput input-date" /></td>
+			<td class="left">审核结束：</td>
+			<td class="right"><input type="text" id="audit_end_start" name="audit_end_start" value="<?=$audit_end_start;?>" class="input finput input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" id="audit_end_end" name="audit_end_end" value="<?=$audit_end_end;?>"  class="input finput input-date" /></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出 </button>
+	</p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style="width:2500px;">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<!--<li class="ui-state-default ui-corner-top"><a href="?c=audit&a=list_wait_arrange">未安排 <span class="cnt-total"><?=$state_total[0];?></span></a></li>-->
+		<li class="ui-state-default ui-corner-top"><a href="?c=task&a=list&status=1<?php gettourl();?>" class="ui-tabs-anchor">待派人 <span class="cnt-total"><?=$state_total[1];?></span></a></li>
+		<li class="ui-state-default ui-corner-top"><a href="?c=task&a=list&status=2<?php gettourl();?>">待审批 <span class="cnt-total"><?=$state_total[2];?></span></a></li>
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="?c=task&a=list&status=3<?php gettourl();?>">已审批 <span class="cnt-total"><?=$state_total[3];?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<div>
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="30"></th>
+			<th width="30">修改</th>
+			<th width="30">推送提醒</th>
+			<th width="30">是否推送</th>
+			<th width="70">项目编号</th>
+			<th width="40">状态</th>
+			<th width="70">收费状态</th>
+			<th width="50">是否上报</th>
+            <th width="40">省份</th>
+			<th width="200">组织名称</th>
+            <th width="30">分层</th>
+			
+			<th width="80">标准</th>
+			<th width="80">审核类型</th>
+			<th width="30">总人日</th>
+			<th width="70">审核开始时间</th>
+			<th width="70">审核结束时间</th>
+            <th width="30">天数</th>
+            <th width="160">组长</th>
+			<th width="160">组员</th>
+			<th>见证</th>
+          
+         	<th width="50">联系人</th>
+              <th width="50">联系人手机</th>
+              <th width="50">企业电话</th>
+              <th width="50">企业传真</th>
+		 
+            <th width="*">备注</th>
+            <th width="*">自用备注</th>
+            <th width="30">合同来源</th>
+            <th width="*">制单人</th>
+			<th width="*">制单时间</th>
+            	<th width="*">审批人</th>
+			<th width="*">审批时间</th>
+            	<th width="*">修改人</th>
+			<th width="*">修改时间</th>
+			<th width="30">删除</th>
+		 
+		</tr>
+		</thead>
+		<tbody>
+        <form action="?c=doc&a=01-1" method="post" id="form_action">
+<?php
+if( $tasks ){
+	foreach( $tasks as $tid => $row ){
+?>
+		<tr id="<?=$tid?>">
+			<td><input type="checkbox"  class="select_down" name="tid[]" value="<?=$row['id'];?>"/></td>
+			<td align="center"><a href="?c=task&a=edit_approval&tid=<?=$tid;?>" class="task-approval"><img src="theme/images/b_edit.png" border=0 /></a></td>
+			<td align="center"><a   onclick="iftuisong(this);"><img src="theme/images/other.png" border=0 /></a></td>
+            <td align="center" data-id="<?=$row['id'];?>">
+            	<?php
+                  $disabled = '';
+                ?>
+                  <select <?php echo $disabled;?>  name="if_push" class='status_if_push fselect'>
+                    <option <?php if($row['if_push']==1)echo 'selected';?> value="1">否</option>
+                    <option <?php if($row['if_push']==2)echo 'selected';?> value="2">是</option>
+                  </select>
+            </td>
+			<td align="center"><?php echo @ implode('<br/>',$row['cti_codes']);?></td>
+			<td align="center"><?=${'status_'.$row['status']};?></td>
+			<td align="center" ><?=$row['scc_status'];?></td>
+			<td align="center" data-id="<?=$row['id'];?>">
+                <?php
+                  $disabled = '';
+                ?>
+                  <select <?php echo $disabled;?>  name="status_sb" class='status_sb_class fselect'>
+                    <option <?php if($row['status_sb']==0)echo 'selected';?> value="0">---否---</option>
+                    <option <?php if($row['status_sb']==1)echo 'selected';?> value="1">---是---</option>
+                  </select>
+            </td>
+            <td> <?=$row['province'];?> </td>
+			<td class="ep-name"><?=$row['ep_name'];?></td>
+            <td class="center"><?=read_cache('ep_level',$row['ep_level']);?></td>
+			<td align="center"><?php echo @ implode('<br/>',$row['audit_vers']);?></td>
+			<td align="center"><?php echo @ implode('<br/>',$row['audit_types']);?></td>
+			<td align="center"><?=$row['tk_num'];?></td>
+			<td align="center"><?=$row['tb_date'];?></td>
+			<td align="center"><?=$row['te_date'];?></td>
+            <td align="center"><?=$row['num'];?></td>
+			<td align="center">
+<?php
+
+foreach($row[audit] as $k=>$v){
+	if($v[role] == '01'){
+		echo $v[name]."";
+	}
+}
+
+				
+?>
+			</td>
+			<td align="center">
+<?php
+foreach($row[audit] as $k=>$v){
+	if($v[role] == '02'){
+		echo $v[name]."(".f_iso($v['iso']).":".f_qua_type($v[qua_type]).$v[use_code].")<br/>";
+	}
+}
+
+				
+?>
+			</td>
+            <td><?php
+foreach($row[audit] as $k=>$v){
+if(!$v['witness']) continue;
+	echo $v[name]." ".r_sys_cache("witness",$v['witness']);
+	echo " ".$v[witness_person];
+}
+
+				
+?>
+</td>
+			 
+			
+           <td align="center"><?=$row['person'];?></td>
+              <td align="center"><?=$row['person_tel'];?></td>
+              <td align="center"><?=$row['ep_phone'];?></td>
+              <td align="center"><?=$row['ep_fax'];?></td>
+          
+            <td align="center"><?php if($row['note']){ ?><a href="javascript:;" title="<?=$row['note'];?>" class="a_link"  ><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$row['note'];?></span></a><?php }?></td>
+			<td align="center"><?php if($row['self_note']){ ?><a href="javascript:;" title="<?=$row['self_note'];?>" class="a_link"  ><img src="theme/images/other.png" border="0" /><span style="display:none"><?=$row['self_note'];?></span></a><?php }?></td>
+            <td align="center"><?=$row['ctfrom_V'];?></td>
+               	<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['create_date'];?></td>
+            <td align="center"><?=$row['approval_user'];?></td>
+			<td align="center"><?=$row['approval_date'];?></td>
+            <td align="center"><?=$row['update_user'];?></td>
+			<td align="center"><?=$row['update_date'];?></td>
+			<td align="center"><a href="?c=task&a=del&tid=<?=$tid;?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="14">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+		<tr>
+			<td colspan="2"></td>
+			<td colspan="13">
+				<!--<button class="btn btn-submit" type="submit" id="audit-btn" onclick="return get_down()">审核通知书下载</button>&nbsp;
+				<button class="btn btn-submit" type="submit" id="finance-btn" onclick="return get_downs()">交费通知下载</button>&nbsp;-->
+				<button class="btn btn-submit" type="submit" id="batch-unapproval-btnu" onclick="return batch_unapproval()">批量退回</button>&nbsp;
+			</td>
+            </form>
+		</tr>
+	</table>
+	
+	<p><?=$pages['pages'];?></p>
+</div>
+
+	</div>
+</div>
+</body>
+</html>

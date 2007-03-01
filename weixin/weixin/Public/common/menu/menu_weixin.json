@@ -1,0 +1,60 @@
+{
+	"button":[
+		{
+			 "name":"联系我们"
+			,"sub_button":[
+				{
+					 "type":"click"
+					,"key" :"qiyejianjie"
+					,"name":"企业简介"
+				},
+				{
+					 "type":"click"
+					,"key" :"lianxifangshi"
+					,"name":"联系方式"
+				},
+				{
+					 "type":"click"
+					,"key" :"zhaopinxinxi"
+					,"name":"招聘信息"
+				},
+				{
+					 "type":"view"
+					,"name":"客服留言"
+					,"url" :"http://cams.lll.cn/weixin/weixin/index.php/Home/Other/kefuliuyan"
+				}
+			]
+		}
+		,{
+			 "name":"在线服务"
+			,"sub_button":[
+				{
+					 "type":"view"
+					,"name":"申请认证"
+					,"url" :"http://cams.lll.cn/weixin/weixin/index.php/Home/Enterprises/shenqingrenzheng"
+				}
+				,{
+					 "type":"view"
+					,"name":"客户公告"
+					,"url" :"http://cams.lll.cn/weixin/weixin/index.php/Home/Enterprises/kehugonggao"
+				}
+				,{
+					 "type":"view"
+					,"name":"审核进度"
+					,"url" :"http://cams.lll.cn/weixin/weixin/index.php/Home/Enterprises/shenhejindu"
+				}
+				,{
+					 "type":"view"
+					,"name":"证书状态"
+					,"url" :"http://cams.lll.cn/weixin/weixin/index.php/Home/Enterprises/zhengshuzhuangtai"
+				}
+				
+			]
+		}
+		,{
+			 "type":"view"
+			,"name":"审核员专区"
+			,"url" :"http://cams.lll.cn/weixin/weixin/index.php"
+		}
+	]
+}

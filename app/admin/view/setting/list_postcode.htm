@@ -1,0 +1,102 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>邮政编码</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script>
+$(function(){
+	$('.c-del').click(function(){ 
+		confirm_dialog('确定删除配置信息？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});  
+})
+</script>
+</head>
+
+<body>
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">邮政编码设置</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<form method="get" action="?c=setting_region&a=list">
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<table>
+	<tr>
+    	<td>编码:</td>
+        <td><input type="text" size="10" name="code" class="input" value="<?=$code?>" /></td>
+        <td colspan="2">省:<input type="text" name="province" size="10" class="input" value="<?=$province;?>" /> </td>
+        <td colspan="2">市:<input type="text" name="city" size="10" class="input" value="<?=$city;?>" /> </td>
+        <td colspan="2">县:<input type="text" name="area" size="10" class="input" value="<?=$area;?>" /> </td>
+        <td>状态：启用<input type="radio" name="is_stop" value="0" checked="checked" />
+        停用<input type="radio" name="is_stop" value="1" /></td>
+        <td><button type="submit" class="btn btn-submit"> 搜 索 </button></td>
+    </tr>
+</table>
+</form>
+		<?=$pages['pages'];?>
+<p style="font-size:0;height:9px;overflow:hidden;"></p>
+<form method="post" action="?c=setting_postcode&a=save">
+<table class="form-table">
+	<tr>
+		<th width="40">排序</th>
+		<th width="60">编码</th>
+		<th width="80">省</th>
+		<th width="80">市</th>
+		<th width="*">县</th>
+		<th width="120">状态</th>
+		<th width="40">删除</th>
+	</tr>
+<?php
+if( $resdb ){
+	foreach( $resdb as $id => $row ){
+		$row['stop_Y'] = $row['is_stop'] ? 'checked' : '';
+		$row['stop_N'] = $row['is_stop'] ? '' : 'checked';
+?>
+	<tr align="center">
+		<td><input type="text" name="vieworder[<?=$id;?>]" value="<?=$row['vieworder'];?>" class="input" size="2"  /></td>
+		<td><input type="text" name="code[<?=$id;?>]" value="<?=$row['code'];?>" size="6" class="input"  /></td>
+		<td><input type="text" name="province[<?=$id;?>]" value="<?=$row['province'];?>" class="input" size="8"  /></td>
+		<td><input type="text" name="city[<?=$id;?>]" value="<?=$row['city'];?>" class="input" size="8"  /></td>
+		<td align="left"><input type="text" name="area[<?=$id;?>]" value="<?=$row['area'];?>" class="input" size="40"  /></td>
+		<td>
+			<input type="radio" id="stop-{<?=$id;?>}-N" name="is_stop[<?=$id;?>]" value="0" <?=$row['stop_N'];?>/><label for="stop-{<?=$id;?>}-N"> 启用</label>
+			<input type="radio" id="stop-{<?=$id;?>}-Y" name="is_stop[<?=$id;?>]" value="1" <?=$row['stop_Y'];?>/><label for="stop-{<?=$id;?>}-Y"> 停用</label>
+		</td>
+		<td align="center"><a href="?c=<?=$c;?>&a=del&type=<?=$type?>&to=<?=$a;?>&id=<?=$row['id'];?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>
+	</tr>
+<?php
+	}
+}
+?>
+	<tr>
+		<td><input type="text" name="new[vieworder][]" value="" size="2" class="input" /></td>
+		<td><input type="text" name="new[code][]" value="" size="6" class="input" /></td>
+		<td><input type="text" name="new[province][]" value="" size="8" class="input" /></td>
+		<td><input type="text" name="new[city][]" value="" size="8" class="input" /></td>
+		<td><input type="text" name="new[area][]" value="" size="20" class="input" /></td>
+		<td>
+			<label><input type="radio" name="new[is_stop][]" value="0" /> 启用</label>
+			<label><input type="radio" name="new[is_stop][]" value="1" /> 停用</label>
+		</td>
+		<td></td>
+	</tr>
+	<tr>
+		<td colspan="5" class="cRed">说明：请谨慎修改以上设置，CNAS设定的请不要修改。</td>
+	</tr>
+</table>
+<p style="font-size:0;height:9px;overflow:hidden;"></p>
+		<?=$pages['pages'];?>
+<p style="font-size:0;height:9px;overflow:hidden;"></p>
+<p class="button-panel tac"><button class="btn btn-submit" type="submit"> 保 存 </button></p>
+</form>
+	</div>
+</div>
+</body>
+</html>

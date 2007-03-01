@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>预算单</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr>
+			<th>项目名称</th>
+			<th>审核阶段</th>
+			<th>审核开始时间</th>
+			<th>合同金额</th>
+			<th>其他费用</th>
+			<th>到款情况</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php foreach ($results as $value):?>
+		<tr>
+			<td style="text-align: center;"><?=$value['ep_name'];?></td>
+			<td style="text-align: center;"><?=$value['audit_type'];?></td>
+			<td style="text-align: center;"><?=$value['tb_date'];?></td>
+			
+			<td style="text-align: center;"><?=$value['cost'];?></td>
+			
+			<td style="text-align: center;"><?=$value['enterprises']['qitafeiyong'];?></td>
+			
+			<td style="text-align: center;"><?=$value['dk_type'];?></td>
+			
+		</tr>
+<?php endforeach;?>
+		</tbody>
+	</table>
+</body>
+</html>

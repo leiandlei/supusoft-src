@@ -1,0 +1,15 @@
+.clear{clear:both; height:0px; font-size:0px; line-height:0px;}
+.showyearbox{font-size:12px; color: #333333; font-family:Arial, Helvetica, sans-serif;
+position:absolute; left:0px; top:25px; z-index:88; background-color: #F4FDFF; border:1px #8A89A9 solid; width:180px; display:none; padding:5px; 
+ -moz-box-shadow: 3px 3px 4px #CCCCCC;   
+ -webkit-box-shadow: 3px 3px 4px #CCCCCC;   
+box-shadow: 3px 3px 4px #CCCCCC;   
+/* For IE 8 */   
+-ms-filter: "progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#CCCCCC')";   
+/* For IE 5.5 - 7 */   
+filter: progid:DXImageTransform.Microsoft.Shadow(Strength=4, Direction=135, Color='#CCCCCC');   
+}
+.showyearbox ul { padding:0px; margin:0px;}
+.showyearbox li { padding:0px; margin:0px; line-height:180%;list-style-type:none;}
+.showyearbox li{ float:left;cursor:pointer; width:50px; padding-left:10px; height:23px; line-height:23px;}
+.showyearbox .tit{ font-size:12px; color: #0066CC; font-weight:bold; padding-left:10px;}

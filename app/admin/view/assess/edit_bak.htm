@@ -1,0 +1,507 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>认证评定</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.url.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<style type="text/css">
+.ctxm-table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.ctxm-table .td {
+	padding: 5px;
+	border: 1px solid #ccc;
+}
+.txxm-table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+.txxm-table td {
+	padding: .4em .6em;
+	border: 1px solid #f2f6fb;
+}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	$( "#assess-tab" ).tabs({
+		collapsible: false
+	});
+
+	$('input.input-date').datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	}); 
+	//选择评定人员
+	$('.select-user').bind( 'click', select_pduser );
+	var anchor = $.url.attr('anchor');
+	if( anchor ) $( "#assess-tab" ).tabs( "enable", anchor );
+	$('#note-form').submit( check_form );
+	$(".copy-y").bind("click",function(){
+		var html=$(this).parent().parent().parent().find("span").html();
+		$(this).parent().parent().find("textarea").val(html)
+		
+		
+		})
+});
+
+
+var $this = null;
+function select_pduser(){ 
+	var iso=$(this).attr("iso");
+	var use_code=$(this).attr("code");
+	var href = '?c=ajax&a=select_teacher&iso='+iso+'&use_code='+use_code+"&step="+$(this).attr("i");
+ 	$this = $(this); 
+	$('<iframe border="0" id="frame1" frameborder="no" src="' + href + '" />').dialog({
+		title: '选择专业管理人员',
+		autoOpen: true,
+		width: 600,
+		height: 380,
+		modal: true,
+		resizable: false,
+		autoResize: true,
+		overlay: {opacity: 0.5,background: "black"},
+		close: function(ev,ui){$(this).remove();}
+	}).width(600 - 30).height(380);
+}
+
+
+function update_user( uid, name ){
+	var val=$this.val();
+	if(val)
+	val+="；";
+	val+=name;
+	$this.val(val);
+
+	$('#frame1').dialog('close');
+}
+function check_form(){
+
+	var ids = $('input[class=note]:checked');
+	if( 1 > ids.length ){
+		alert('请选择项目！');
+		return false;
+	}
+	}
+</script>
+<script>
+/*问题列表编辑 @zxl2013-11-26 11:38:52*/
+$(function(){
+	html1='<select name="jibie" id="s_jibie"><option value="A">A</option><option value="B">B</option><option value="C">C</option><option value="D">D</option><option value="Z">其他</option></select>';
+	$("td[id=jibie]").on("dblclick",function(){
+		//alert("html");
+		u_id=$(this).parent().attr("u_id");
+		$(this).html(html1);
+		$("#s_jibie").blur(function(){
+			//alert(2);
+			$.get("?c=assess&a=edit_question&id="+u_id,{"jibie":$(this).val()});
+			htmlval=$(this).val()=='Z'?'其他':$(this).val();
+			$(this).parent().html(htmlval);
+			
+			})
+		
+		})
+	$("td[id=note]").on("dblclick",function(){
+		//alert("html");
+		var val1=$(this).html();
+		u_id=$(this).parent().attr("u_id");
+		$(this).html('<textarea style="width:98%;" rows="3" name="" id="t_note"></textarea>');
+		$("#t_note").focus(function(){
+			$(this).val(val1);
+			
+			}).on('blur',function(){
+				$.get("?c=assess&a=edit_question&id="+u_id,{"note":$(this).val()});
+				$(this).parent().html($(this).val());
+				//alert($(this).val());
+				//alert($(this).val());
+				
+			})
+		
+		
+		})
+	
+	
+	})
+
+</script>
+</head>
+
+<body>
+<?php echo einfo("tid=$tid");?> <br/>
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top"><a href="javascript:;">审核文档</a></li>
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <form method="post" action="?c=attachment&a=batdown">
+      <table class="grid-table">
+        <tr>
+          <th width="30">选择</th>
+          <th>文档名</th>
+          <th>文档类型</th>
+          <th>备注</th>
+          <th>上传时间</th>
+          <th>上传人</th>
+           <th>下载</th>
+        </tr>
+        <tbody id="attach-list">
+          <?php
+if( $task_archives ){
+	foreach( $task_archives as $row ){
+?>
+          <tr>
+            <td align="center"><input type="checkbox" name="aid[]" value="<?=$row['id'];?>" /></td>
+            <td align="center"><?=$row['name'];?></td>
+            <td align="center"><?=$row['ftype_V'];?></td>
+            <td align="center"><?php
+if( $row['description'] ){
+?>
+              <a href="javascript:;" title="<?=$row['description'];?>"><img src="theme/images/other.png" border="0" /></a>
+              <?php
+}
+?></td>
+            <td align="center"><?=$row['create_date'];?></td>
+            <td align="center"><?=f_username($row['create_uid']);?></td>
+            <td align="center"><a href="?c=attachment&a=down&aid=<?=$row['id']?>">下载</a></td>
+          </tr>
+          <?php
+	}
+}
+?>
+        </tbody>
+        <tr>
+          <td></td>
+          <td colspan="6"><button type="submit" class="btn btn-submit"> 批量打包下载 </button></td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>
+<br/>
+<p style=" padding:10px 20px 10 20px; border-bottom:1px solid #999;margin:0 auto;width:750px; text-align:left; font-size:14px">审核时间：
+  <?=$task_info[tb_date]?>
+  至
+  <?=$task_info[te_date]?>
+</p>
+<br />
+<div id="assess-tab" style="margin:0 auto;width:750px;" class="tal">
+  <ul>
+    <li><a href="#tab-hr">评定人员</a></li>
+    <li><a href="#tab-question">评定问题</a></li>
+    <li><a href="#tab-edit">认证决定</a></li>
+    <?php if( $scope_childs ):?>
+    <li><a href="#tab-scope">子证书范围</a></li>
+    <?php endif;?>
+     <!--<li><a href="#tab-result">评分</a></li>-->
+  </ul>
+  <div id="tab-hr">
+    <form method="post" action="?c=assess&a=edit_hr">
+      <input type="hidden" name="pd_id" value="<?=$pd_id;?>" />
+      <input type="hidden" name="tid" value="<?=$tid;?>" />
+      <input type="hidden" name="step" value="1" />
+      <input type="hidden" name="url" value="<?=$url?>" />
+      <table class="grid-table">
+        <tr>
+          <th width="130">标准版本</th>
+          <th width="80">审核类型</th>
+          <th>专业代码</th>
+          <th width="80">一评人员</th>
+          <th width="80">二评人员</th>
+          <th width="80">一评技术专家</th>
+          <th width="80">二评技术专家</th>
+        </tr>
+        <tbody>
+          <?php if( $pds ): foreach( $pds as $pd_id => $pd ): ?>
+          <tr align="center">
+            <td><?=$pd['audit_ver_V'];?>
+              （
+              <?=$pd[cti_code]?>
+              ）</td>
+            <td><?=$pd['audit_type_V'];?></td>
+            <td><?=$pd['use_code'];?></td>
+            <!--<td><input type="hidden" name="comment_a_name[<?=$pd_id;?>]" value="<?=$pd['comment_a_uid']?>"  />
+             <?=$pd['comment_a_name']?></td>-->
+            <td><select name="comment_a_name[<?=$pd_id;?>]">
+                <option value="">---请选择---</option>
+               <?=$pd['comment_a_select'];?>
+                </select>
+                </td>
+            <td><select name="comment_b_name[<?=$pd_id;?>]">
+                <option value="">---请选择---</option>
+               <?=$pd['comment_b_select'];?>
+                </select>
+                </td>
+              <!--
+              <input type="text" name="comment_b_name[<?=$pd_id;?>]" value="<?=$pd['comment_b_name'];?>" class="input select-user" rel="<?=$pd_id;?>" iso="<?=$pd[iso]?>" code="<?=$pd[use_code]?>"  i='2'/></td>
+              -->
+            <td><select name="comment_c_name[<?=$pd_id;?>]">
+                <option value="">---请选择---</option>
+               <?=$pd['comment_c_select'];?>
+                </select>
+              <!--
+              <input type="text" name="zy_name[<?=$pd_id;?>]" value="<?=$pd['zy_name'];?>" class="input select-user" rel="<?=$pd_id;?>" iso="<?=$pd[iso]?>" code="<?=$pd[use_code]?>"  i='1'/></td>-->
+            </td>
+            <td><select name="comment_d_name[<?=$pd_id;?>]">
+                <option value="">---请选择---</option>
+               <?=$pd['comment_d_select'];?>
+                </select>
+              <!--
+              <input type="text" name="zy_name[<?=$pd_id;?>]" value="<?=$pd['zy_name'];?>" class="input select-user" rel="<?=$pd_id;?>" iso="<?=$pd[iso]?>" code="<?=$pd[use_code]?>"  i='1'/></td>-->
+            </td>
+          </tr>
+          <?php endforeach;endif;?>
+        </tbody>
+      </table>
+      <p class="button-panel tac" style="margin-top:12px;">
+        <button class="btn btn-submit" type="submit"> 保 存 </button>
+      </p>
+    </form>
+  </div>
+  
+  <!--评定问题 START-->
+  <div id="tab-question">
+    <table width="100%">
+      <tbody id="question-list">
+        <tr>
+          <td colspan="4"><table border="1" class="grid-table" id="ques">
+              <tr>
+                <th colspan="2" >操作</th>
+                <th width="40">级别</th>
+                <th>内容</th>
+                <th width="300">审核员整改内容</th>
+              </tr>
+              <form action="?c=assess&a=edit_question" method="post" id="note-form">
+                <input type="hidden" name="status" value="1" />
+                <input type="hidden" name="pd_id" value="<?=$pd_id?>" />
+                <input type="hidden" name="tid" value="<?=$tid?>" />
+                <?php  if($result)
+            foreach($result as $val){ if(!$val[note]) continue;?>
+                <tr u_id=<?=$val['id'];?>>
+                  <td  width="30"><?php if(!$val[status]){ ?>
+                    <input type="checkbox" class="note" name="note_id[]" value="<?=$val[id];?>" />
+                    <?php }?></td>
+                  <td width="30" align="center"><a class="" href="?c=assess&a=edit&pd_id=<?=$pd_id;?>&tid=<?=$tid;?>&id=<?=$val['id'];?>&type=del" ><img src="theme/images/b_drop.png" border=0 title="删除"/></a></td>
+                  <td width="80" align="center" id="jibie"><?=$val['level']=='Z'?'其他':$val['level']?></td>
+                  <td id="note"><?=$val['note']?></td>
+                  <td id="note"><?=$val['re_note']?></td>
+                </tr>
+                <?php }?>
+                <tr>
+                  <td colspan="3" align="center"><button class="btn btn-submit" type="submit"> 通 过 </button></td>
+                  <td colspan="4" align="right"><font color="#FF0000">*双击级别、内容即可编辑</font></td>
+                </tr>
+              </form>
+            </table></td>
+        </tr>
+        <tr>
+            <td>
+          <form method="post" action="?c=<?=$c;?>&a=edit_question">
+            <input type="hidden" name="step" value="1" />
+            <input type="hidden" name="tid" value="<?=$tid;?>" />
+            <?php if( $pds ): foreach( $pds as $pd_id => $pd ):?>
+            <table class="grid-table" id="grid-table-<?=$pd_id?>">
+              <input type="hidden" name="pd_id[<?=$pd_id?>]" value="<?=$pd_id?>" />
+              <input type="hidden" name="pid[<?=$pd_id?>]" value="<?=$pd[pid]?>" />
+              <tr>
+                <th colspan="2" >评定问题
+                </td>
+              
+              
+                <td ><input name="audit_ver_V[<?=$pd_id?>][]"  type="hidden" value="<?=$pd['audit_ver_V'];?>"/>
+                  <?=$pd['audit_ver_V'];?>
+                  (
+                  <?=$pd[cti_code]?>
+                  )</td>
+                <td><input name="audit_type_V[<?=$pd_id?>][]"  type="hidden" value="<?=$pd['audit_type_V'];?>"/>
+                  <?=$pd['audit_type_V'];?></td>
+              </tr>
+              <tr>
+                <th width="30"><a href="javascript:add_ques(<?=$pd_id?>);" ><img src="theme/images/b_add.gif" border=0  /></a></th>
+                <th width="80">问题分类:</th>
+                <th colspan="2">问题描述</th>
+              </tr>
+              <tr style="display:none;">
+                <td align="center"></td>
+                <td><select name="comment_a_level[<?=$pd_id?>][]">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="Z">其他</option>
+                  </select></td>
+                <td colspan="2"><textarea style="width:98%;" rows="3" name="comment_a[<?=$pd_id?>][]"></textarea></td>
+              </tr>
+              <tr>
+                <td align="center"></td>
+                <td><select name="comment_a_level[<?=$pd_id?>][]">
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                    <option value="D">D</option>
+                    <option value="Z">其他</option>
+                  </select></td>
+                <td colspan="2"><textarea style="width:98%;" rows="3" name="comment_a[<?=$pd_id?>][]"></textarea></td>
+              </tr>
+            </table>
+            评定结论:
+            <label>
+              <input type="radio" name="comment_a_pass[<?=$pd_id;?>]" value="1" <?=$pd['comment_a_pass_1'];?>/>
+              通过</label>
+            &nbsp;
+            <label>
+              <input type="radio" name="comment_a_pass[<?=$pd_id;?>]" value="2" <?=$pd['comment_a_pass_2'];?>/>
+              不通过</label>
+            &nbsp; <br/>
+            <br/>
+            <?php endforeach;endif;?>
+            <p class="button-panel tac">
+              <button class="btn btn-submit" type="submit"> 提 交 </button>
+            </p>
+          </form>
+            </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <!--评定问题 END-->
+  
+  <div id="tab-edit">
+    <form method="post" action="?c=assess&a=edit" onsubmit="return check_pd_user();">
+      <input type="hidden" name="step" value="1" />
+      <input type="hidden" name="tid" value="<?=$tid;?>" />
+      <input type="hidden" name="ct_id" value="<?=$ct_id;?>" />
+      <input type="hidden" name="url" value="<?=$url;?>" />
+      <?php
+if( $pds ){
+	foreach( $pds as $pd_id => $pd ){
+?>
+      <table class="grid-table">
+        <tr>
+          <th width="120" align="right">认证标准：</th>
+          <th width="240"><?=f_audit_ver($pd['audit_ver']);?>
+            (
+            <?=$pd[cti_code]?>
+            )</th>
+          <th width="120" align="right">审核类型：</th>
+          <th><?=$pd['audit_type_V'];?></th>
+        </tr>
+        <tr>
+          <td align="right">专业：</td>
+          <td><input type="hidden" name="use_code[<?=$pd_id;?>]" value="<?=$pd['use_code'];?>" /><?=$pd['use_code'];?></td>
+          <td align="right">小类：</td>
+          <td><input type="hidden" name="audit_code[<?=$pd_id;?>]" value="<?=$pd['audit_code'];?>" /><?=$pd['audit_code'];?></td>
+        </tr>
+        <tr>
+          <td align="right"><span class="red">认可标志：</span></td>
+          <td colspan="3"><?=$pd['mark_checkbox'];?></td>
+        </tr>
+       
+        <tr>
+          <td valign="top" align="right">审核范围：<br/>
+           </td>
+          <td colspan="3"><textarea name="scope[<?=$pd_id;?>]" cols="80" rows="7"><?=$pd['scope'];?>
+</textarea></td>
+        </tr>
+        <tr>
+          <td align="right">评定日期：</td>
+          <td><input type="text" name="assess_date[<?=$pd_id;?>]" value="<?=$pd['comment_date']?>" class="input input-date" size="12" /></td>
+          <!-- <td align="right">总经理审批日期：</td>
+          <td><input type="text" name="sp_date[<?=$pd_id;?>]" value="<?=$pd['sp_date']?>" class="input input-date" size="12" /></td> -->
+        </tr>
+        <tr>
+          <td align="right">评定结果：</td>
+          <?php if(!$pd['pd_type_1']  && !$pd['pd_type_2'] && !$pd['pd_type_3'])  $pd['pd_type_1']="selected"; ?>
+          <td><select name="pd_type[<?=$pd_id;?>]">
+              <option value="0"></option>
+              <option value="10"<?=$pd['pd_type_1'];?>>通过</option>
+              <option value="2"<?=$pd['pd_type_2'];?>>待整改</option>
+              <option value="3"<?=$pd['pd_type_3'];?>>不通过</option>
+            </select></td>
+          <td align="right">是否发证：</td>
+          <td><label>
+              <input type="radio" name="ifchangecert[<?=$pd_id;?>]" value="1" <?=$checks[$pd_id]['y']?> />
+              是</label>
+            <label>
+              <input type="radio" name="ifchangecert[<?=$pd_id;?>]" value="0"  <?=$checks[$pd_id]['n']?>/>
+              否</label></td>
+        </tr>
+        <tr>
+          <td valign="top" align="right">评定备注：</td>
+          <td colspan="3"><textarea cols="80" rows="3" name="note[<?=$pd_id;?>]"><?=$pd[comment_note];?>
+</textarea>
+            <input type="hidden" name='cti_id[<?=$pd_id;?>]' value='<?=$pd[cti_id]?>'/></td>
+        </tr>
+      </table>
+      <?php
+	}
+}
+?>
+      <p style="font-size:0;height:12px;overflow:hidden;"></p>
+      <p class="button-panel tac">
+        <button class="btn btn-submit" type="submit"> 提 交 </button>
+      </p>
+      <br>
+    </form>
+    <p class="button-panel tac"><a href="?c=doc&a=JS-003&tid=<?=$tid?>"><img src="theme/images/down.gif" width="16" height="16" border=0 /><font color="#00f">技术专家委员会评议报告</font></a></p>
+    <br>
+  </div>
+  <?php if($scope_childs):?>
+  <div id="tab-scope">
+    <form action="?c=assess&a=scope_save" method="post">
+      <input type="hidden" name="pd_id" value="<?=$pd_id?>" />
+      <input type="hidden" name="tid" value="<?=$tid?>" />
+      <input type="hidden" name="ct_id" value="<?=$ct_id?>" />
+      <table class="grid-table">
+        <?php 
+ foreach( $scope_childs as  $val ):
+
+?>
+        <tr>
+          <td width="180" align='right' valign="top"><?=$val[ep_name]?>
+            ：</td>
+          <td width="">
+          <?php if($val[num]); foreach($val[num] as $v){ ?>
+         <table class="grid-table">
+         <tr><td><?=$iso_arr[$v[cti_id]]?>范围</td><td><textarea name="scope[<?=$v[id]?>]" style="width: 450px; height: 72px;"><?=$v[scope]?>
+</textarea></td></tr></table>
+           
+            <?php }?>
+            </td>
+          
+        </tr>
+        <?php endforeach;?>
+      </table>
+      <br />
+      <p class="button-panel tac">
+        <button class="btn btn-submit" type="submit"> 提 交 </button>
+      </p>
+      <br>
+    </form>
+  </div>
+  <?php endif;?>
+  
+  
+</div>
+<script>
+function add_ques(num){
+	html_id="#grid-table-"+num+" tr:eq(2)";
+	
+	html="<tr>"+$(html_id).html()+"</tr>";
+	//alert(html);
+	$("#grid-table-"+num).append(html)
+	
+	}
+
+</script>
+</body>
+</html>

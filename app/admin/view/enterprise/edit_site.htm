@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>分场所列表</title>
+
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script>
+$(function(){
+	$('.c-del').click(function(){
+		confirm_dialog('确认要删除该场所？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+});
+</script>
+</head>
+
+<body>
+
+
+
+
+
+<br/>
+
+<div style="margin:0 auto;width:1050px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">编辑分场所</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+<form method="post" action="?c=enterprise&a=edit_site">
+<input type="hidden" name="step" value="1" />
+<input type="hidden" name="es_id" value="<?=$es_id;?>" />
+<input type="hidden" name="eid" value="<?=$eid;?>" />
+<table class="grid-table tal">
+	<tr>
+		<th colspan="4">编辑分场所信息</th>
+	</tr>
+	<tr>
+		<td width="180" align="right">主公司名称：</td>
+		<td colspan="3"><a id="es-ep-name" href=""><?=$ep_name;?></a></td>
+	</tr>
+	<tr>
+		<td align="right">分场所类型：</td>
+		<td colspan="3"><select id="es-type" name="es_type">
+			<?=$site_type_select;?>
+		</select></td>
+	</tr>
+	<tr>
+		<td align="right">分场所名称：</td>
+		<td colspan="3"><input type="text" id="es-name" name="es_name" value="<?=$es_name;?>" class="input" style="width:400px;" /> <font class="cRed">*</font></td>
+	</tr>
+	<tr>
+		<td align="right">分场所名称(英)：</td>
+		<td colspan="3"><input type="text" id="es-name-e" name="es_name_e" value="<?=$es_name_e;?>" class="input" style="width:400px;" /></td>
+	</tr>
+	<tr>
+		<td align="right">地址：</td>
+		<td colspan="3"><input type="text" id="es-addr" name="es_addr" value="<?=$es_addr;?>" class="input" style="width:400px;" /> <font class="cRed">*</font></td>
+	</tr>
+	<tr>
+		<td align="right">地址(英)：</td>
+		<td colspan="3"><input type="text" id="es-addr-e" name="es_addr_e" value="<?=$es_addr_e;?>" class="input" style="width:400px;" /></td>
+	</tr>
+	<tr>
+		<td align="right">联系电话：</td>
+		<td><input type="text" id="es-tel" name="es_tel" value="<?=$es_tel;?>" class="input" /> <font class="cRed">*</font></td>
+		<td width="110" align="right">传真：</td>
+		<td><input type="text" id="es-fax" name="es_fax" value="<?=$es_fax;?>" class="input" /> <font class="cRed">*</font></td>
+	</tr>
+	<tr>
+		<td align="right">联系人：</td>
+		<td><input type="text" id="es-person" name="es_person" value="<?=$es_person;?>" class="input" /> <font class="cRed">*</font></td>
+		<td align="right">联系人手机：</td>
+		<td><input type="text" id="es-mobile" name="es_mobile" value="<?=$es_mobile;?>" class="input" /> <font class="cRed">*</font></td>
+	</tr>
+	<tr>
+		<td align="right">分现场人数：</td>
+		<td><input type="text"  name="es_num" value="<?=$es_num;?>" class="input" /> <font class="cRed"></font></td>
+		<td align="right">距离总部距离：</td>
+		<td><input type="text"  name="es_km" value="<?=$es_km;?>" class="input" /> <font class="cRed"></font></td>
+	</tr>
+	<tr>
+		<td align="right">职能部门：</td>
+		<td colspan='3'><input type="text"  name="es_dpart" value="<?=$es_dpart;?>" class="input" /> <font class="cRed"></font></td>
+	</tr>
+	<tr>
+		<td align="right" valign="top">分场所范围：</td>
+		<td colspan="3" valign="top"><textarea  name="es_scope" rows="3" style="width:395px;"><?=$es_scope;?></textarea></td>
+	</tr>
+	
+	<tr>
+		<td align="right" valign="top">分场所范围（英文）：</td>
+		<td colspan="3" valign="top"><textarea  name="es_scope_e" rows="3" style="width:395px;"><?=$es_scope_e;?></textarea></td>
+	</tr>
+	<tr>
+		<td align="right" valign="top">备注信息：</td>
+		<td colspan="3" valign="top"><textarea id="es-note" name="es_note" rows="3" style="width:395px;"><?=$es_note;?></textarea></td>
+	</tr>
+</table>
+<p style="margin-top:9px;" class="tac">
+	<button type="submit" class="btn btn-submit"> 保存 </button>
+</p>
+
+	</div>
+</div>
+
+</body>
+</html>

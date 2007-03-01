@@ -1,0 +1,118 @@
+<?php 
+/*
+*首先将文件名改成中文 用excel_read读取数据
+*/
+@set_time_limit(0);
+ini_set("memory_limit","256M");
+$auditors=excel_read(CONF."imp/auditors.xlsx");
+foreach($auditors['Sheet1'] as $k=>$item){
+	if(!$item[F] or $k<3) continue;
+	foreach($item as $_k=>$v){
+		if(in_array($_k,array("M","N","Q","R","U","V")))
+			$item[$_k]=GetData($v);
+	
+	}
+	//人员基础表
+	$sex=1;
+	if($item[e]=="女")
+		$sex=2;
+	$new_hr=array(	"name"=>$item[C],
+					"sex"=>$sex,
+					"card_type"=>"01",
+					"card_no"=>$item[F],
+					"tel"=>$item[D],
+					"ctfrom"=>"01000000",
+					"is_hire"=>"1",
+					'job_type'=>'1004'
+					);
+	$uid=$db->insert("hr",$new_hr);
+	//教育经历
+	$new_exp=array("area"=>$item[G],
+					"position"=>"H",
+					"type"=>"j",
+					"add_hr_id"=>$uid,
+					"online"=>1,
+					);
+	$db->insert("hr_experience",$new_exp);
+	//注册资格 
+	//E
+	if($item[L]){
+	$new_qua=array("uid"=>$uid,
+					"ctfrom"=>"01000000",
+					"iso"=>"A02",
+					"qua_type"=>"02",
+					"qua_no"=>$item[L],
+					"s_date"=>$item[M],
+					"e_date"=>$item[N],
+					);
+	$qua_id=$db->insert("hr_qualification",$new_qua);
+	//领域
+	$use_codes=explode(";",$item[O]);
+	if($use_codes=array_unique($use_codes))
+	foreach($use_codes as $use_code){
+		$new_audit_code=array("uid"=>$uid,
+								"ctfrom"=>"01000000",
+								"use_code"=>$use_code,
+								"qua_id"=>$qua_id,
+								"qua_type"=>"02",
+								"iso"=>"A02",
+								);
+		if($use_code)						
+		$db->insert("hr_audit_code",$new_audit_code);
+		}
+	}
+	//O
+	if($item[P]){
+	$new_qua=array("uid"=>$uid,
+					"ctfrom"=>"01000000",
+					"iso"=>"A03",
+					"qua_type"=>"02",
+					"qua_no"=>$item[P],
+					"s_date"=>$item[Q],
+					"e_date"=>$item[R],
+					);
+	$qua_id=$db->insert("hr_qualification",$new_qua);
+	//领域
+	$use_codes=explode(";",$item[S]);
+	if($use_codes=array_unique($use_codes))
+	foreach($use_codes as $use_code){
+		$new_audit_code=array("uid"=>$uid,
+								"ctfrom"=>"01000000",
+								"use_code"=>$use_code,
+								"qua_id"=>$qua_id,
+								"qua_type"=>"02",
+								"iso"=>"A03",
+								);
+		if($use_code)
+		$db->insert("hr_audit_code",$new_audit_code);
+		}
+	}
+	//Q
+	if($item[T]){
+	$new_qua=array("uid"=>$uid,
+					"ctfrom"=>"01000000",
+					"iso"=>"A01",
+					"qua_type"=>"02",
+					"qua_no"=>$item[T],
+					"s_date"=>$item[U],
+					"e_date"=>$item[V],
+					);
+	$qua_id=$db->insert("hr_qualification",$new_qua);
+	//领域
+	$use_codes=explode(";",$item[W]);
+	if($use_codes=array_unique($use_codes))
+	foreach($use_codes as $use_code){
+		$new_audit_code=array("uid"=>$uid,
+								"ctfrom"=>"01000000",
+								"use_code"=>$use_code,
+								"qua_id"=>$qua_id,
+								"qua_type"=>"02",
+								"iso"=>"A01",
+								);
+		if($use_code)
+		$db->insert("hr_audit_code",$new_audit_code);
+		}
+	}
+}
+ECHO "SUCCESS";
+?>

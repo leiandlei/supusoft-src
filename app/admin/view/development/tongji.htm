@@ -1,0 +1,186 @@
+<?php tpl('header')?>
+<body>
+	<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+		<input type="hidden" name="c" value="<?=$c;?>" />
+		<input type="hidden" name="a" value="<?=$a;?>" />
+		<input type="hidden" name="status" value="<?=$status;?>" />
+		<table>
+		    <tr>
+		        <td class="left">月份:</td>
+		        <td class='right'>
+		            <input type='text' value="<?=$month?>" name="month" class="input-date" />
+		        </td>
+		    </tr>
+		</table>
+	  	<p class="button-panel">
+	    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+	    	&nbsp;
+	    	<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+		</p>
+	</form>
+	<br/>
+
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top ui-state-active">
+		    	<a href="?c=development&a=tongji">
+		    		财务月度统计
+		      	</a>
+		    </li>
+	  	</ul>
+  	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+  	   		<form method="post" id="from" action="?c=development&a=tongjisave">
+			    <table class="grid-table tal" style="text-align: center">
+					<thead>
+						<tr>
+							<th></th>
+							<th>项目名称</th>
+							<th>企业规模</th>
+							<th>结算单价</th>
+							<th>体系</th>
+							<th>结算价</th>
+							<th>是否带标</th>
+							<th>认证认可年度管理费</th>
+							<th>结算总金额</th>
+							<th>审核成本</th>
+							<th>其他费用</th>
+							<th>合同金额</th>
+							<th>实收金额</th>
+							<th>额定税收</th>
+							<th>返款金额</th>
+							<th>金额结算</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach ($results as $value):?>
+						<?php
+
+							//企业数量
+							$count = count($value['enterprises']);
+
+							//合计结算价-年度管理-结算总金额-审核成本-其他费用-金额结算
+							$hj_jiesuanjia = $hj_nianduguanlifei = $hj_jiesuanzongjine = $hj_shenhechengben = $hj_qitafeiyong = $hj_jiesuanjine = 0
+						?>
+							<tr>
+								<input type="hidden" name="hj[ctfrom][]" value="<?=$value['code'];?>">
+								<input type="hidden" name="hj[month][]" value="<?=$month;?>">
+								<td rowspan="<?=$count+4?>"><?=$value['code'];?></td>
+								<td>上月结转</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+								<td><?=$value['partnertongji']['upmoth']['jiezhuan'];?></td>
+							</tr>
+							<tr>
+								<td>预付款</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+								<td><input type="text" name="hj[yufukuan][]" value="<?=$value['partnertongji']['nowmoth']['yufukuan'];?>" size='5'></td>
+							</tr>
+							<tr>
+								<td>开票扣税</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td><td>-</td>
+								<td><input type="text" name="hj[koukuan][]" value="<?=$value['partnertongji']['nowmoth']['koukuan'];?>" size='5'></td>
+							</tr>
+						<?php foreach ($value['enterprises'] as $vo):?>
+						<?php
+							//带标志
+							$daibiao = 0;
+							foreach ($vo['item'] as $item)
+							{
+								if($item['mark']!=0)$daibiao=$daibiao+1;
+							}
+
+							//合计结算价
+							$hj_jiesuanjia = $hj_jiesuanjia+($vo['jiesuandian']*count($vo['item']));
+
+							//年度管理费
+							$hj_nianduguanlifei = $hj_nianduguanlifei+$vo['nianduguanlifei'];
+
+							//结算总金额
+							$hj_jiesuanzongjine = $hj_jiesuanzongjine+$vo['jiesuanzongjine'];
+
+							//审核成本
+							$hj_shenhechengben  = $hj_shenhechengben+$vo['shenhechengben'];
+
+							//其他费用
+							$hj_qitafeiyong     = $hj_qitafeiyong+$vo['qitafeiyong'];
+
+							//金额结算
+							$hj_jiesuanjine     = $hj_jiesuanjine+$vo['jiesuanjine'];
+
+						?>	
+							<tr>
+								<td><?=$vo['ep_name'];?></td>
+								<td><?=$vo['ep_amount'];?></td>
+								<td><?=$vo['jiesuandian'];?></td>
+								<td><?=count($vo['item']);?></td>
+								<td>
+									<?=$vo['jiesuandian']*count($vo['item']);?>
+								</td>
+								<td><?=$daibiao?></td>
+								<td><?=$vo['nianduguanlifei'];?></td>
+								<td><?=$vo['jiesuanzongjine'];?></td>
+								<td><?=$vo['shenhechengben'];?></td>
+								<td><?=$vo['qitafeiyong'];?></td>
+								<td><?=$vo['ctcost'];?></td>
+								<td>
+									<input type="hidden" name="cp[id][]" value="<?=$vo['id'];?>" size='5'>
+									<input type="text" name="cp[sscost][]" value="<?=$vo['sscost'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="cp[edingshuishou][]" value="<?=$vo['edingshuishou'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="cp[fankuanjine][]" value="<?=$vo['fankuanjine'];?>" size='5'>
+								</td>
+								<td>
+									<input type="text" name="cp[jiesuanjine][]" value="<?=$vo['jiesuanjine'];?>" size='5'>
+								</td>
+							</tr>
+						<?php endforeach;?>
+							<tr>
+								<td>合计</td><td>-</td><td>-</td><td>-</td>
+								<td><?=$hj_jiesuanjia?></td><td>-</td>
+								<td><?=$hj_nianduguanlifei?></td>
+								<td><?=$hj_jiesuanzongjine?></td>
+								<td><?=$hj_shenhechengben?></td>
+								<td><?=$hj_qitafeiyong?></td><td>-</td><td>-</td><td>-</td><td>-</td>
+								<td><input type="text" name="hj[jiezhuan][]" value="<?=$hj_jiesuanjine;?>" size='5'></td>
+							</tr>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+				<p>
+					<center style="margin-bottom: 10px;">
+						<button class="btn btn-submit submit-btn" type="button" > 保 存 </button>&nbsp;&nbsp;&nbsp;
+					</center>
+				</p>
+			</form>
+
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+	    $('button.submit-btn').on('click',function(){
+	    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+	    	$('#from').submit();
+	  	});
+
+	  	$( ".input-date" ).datepicker({
+			changeMonth	: true,
+			changeYear	: true,
+			dateFormat	: "yy-mm"
+		});
+  	})
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</html>
+

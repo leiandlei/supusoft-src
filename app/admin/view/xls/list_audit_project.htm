@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>项目列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<thead>
+		<tr>
+			<td>合同编号</td>
+			<td>项目编号</td>
+			<td>企业名称</td>
+			<td>认证标准</td>
+			<td>证书状态</td>
+			<td>审核类型</td>
+			<td>审核开始时间</td>
+			<td>审核结束时间</td>
+			<td>评定日期</td>
+			<td>合同来源</td>
+			<td>项目状态</td>
+		</tr>
+	</thead>
+	<tbody>
+<?php if( $projects ): foreach( $projects as $row ):?>
+		<tr>
+			<td><?=$row['ct_code'];?></td>
+			<td><?=$row['cti_code'];?></td>
+			<td><?=$row['ep_name'];?></td>
+			<td><?=$row['audit_ver_V'];?></td>
+			<td><?=$row['cert_status'];?></td>
+			<td><?=$row['audit_type_V'];?></td>
+			<td><?=$row['tb_date'];?></td>
+			<td><?=$row['te_date'];?></td>
+			<td><?=$row['assess_date'];?></td>
+			<td><?=$row['ctfrom_V'];?></td>
+			<td><?=$row['status_V'];?></td>
+		</tr>
+<?php endforeach; endif;?>
+	</tbody>
+</table>
+</body>
+</html>

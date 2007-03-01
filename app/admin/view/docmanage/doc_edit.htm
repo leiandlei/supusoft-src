@@ -1,0 +1,117 @@
+<? tpl('header')?>
+<script type="text/javascript" src="theme/js/region.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+</head>
+<body>
+
+
+<form method="post" id="form" enctype="multipart/form-data" action="?c=docmanage&a=doc_edit">
+	<?php
+	if( $a == 'doc_edit' ){
+		?>
+		<input id="id" type="hidden" name="id" value="<?=$id;?>" />
+		<?php
+	}
+	?>
+	<div id="enterprise-tab" style="margin:0 auto;width:750px;" class="tal ui-widget-content">
+		<ul class="ui-widget-header" style="height: 30px;margin-bottom: 10px;padding-left: 10px;line-height: 30px;">
+		    <li>基本信息</li>
+		 </ul>
+		<div id="tab-basic">
+		<ul class="main-form">
+			<!-- 中幅 -->
+			<li>
+				<label class="field">文件级别</label>
+				<em>*</em>
+				<span>
+					<select name="type_level" class='fselect is_todo-js' style="width:156px;">
+                      <option value="1" <?php if($type_level==1)echo 'selected';?>>一级</option>
+                      <option value="2" <?php if($type_level==2)echo 'selected';?>>手册附件</option>
+                      <option value="3" <?php if($type_level==3)echo 'selected';?>>二级</option>
+                      <option value="4" <?php if($type_level==4)echo 'selected';?>>三级</option>
+                  </select>
+				</span> 
+
+				<label class="field">文件属性</label>
+				<em>*</em>
+				<span>
+					<select name="type_shuxing" class='fselect is_todo-js' style="width:156px;">
+                      	<option value="1" <?php if($type_shuxing==1)echo 'selected';?>>手册</option>
+                      	<option value="2" <?php if($type_shuxing==2)echo 'selected';?>>公开文件</option>
+                      	<option value="3" <?php if($type_shuxing==3)echo 'selected';?>>通用程序</option>
+                      	<option value="4" <?php if($type_shuxing==4)echo 'selected';?>>机构内部管理程序</option>
+                      	<option value="5" <?php if($type_shuxing==5)echo 'selected';?>>专业能力管理程序</option>
+                      	<option value="6" <?php if($type_shuxing==6)echo 'selected';?>>认证业务管理程序</option>
+                      	<option value="7" <?php if($type_shuxing==7)echo 'selected';?>>其他</option>
+                 	</select>
+				</span> 
+		    </li>
+			<li>
+				<label class="field">文件编号</label>
+				<em>*</em>
+				<span>
+					<input type="text" dataType="Require" msg="文件编号"  name="code" value="<?=$code;?>" class="input" style="width:155px" />
+				</span>
+
+				<label class="field">文件名称</label>
+				<em>*</em>
+				<span>
+					<input type="text"  dataType="Require" msg="文件名称"  name="name" value="<?=$name;?>" class="input" style="width:155px" />
+				</span>
+		    </li>
+
+		    <li>
+				<label class="field">颜色</label>
+				<em>*</em>
+				<span>
+					<select name="color" class='fselect is_todo-js' style="width:156px;">
+						<option value="">无色</option>
+	                    <option value="#ff9e9e" style="color:#ff9e9e" <?php if($color=='#ff9e9e')echo 'selected';?>>颜色1</option>
+	                    <option value="#f288e2" style="color:#f288e2" <?php if($color=='#f288e2')echo 'selected';?>>颜色2</option>
+	                    <option value="#a542cc" style="color:#a542cc" <?php if($color=='#a542cc')echo 'selected';?>>颜色3</option>
+	                    <option value="#6269ed" style="color:#6269ed" <?php if($color=='#6269ed')echo 'selected';?>>颜色4</option>
+	                    <option value="#62cced" style="color:#62cced" <?php if($color=='#62cced')echo 'selected';?>>颜色5</option>
+	                    <option value="#5beb78" style="color:#5beb78" <?php if($color=='#5beb78')echo 'selected';?>>颜色6</option>
+                  </select>
+
+				<label class="field">权重</label>
+				<em>*</em>
+				<span>
+					<input type="number"name="weight" value="<?=$weight;?>" class="input" style="width:155px" />
+				</span>
+		    </li>
+
+		    <li>
+				<label class="field">上传文件</label>
+				<em>*</em>
+				<span>
+					<input type="file" name="file" />
+				</span>
+		    </li>
+
+			<li>
+				<label class="field">文件备注</label>
+				<em></em>
+				<span>
+				<textarea cols="74" rows="3" name="note" style="width:467px;"><?=$note;?></textarea>
+			</span> 
+			</li>
+		</ul>
+		<p>
+			<center style="margin-bottom: 10px;">
+				<button class="btn btn-submit submit-btn" type="submit" name="sub" value="1"> 保 存 </button>
+				&nbsp;&nbsp;&nbsp;        
+				<a href="?c=<?=$c;?>&a=list" title="关闭窗口">返回列表</a>
+			</center>
+		</p>
+	</div>
+
+</form>
+</body>
+<script>
+	$('button.submit-btn').on('click',function(){
+    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+    	$('#from').submit();
+  	});
+</script>
+</html>

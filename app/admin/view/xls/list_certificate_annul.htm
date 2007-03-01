@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>应撤销证书列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+		<tr align='center'>
+			
+			<th width="80">合同编号</th>
+			<th width="80">项目编号</th>
+			<th width="80">证书编号</th>
+			<th width="250">组织名称</th>
+			<th width="100">合同来源</th>
+			<th width="60">审核类型</th>
+			<th width="80">审核阶段</th>
+			<th width="90">证书到期</th>
+            <th width="*">暂停时间</th>
+            <th width="*">暂停到期</th>
+			<th width="60">状态</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $datas ){
+	foreach( $datas as $row ){
+?>
+		<tr align='center'>
+			
+			<td align="center"><?=$row['ct_code'];?></td>
+			<td align="center"><?=$row['cti_code'];?></td>
+			<td align="center"><?=$row['certno'];?></td>
+			<td> <?=$row['ep_name'];?></td>
+			<td align="center"><?=f_ctfrom($row['ctfrom']);?></td>
+			<td align="center"><?=f_audit_ver($row['audit_ver']);?></td>
+			<td align="center"><?=f_audit_type($row['audit_type']);?></td>
+			<td align="center"><?=$row['e_date'];?></td>
+            <td align="center"><?=$row['time1'];?></td> <!--暂停时间-->
+            <td align="center"><?=$row['time2'];?></td> <!--暂停到期-->
+			<td align="center"><?php if($row['status']=='1'){echo '有效';}elseif($row['status']=='2'){echo '暂停';}elseif($row['status']=='3'){echo '撤销';}elseif($row['status']=='4'){echo '注销';}elseif($row['status']=='5'){echo '过期失效';}?></td>
+	  	</tr>
+<?php
+	}
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

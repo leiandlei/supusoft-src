@@ -1,0 +1,111 @@
+<!doctype html>
+<html>
+	<head>
+		<include file='./Public/mui/common/html/head.html' />
+		<script src="__PUBLIC__/bootstrap/js/jquery.min.js" type="text/javascript"></script>
+		<style type="text/css">
+			.content-header {
+				height: 10rem;
+				background: url(__PUBLIC__/mui/images/back-user-center.png);
+				background-size: cover;
+			}
+			
+			
+			.content-header .mui-table-view-cell:after,
+			.content-content .mui-table-view-cell:after {
+				background-color: rgba(0, 0, 0, 0)
+			}
+		</style>
+	</head>
+
+	<body>
+		<header class="mui-bar mui-bar-transparent">
+		    <a class="mui-action-back mui-icon mui-icon-left-nav mui-pull-left"></a>
+		</header>
+
+		<div class="mui-content">
+			<div class="content-header">
+				<div class="mui-row">
+					<div class="mui-col-sm-12 mui-col-xs-12 mui-text-left">
+						<h2 style="padding: 2rem;margin: 0;">
+							{$username}您好<br/>
+							以下是您今天的审核任务和签到记录
+						</h2>
+					</div>
+				</div>
+			</div>
+			<div class="content-content">
+				<div class="mui-card">
+					<volist name="shenherenwu" id="vo">
+						<div class="mui-card-header">
+							<div class="mui-left">{$vo.ep_name}</div>
+							<button type="button" class="mui-btn mui-btn-primary mui-btn-outlined mui-right qiandao" data-eid="{$vo.eid}" data-tid="{$vo.tid}" data-pid="{$vo.pid}">
+								签到
+							</button>
+						</div>
+					</volist>
+				</div>
+			</div>
+			<div class="content-footer">
+				<h4 style="height: 30px;text-align: center;background: #f5f5f5;line-height: 30px;">签到记录</h4>
+				<div>
+					<volist name="qiandaodlist" id="vo">
+						<div class="mui-card">
+							<div class="mui-card-header">{$vo.ep_name}</div>
+							<div class="mui-card-content">
+								<div class="mui-card-content-inner">
+									<p>签到时间：{$vo.qd_datetime}</p>
+									<p>签到位置：{$vo.qd_addr}附近</p>
+								</div>
+							</div>
+						</div>
+					</volist>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
+	<script type="text/javascript">
+		mui.init();
+		wx.config({
+		     debug: false
+		    ,appId:     "{$weAutoInfo.appId}"       //公众号的唯一标识
+		    ,timestamp: "{$weAutoInfo.timestamp}"   //生成签名的时间戳
+		    ,nonceStr:  "{$weAutoInfo.nonceStr}"    //签名的随机串
+		    ,signature: "{$weAutoInfo.signature}"   //签名
+		    ,jsApiList: ['checkJsApi','onMenuShareTimeline','onMenuShareAppMessage','onMenuShareQQ','onMenuShareWeibo','hideMenuItems','showMenuItems','hideAllNonBaseMenuItem','showAllNonBaseMenuItem','translateVoice','startRecord','stopRecord','onRecordEnd','playVoice','pauseVoice','stopVoice','uploadVoice','downloadVoice','chooseImage','previewImage','uploadImage','downloadImage','getNetworkType','openLocation','getLocation','hideOptionMenu','showOptionMenu','closeWindow','scanQRCode','chooseWXPay','openProductSpecificView','addCard','chooseCard','openCard']
+		});
+		$(function()
+		{
+			$(".qiandao").on('tap', function(event)
+			{
+				var params = {'pid':$(this).data('pid'),'tid':$(this).data('tid'),'eid':$(this).data('eid')};
+			  	wx.getLocation({
+			      	success: function (res) {
+				        console.log(params);
+				        $.ajax({
+				          	 type: "POST"
+				          	,async:false
+				          	,url: "{:U('ajax/qiandao')}"
+				          	,data:{"location":res,"params":params}
+				          	,dataType: "json"
+				          	,success: function(e)
+				          	{
+			          			if( e.errorCode==0 ){
+			          				alert('签到成功');
+			          				wx.closeWindow();
+			          			}else
+			          			{
+			          				alert( e.errorStr );
+			          			}
+				            }
+				        });
+			      	},
+			      	cancel: function (res) {
+			        	alert('用户拒绝授权获取地理位置');
+			      	}
+			    });
+		  	});
+		})
+	</script>
+</html>

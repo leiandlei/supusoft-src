@@ -1,0 +1,63 @@
+<?php tpl('header')?>
+<body>
+	<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	    <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		    <li class="ui-state-default ui-corner-top ui-state-active">
+		    	<a href="###">
+		    		合作方列表
+		      	</a>
+		    </li>
+	  	</ul>
+  	    <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+  	    	<form method="post" id="from" action="?c=development&a=save_hezuofang">
+		    	<table class="grid-table tal" style="text-align: center">
+					<thead>
+						<tr>
+							<th>合作方编码</th>
+							<th>合作方名称</th>
+							<th>操作</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php foreach($results as $vo):?>
+							<tr>
+								<td><?=$vo['code'];?></td>
+								<td><?=$vo['name'];?></td>
+								<td>
+									<a href="?c=concert_sheet&a=xtd_list&ctfrom=<?=$vo['code'];?>"><img src="theme/images/b_edit.png" border=0 /></a>
+								</td>
+							</tr>
+						<?php endforeach;?>
+					</tbody>
+				</table>
+			</form>
+	  	</div>
+	</div>
+</body>
+<script type="text/javascript">
+	$(function(){
+	    $('button.submit-btn').on('click',function(){
+	    	if( !Validator.Validate( document.forms[0], 2 ) ) return;
+	    	$('#from').submit();
+	  	});
+
+	  	$( ".input-date" ).datepicker({
+			changeMonth	: true,
+			changeYear	: true,
+			dateFormat	: "yy-mm"
+		});
+  	})
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</html>

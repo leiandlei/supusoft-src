@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>计划</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+<table>
+	<thead>
+		<tr>
+			
+			<th width="100">项目编号</th>
+<!--			<th width="40">状态</th>
+-->			<th width="300">组织名称</th>
+			<th width="*">合同来源</th>
+			<th width="*">标准</th>
+			<th width="*">审核类型</th>
+<!--			<th width="*">总人日</th>
+-->			<th width="*">审核开始时间</th>
+			<th width="*">审核结束时间</th>
+            <th width="100">组长</th>
+            <th width="100">计划上传时间</th>
+            <th width="100">计划审批时间</th>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+if( $tasks ){
+	foreach( $tasks as $tid => $row ){
+?>
+		<tr>
+			
+			<td align="center"><?php echo @ implode('<br/>',$row['cti_codes']);?></td>
+			<!--<td align="center"><?=${'status_'.$row['status']};?></td>-->
+			<td><?=$row['ep_name'];?></td>
+			<td align="center"><?=$row['ctfrom_V'];?></td>
+			<td align="center"><?php echo @ implode('<br/>',$row['audit_vers']);?></td>
+			<td align="center"><?php echo @ implode('<br/>',$row['audit_types']);?></td>
+			<!--<td align="center"><?=$row['tk_num'];?></td>-->
+			<td align="center"><?=$row['tb_date'];?></td>
+			<td align="center"><?=$row['te_date'];?></td>
+            <td align="center"><?=$row['leader'];?></td>
+            <td align="center"><?=$row['upload_plan_date'];?></td>
+            <td align="center"><?=$row['jh_sp_date'];?></td>
+			<!--<td><?php echo @ implode('<br/>',$row['audit']);?></td>
+			<td align="center"><?=$row['name'];?></td>
+			<td align="center"><?=$row['create_date'];?></td>
+			<td align="center"><a href="?m=task&a=del&tid=<?=$tid;?>" class="c-del"><img src="theme/images/b_drop.png" border=0 /></a></td>-->
+		</tr>
+<?php }}?>
+	</tbody>
+</table>
+</body>
+</html>

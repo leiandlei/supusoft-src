@@ -1,0 +1,150 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>评定问题</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	//var tooltips = $( "[title]" ).tooltip({position:{my:"left+6 center", at:"right center"}});
+	$( "#enterprise-tab" ).tabs({
+		collapsible: false
+	});
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#export-xls-btn').click( do_export_xls );
+});
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1300px;margin:0 auto;'>
+  <input type="hidden" name="c" value="<?=$c;?>" />
+  <input type="hidden" name="a" value="<?=$a;?>" />
+  <input type="hidden" name="pd_type" value="<?=$pd_type;?>" />
+  <table>
+    <tr>
+      <td class="left">企业名称：</td>
+      <td class="right"><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+      <td class="left">合同编号：</td>
+      <td class="right"><input type="text" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+       <td class="left">项目编号：</td>
+      <td class="right"><input type="text" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+     </tr>
+     <tr>
+      <td class="left">创建时间：</td>
+      <td class="right"><input type="text" name="sp_start" value="<?=$sp_start?>"  class="input finput input-date" /></td>
+      <td class="left">至</td>
+      <td class="right"><input type="text" name="sp_end" value="<?=$sp_end?>" class="input finput input-date" /></td>
+    </tr>
+    
+  </table>
+  <br />
+  <p class="button-panel">
+    <button class="btn btn-submit" type="submit"> 搜 索 </button>
+    &nbsp;
+    <button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+    &nbsp;
+    <button class="btn btn-button" id="export-xls-btn" type="button"> 批量导出 </button>
+  </p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1300px;margin:0 auto;'>
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top<?=$pd_type_0;?>"><a href="?c=assess&a=list<?php gettourl();?>">问题 <span class="cnt-total">
+      [<?=$total;?>]
+      </span></a></li>
+   
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <div >
+      <table class="grid-table">
+        <thead>
+          <tr>
+            
+            <th width="*">合同编号</th>
+            <th width="*">项目编号</th>
+            <th width="200">企业名称</th>
+            <th width="*">等级</th>
+            <th width="200">内容</th>
+             <th width="*">组长</th>
+            
+            
+            <th width="*">审核开始时间</th>
+            <th width="*">审核结束时间</th>
+            <th width="*">评定时间</th>
+            <th width="*">创建时间</th>
+           
+            
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+if( $resdb ){
+	foreach( $resdb as $row ){
+?>
+          <tr>
+           
+            <td align="center"><?=$row['ct_code'];?></td>
+            <td align="center"><?=$row['cti_code'];?></td>
+            <td><?=$row['ep_name'];?></td>
+            <td align="center"><?=$row['level'];?></td>
+            <td align="center"><?=$row['note'];?></td>
+            <td align="center"><?=$row['name'];?></td>
+            <td align="center"><?=$row['tb_date'];?></td>
+             <td align="center"><?=$row['te_date'];?></td>
+            <td align="center"><?=$row['sp_date'];?></td>
+            
+            <td align="center"><?=$row['create_date'];?></td>
+            
+          </tr>
+          <?php
+	}
+} else {
+?>
+          <tr>
+            <td align="center" colspan="16">未找到相关记录</td>
+          </tr>
+          <?php
+}
+?>
+        </tbody>
+      </table>
+      <p>
+        <?=$pages['pages'];?>
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>

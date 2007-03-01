@@ -1,0 +1,181 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>变更评审列表</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	$('.c-del').click(function(){
+		confirm_dialog('确认要删除该项目？', $(this).attr( 'href' ), 'warning' );
+		return false;
+	});
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#audit-form').submit( check_submit );
+
+	$('#export-xls-btn').click( do_export_xls );
+	
+	$('#add_rerevoked_btn').click(add_rerevoked_btn);
+});
+
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+</script>
+</head>
+
+<body>
+
+<!--搜索-->
+<form method="get" id="search-form" action="" class="search-form tal" style='width:1100px;margin:0 auto;'>
+  <input type="hidden" name="c" value="<?=$c;?>" />
+  <input type="hidden" name="a" value="<?=$a;?>" />
+  <input type="hidden" name="status" value="<?=$review_status;?>" />
+  <table>
+    <tr>
+      <td class="left">企业名称：</td>
+      <td class="right"><input type="text" id="ep_name" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+      <td class="left">项目编号：</td>
+      <td class="right"><input type="text" id="cti_code" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+      <td class="left">合同编号：</td>
+      <td class="right"><input type="text" id="ct_code" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+      <td class="left">合同来源：</td>
+      <td class="right">
+      	<select id="ctfrom" name="ctfrom" class='fselect'>
+          <option value=""></option>
+          <?=$ctfrom_select;?>
+        </select>
+       </td>
+    </tr>
+    <tr>
+      <td class="left">计划日期：</td>
+      <td class="right"><input type="text" id="pre_date_start" name="pre_date_start" value="<?=$pre_date_start;?>" class="input finput input-date" /></td>
+      <td class="left">至</td>
+      <td class="right"><input type="text" id="pre_date_end" name="pre_date_end" value="<?=$pre_date_end;?>"  class="input finput input-date" /></td>
+      <td class="left">监察日期：</td>
+      <td class="right"><input type="text" id="final_date_start" name="final_date_start" value="<?=$final_date_start;?>"  class="input finput input-date" /></td>
+      <td class="left">至</td>
+      <td class="right"><input type="text" id="final_date_end" name="final_date_end" value="<?=$final_date_end;?>" class="input finput input-date" /></td>
+    </tr>
+  </table>
+  <p class="button-panel">
+    <button class="btn btn-submit" type="submit"> 搜 索 </button>
+    &nbsp;
+    <button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+    &nbsp;
+    <button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出 </button>
+  </p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1500px;margin:0 auto;'>
+  <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top <?=$status_1_tab;?>"><a href="?c=contract&a=add_review&status=1<?php gettourl();?>">未评审 <span class="cnt-total">
+      <?=$total[1];?>
+      </span></a></li>
+    <li class="ui-state-default ui-corner-top <?=$status_2_tab;?>"><a href="?c=contract&a=add_review&status=2<?php gettourl();?>">已评审 <span class="cnt-total">
+      <?=$total[2];?>
+      </span></a></li>
+    <li class="ui-state-default ui-corner-top <?=$status_3_tab;?>"><a href="?c=contract&a=add_review&status=3<?php gettourl();?>">所有项目 <span class="cnt-total">
+      <?=$total[3];?>
+      </span></a></li>
+    <!--li class="ui-state-default ui-corner-top"><a href="?c=task&a=list_project&status=3">已审批 <span class="cnt-total"><?=$state_total[3];?></span></a></li>-->
+  </ul>
+  <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <div class="list-table tal">
+      <table class="grid-table">
+        <thead>
+          <tr>
+            <th width="30">操作</th>
+            <th width="60">审核类型</th>
+            <th width="60">状态</th>
+            <th width="*">合同编号</th>
+            <th width="*">项目编号</th>
+            <th width="200">企业名称</th>
+            <th width="*">标准</th>
+            <th width="*">计划开始</th>
+            <th width="*">最后审核日期</th>
+            <th width="*">体系人数</th>
+            <th width="*">现场人数</th>
+            <th width="*">专业代码(GC)</th>
+            <th width="*">专业代码(TRC)</th>
+            
+            <th width="400">范围</th>
+            <th width="*">合同来源</th>
+          </tr>
+        </thead>
+        <tbody>
+          <?php
+if( $projects ){
+	foreach( $projects as $pid => $row ){
+?>
+          <tr >
+            <td align="center" ><a href="?c=contract&a=edit_scope&pid=<?=$row['id'];?>&type=review"><img src="theme/images/b_edit.png" border=0 /></a></td>
+            <td align="center"><span class="audit-type">
+              <?=$row['audit_type_V'];?>
+              </span></td>
+            <td align="center" <?=$row[style];?>><?=$row['status_V'];?></td>
+            <td align="center"><?=$row['ct_code'];?></td>
+            <td align="center"><?=$row['cti_code'];?></td>
+            <td class="ep-name"><?=$row['ep_name'];?></td>
+            <td align="center"><?=$row['audit_ver_V'];?></td>
+            <td align="center"><?=$row['pre_date'];?></td>
+            <td align="center"><?=$row['final_date'];?></td>
+            <td align="center"><?=$row['total'];?></td>
+            <td align="center"><?=$row['st_num'];?></td>
+            <td align="center"><?=$row['audit_code_2017'];?></td>
+            <td align="center"><?=$row['audit_code'];?></td>
+            
+            <td align="center"><?=$row['scope'];?></td>
+            <td align="center"><?=$row['ctfrom_V'];?></td>
+          </tr>
+          <?php
+	}
+} else {
+?>
+          <tr>
+            <td align="center" colspan="14">未找到相关记录</td>
+          </tr>
+          <?php
+}
+?>
+        </tbody>
+      </table>
+      <p>
+      
+        <?=$pages['pages'];?>
+      </p>
+    </div>
+  </div>
+</div>
+</body>
+</html>
+ 

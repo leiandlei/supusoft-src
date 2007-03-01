@@ -1,0 +1,68 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>财务申请报销明细列表</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<style>
+tabld{border-collapse:collapse;border:1px solid #999;}
+TD{font-size: 12px;vertical-align: middle;vnd.ms-excel.numberformat:@;border:1px solid #999;}
+br{mso-data-placement:same-cell;}
+</style>
+</head>
+
+<body>
+	<table class="grid-table tal">
+		<thead>
+        <tr><th colspan="7">受审核方：<?=$ep_name?></th><th colspan="">组长：<?=$leader?></th></tr>
+		 <tr>
+            <th width="*">审核员</th>
+            
+            <th width="*">项目号</th>
+            <th width="*">受审核部门</th>
+            <th width="*">审核日期</th>
+            <th width="*">向   导 </th>
+          
+            <th width="*">不符合项的性质</th>
+            <th width="*">不符合条款</th>
+            <th width="*">不合格事实描述</th>
+          
+            
+            
+          </tr>
+		</thead>
+		
+		<tbody>
+	
+ <?php
+if( $resdb ){
+	foreach( $resdb as $row ){
+?>
+           <tr>
+            <td align="center"><?=$row['name'];?></td>
+            
+            <td align="center"><?=$row['cti_code'];?></td>
+            <td align="center"><?=$row['dep'];?></td>
+            <td align="center"><?=$row['shrq'];?></td>
+            <td align="center"><?=$row['xd'];?></td>
+          
+            <td align="center"><?=$row['bfhxxz'];?></td>
+            <td align="center"><?=$row['bfhtk'];?></td>
+            <td align="center"><?=$row['bfhms'];?></td>
+          
+           
+            
+          </tr>
+          <?php
+	}
+} else {
+?>
+          <tr>
+            <td align="center" colspan="16">未找到相关记录</td>
+          </tr>
+          <?php
+}
+?>
+		</tbody>
+	</table>
+</body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同列表</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src=" theme/js/ui-dialog.js"></script>
+
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+
+<script>
+    $(function() {
+        $( "#enterprise-tab" ).tabs({
+            collapsible: false
+        });
+		$('.shenpi').click(function(){
+			confirm_dialog('确认要审批？', $(this).attr( 'href' ), 'warning' );
+			return false;
+		});
+		$('.c-del').click(function(){
+			confirm_dialog('确认要删除该证书？', $(this).attr( 'href' ), 'warning' );
+			return false;
+		});
+        $( "input.input-date" ).datepicker({
+    		changeMonth	: true,
+    		changeYear	: true,
+    		dateFormat	: "yy-mm-dd"
+    	});
+		$(".tongzhi_date").on("dblclick",function(){
+			var val1=$(this).text();
+			var id=$(this).attr("i");
+			$(this).html('<input type="text" name="tongzhi_date" value="'+val1+'" />');
+			$(this).find("input").focus();
+			$(this).find("input").blur(function(){
+				$.get("?c=ajax&a=change_list&id="+id+"&tongzhi_date="+$(this).val());
+				$(this).parent().html($(this).val());
+
+			})
+			
+		
+		
+		
+		})
+		$('#export-xls-btn').click( function(){
+		var form = $('#search-form');
+		form.append($('<input type="hidden" name="export" value="1" />'));
+		form.submit();
+		form.find('input[name=export]').remove();
+	} );
+    });
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</head>
+
+<body>
+<form method="get" action="" class="search-form tal" id='search-form' style='width:1050px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+<input type="hidden" name="paged" value="<?=$paged;?>" />
+<input type="hidden" name="status" value="<?=$status;?>" />
+	<table >
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+			<td class="left">合同编号：</td>
+			<td class="right"><input type="text" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+			<td class="left">合同来源：</td>
+			<td class="right"><select name="ctfrom" class='fselect'><option value="">==请选择==</option><?=$ctfrom_select;?></select></td>
+			<td class="left"></td>
+			<td class="right"></td>
+		</tr>
+		<tr>
+			<td class="left">项目编号：</td>
+			<td class="right"><input type="text" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+			
+			<td class="left">变更日期：</td>
+			<td class="right"><input type="text" name="change_date_start" value="<?=$change_date_start;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="change_date_end" value="<?=$change_date_end;?>" class="input input-date finput"/></td>
+		</tr>
+		<tr>
+			<td class="left">证书编号：</td>
+			<td class="right"><input type="text" name="certno" value="<?=$certno;?>" class="input finput" /></td>
+			<td class="left">上报日期：</td>
+			<td class="right"><input type="text" name="pass_date_start" value="<?=$pass_date_start;?>" class="input input-date finput"/></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" name="pass_date_end" value="<?=$pass_date_end;?>" class="input input-date finput"/></td>
+		</tr>
+        <tr><td class="left">变更类型：</td>
+			<td class="right"><select name="change_item" class='fselect'><option value="">==请选择==</option><?=$change_item_select;?></select></td>
+            <td class="left">省份：</td>
+      <td class="right"><select id="areacode" name="areacode"
+			class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$province_select;?>
+        </select></td>
+        </tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出</button>
+
+	</p>
+</form>
+<br/>
+
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style='width:1350px;margin:0 auto;'>
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top <?=$status_0_tab;?>"><a href="?c=change&a=list&status=0<?php gettourl();?>">未审批 <span class="cnt-total"><?=$status_count[0];?></span></a></li>
+		<li class="ui-state-default ui-corner-top <?=$status_1_tab;?>"><a href="?c=change&a=list&status=1<?php gettourl();?>">已审批 <span class="cnt-total"><?=$status_count1;?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		
+	<table class="grid-table tal">
+		<thead>
+		<tr align='center'>
+<?php
+	if($status=='1'){
+?>
+			<!-- <th width="*">增加特殊项目</th> -->
+		<!--	<th width="*"></th>-->
+			
+<?php
+	}else{
+?>
+			<th width="*">审批</th>
+<?php
+	}
+?>
+			
+			
+			<th width="*">项目编号</th>
+			<th width="*">证书编号</th>
+			<th width="*">组织名称</th>
+			<th width="*">合同来源</th>
+			<th width="*">体系标准</th>
+			<th width="*">变更类型</th>
+			<th width="*">变更日期(暂停开始)</th>
+            
+            <th width="*">暂停结束</th>
+			<th width="*">变更细节</th>
+			<th width="*">备注</th>
+            <?php if($status) {?>
+            <th width="50">通知</th>
+			<th width="50">通知发放时间</th><?php }?>
+			<th width="*">删除</th>
+		</tr>
+		</thead>
+		<tbody>
+
+<?php
+if( $datas ){
+	foreach( $datas as $id=>$row ){
+?>
+		<tr align='center'>
+<?php
+	if($status=='1'){
+?>
+ 
+        <!--    <td></td>-->
+			
+<?php
+	}else{
+?>
+			<td><a class="shenpi" href="?c=change&a=sp&cgid=<?=$row[id]?>"><img src="theme/images/b_edit.png" border=0 /></a></td>
+<?php
+	}
+?>
+			<td><?=$row['cti_code']?></td>
+			<td><?=$row['certno']?></td>
+			<td><?=$row['eid']?></td>
+			<td><?=$row['ctfrom']?></td>
+			<td><?=$row['audit_ver']?></td>
+			<td align="center"><?=read_cache("certchange",$row['cg_type'])?></td>
+			<td><?=$row['cgs_date']?></td>
+            <td><?=$row['cge_date']?></td>
+			<td><?php echo $row[cg_xj];?></td>
+			<td><?php if($row['note']){?><a href="#" title="<?=$row['note'];?>" ><img src="theme/images/other.png" border=0 /></a><?php } ?></td><?php if($status) { if($row[action]) {?>
+            <td><a href="?c=doc&a=<?=$row[action]?>&cgid=<?=$row['id'];?>"  title="下载"><img src="theme/images/down.gif" width="16" height="16" border=0 /></a></td>
+			<td class="tongzhi_date" i="<?=$id;?>"><?=$row['tongzhi_date']?></td><?php }else {?><td></td><td></td><?php }}?>
+			<td><a href="?c=change&a=del&cgid=<?=$row['id'];?>" class='c-del'><img src="theme/images/b_drop.png" border=0 /></a></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="17">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+	<p><?=$pages['pages'];?></p>
+
+
+	</div>
+</div>
+</body>
+</html>

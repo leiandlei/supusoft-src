@@ -1,0 +1,261 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>合同审批</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#back-btn').click( back_dialog );
+	$('#approval-btn').click( approval );
+	$('#unapproval-btn').click( unapproval );
+	$.ajaxSetup({async:false});
+});
+
+function back_dialog(){
+	var ct_id = $('#ct-id').val();
+	if( back( ct_id ) ){
+					alert( '已成功退回！' );
+					window.location.href = '?c=contract&a=list&status=1';
+					$(this).dialog('close');
+				} else {
+					alert( '操作失败！' );
+				}
+}
+
+function back( ct_id ){
+	var r = false;
+	$.getJSON('?c=contract&a=back_review&ct_id='+ct_id, function(json){
+		if( 'ok' == json.status ){
+			r = true;
+		}
+	});
+	return r;
+}
+
+
+function approval(){
+	if($('#appr-date').val()==''){
+		alert('审批日期必须填写！');
+		return;
+	}
+	var ct_id = $('#ct-id').val();
+	var appr_date = $('#appr-date').val();
+	var appr_note = encodeURI($('#appr-note').val());
+	
+	$.getJSON('?c=ajax&a=approval&ct_id='+ct_id+'&appr_date='+appr_date+'&appr_note='+appr_note, function(json){
+		
+		if( 'ok' == json.status ){
+			$('#approval-btn').attr( {'disabled':'disabled'} );
+			alert('审批成功！');
+			window.location.href = '?c=contract&a=list&status=3';
+			
+		} else {
+			alert( json.msg );
+		}
+		
+	});
+}
+
+/*
+function no_approval(){//审批不通过
+	var ct_id = $('#ct-id').val();
+	var appr_date = $('#appr-date').val();
+
+	$.getJSON('?c=ajax&a=approval&ct_id='+ct_id+'&appr_date='+appr_date, function(json){
+		if( 'ok' == json.status ){
+			alert( 'ok' );
+			
+		} else {
+			$('#approval-btn').attr( 'disabled',false );
+			alert( json.msg );
+		}
+	});
+}
+*/
+
+function unapproval(){
+	var ct_id = $('#ct-id').val();
+	$.getJSON('?c=ajax&a=unapproval&ct_id='+ct_id, function(json){
+		if( 'ok' == json.status ){
+			$('#approval-btn').attr( 'disabled', false );
+			$('#appr-date').attr( 'disabled', false );
+			$('#unapproval-btn').attr( 'disabled', true );
+			alert('撤销审批成功！');
+			window.location.href = '?c=contract&a=list&status=2';
+			/*
+			$('#msg-dialog').dialog({
+				title	: '提示信息',
+				width	: 240,
+				height	: 160,
+				autoOpen: true,
+				resizable: false,
+				autoResize: true,
+				modal	: true,
+				overlay: {opacity: 0.5,background: "black"},
+				close: function(ev,ui){window.parent.close_iframe_dialog();},
+				buttons	:{
+					'确定'	: function(){
+						window.parent.location.reload();
+						$(this).dialog('close');
+					}
+				},
+				open	: function(){
+					var btn = $('.ui-dialog-buttonpane').find('button:contains("确定")');
+					btn.removeClass('ui-state-default').addClass('ui-state-default-highlight');
+					var t = $(this).find('#msg-ico');
+					t.addClass('notice-ico-'+style);
+					var h = $(this).find('h6');
+					alert( h[0] );
+					h.text( message );
+					$(this).find('.ui-widget-content').addClass('notice-'+style);
+				}
+			});
+			*/
+		}
+	});
+}
+
+
+</script>
+</head>
+
+<body>
+<?php echo einfo("ct_id=$ct_id");?>
+<br/>
+
+<div id="back-dialog" style="display:none;text-align:left;">
+	<h5 style="margin-bottom:9px;">原回原因：</h5>
+	<p><textarea id="back-msg" name="message" style="width:275px;" rows="3"></textarea></p>
+</div>
+
+
+<div id="msg-dialog" style="margin-bottom:10px;display:none;" class="clearfix"><span id="msg-ico"></span><h6></h6></div>
+
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">文档列表</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+		<form method="post" action="?c=attachment&a=batdown">
+		<table class="grid-table">
+			<tr>
+				<th width="30">选择</th>
+				<th>文档名</th>
+				<th>文档类型</th>
+				<th>备注</th>
+				<th>上传时间</th>
+				<th>上传人</th>
+				<th>操作</th>
+			</tr>
+			<tbody id="attach-list">
+<?php
+if( $ct_archives ){
+	foreach( $ct_archives as $row ){
+?>
+			<tr>
+				<td align="center"><input type="checkbox" name="aid[]" value="<?=$row['id'];?>" /></td>
+				<td align="center"><?=$row['name'];?></td>
+				<td align="center"><?=$row['ftype_V'];?></td>
+				<td align="center">
+<?php
+if( $row['description'] ){
+?>
+<a href="javascript:;" title="<?=$row['description'];?>"><img src="theme/images/other.png" border="0" /></a> 
+<?php
+}
+?>
+				</td>
+				<td align="center"><?=$row['create_date'];?></td>
+				<td align="center"><?php echo f_username($row['create_uid']);?></td>
+				<td align="center">
+					<a href="?c=attachment&a=down&aid=<?=$row['id'];?>">下载</a><!-- &nbsp; | 
+					<a href="?c=contract&a=delattach&ct_id=<?=$ct_id;?>&aid=<?=$row['id'];?>">删除</a>-->
+				</td>
+			</tr>
+<?php
+	}
+}
+?>			</tbody>
+			<tr>
+				<td></td>
+				<td colspan="6">
+					<button type="submit" class="btn btn-submit"> 批量打包下载 </button>&nbsp;&nbsp;&nbsp;<span style="color:#999;">注：此处只显示申请合同、申请资料</span>
+				</td>
+			</tr>
+		</table><br/>
+		<table class="grid-table">
+		<tr>
+			<th width="70" valign="top" style="text-align:right;">文档下载：</th>
+			<td height="100" class="tal">
+				<ul class="doc-list">
+					<li><a href="?c=doc&a=HB001-1&ct_id=<?=$_GET['ct_id'];?>&eid=<?=$_GET['eid'];?>">[QMS认证申请评审表及组织审核通知单]</a></li>
+                    <li>&nbsp;</li>
+                    <li><a href="?c=doc&a=HB001-2&ct_id=<?=$_GET['ct_id'];?>&eid=<?=$_GET['eid'];?>">[EMS认证申请评审表及组织审核通知单]</a></li>
+                    <li>&nbsp;</li>
+                    <li><a href="?c=doc&a=HB001-3&ct_id=<?=$_GET['ct_id'];?>&eid=<?=$_GET['eid'];?>">[OHSMS认证申请评审表及组织审核通知单]</a></li>
+					<li>&nbsp;</li>
+                    <li><a href="?c=doc&a=HB-008&ct_id=<?=$_GET['ct_id'];?>&eid=<?=$_GET['eid'];?>">[认证审核合同及评审档案清单]</a></li>
+				</ul>
+			</td>
+		</tr>
+	</table>
+		</form>
+	</div>
+</div><br/>
+
+<div style="margin:0 auto;width:750px;" class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top ui-tabs-active ui-state-active"><a href="javascript:;">合同审批</a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<table class="grid-table">
+	<tr>
+		<th width="70" valign="top" style="text-align:right;">企业名称：</th>
+		<td class="tal"><?=$contract['ep_name'];?></td>
+	</tr>
+	<tr>
+		<th width="70" style="text-align:right;">审批日期：</th>
+		<td class="tal">
+			<input type="hidden" id="ct-id" name="ct_id" value="<?=$ct_id;?>" />
+			<input type="text" name="appr_date" id="appr-date" value="<?=$approval_date;?>" size="12" class="input input-date" <?=$approval_disabled;?> />
+		</td>
+	</tr>
+	<tr>
+		<th width="70" style="text-align:right;">审批意见：</th>
+		<td class="tal">
+			<textarea id="appr-note" name="approval_note" cols="80" rows="3" <?=$approval_disabled;?>><?=$approval_note;?></textarea>
+		</td>
+	</tr>
+	<tr>
+		<th style="text-align:right;">操作：</th>
+		<td class="tal">
+			<button type="button" class="btn btn-button" id="back-btn" <?=$approval_disabled;?>> 退回到待评审 </button> &nbsp; 
+			<button type="button" class="btn btn-submit" id="approval-btn" <?=$approval_disabled;?>> 审批通过 </button> &nbsp; 
+			<button type="button" class="btn btn-button" id="unapproval-btn" <?=$unapproval_disabled;?>> 撤消审批 </button>
+			&nbsp&nbsp
+&nbsp        <a href="?c=<?=$c;?>&a=list" title="关闭窗口">返回列表</a>
+		</td>
+	</tr>
+</table>
+<p class="note-msg tal" style="padding-left:80px;width:400px;"><strong>注意：</strong> 只有在未安排的情况下才可以撤消审批。</p>
+
+	</div>
+</div>
+</body>
+</html>

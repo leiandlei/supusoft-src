@@ -1,0 +1,274 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>选择审核员</title>
+
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<style type="text/css">
+body{margin:0;padding:0;}
+</style>
+<script>
+$(function(){
+	$( "input.input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+
+	$('#plan-btn').click( bat_plan );
+	$(document).on("click",".view",function(){
+		var X = $(this).position().top; 
+		var Y = $(this).position().left; 
+		var url="?c=ajax&a=view_auditor&uid="+$(this).attr("i")
+		$.post(url,function(result){
+			
+			$("#view").html(result);
+			$("#view").show();
+			})
+		
+		
+		})
+	$(document).on("mouseout",".view",function(){
+		$("#view").hide();
+		})
+
+	$('.q-item').click(function(){
+		var checkbox = $(this).parent().find('input[name=item]:checked');
+		if( checkbox.prop( 'checked' ) ){
+			var val = checkbox.val();
+			var cks = checkbox.parent().parent().parent().find('input[type=checkbox]:checked');
+
+			for( var i = 0; i < cks.length; i++ ){
+				if( val.substring(0,val.indexOf('@') ) != cks[i].value.substring(0,cks[i].value.indexOf('@') ) ){
+					alert( '必须是同一个审核员才可以多体系一起安排！' );
+					checkbox.prop('checked',false);
+					return;
+				}
+			}
+
+			pos = checkbox.position();
+			$('#plan-btn').show();
+			$('#plan-btn').css({position:'absolute',top:pos.top,left:pos.left+30});
+		} else {
+			var cks = checkbox.parent().parent().parent().find('input[type=checkbox]:checked');
+			if( cks.length < 1 )
+				$('#plan-btn').hide();
+		}
+
+	});
+});
+
+function bat_plan(){
+	var cks = $('input.q-item[type=checkbox]:checked');
+	var qua_type = []
+	var qua_types = []
+	var iso = []
+	var code = [];
+	var use_code = [];
+
+	var code_2017 = [];
+	var use_code_2017 = [];
+	var uid = name = null;
+	for( var i = 0; i < cks.length; i++ ){
+		var t = cks[i].value.split('@');
+		
+		uid = t[0];
+		name = t[1];
+		qua_type[i] = t[2];
+		iso[i] = t[3];
+		code[i] = t[4];
+		qua_types[i] = t[5];
+		use_code[i] = t[6];
+		code_2017[i]     = t[7];
+		use_code_2017[i] = t[8];
+
+	}
+	window.parent.update_hr( uid, name, qua_type.join('|'), iso.join('|'), code.join('|'), qua_types.join('|') ,use_code.join('|') ,code_2017.join('|'),use_code_2017.join('|'));
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+function checkall(){
+	$(".q-item").each(function(){
+		if($(this).attr("checked")){
+		  $(this).removeAttr("checked");
+		}else{
+		 $(this).attr("checked",'true');
+		}
+	})
+	 
+}
+
+
+
+</script>
+</head>
+
+<body style="padding-bottom:20px;">
+
+<form method="get" action="">
+	<input type="hidden" name="c" value="<?=$c;?>" />
+	<input type="hidden" name="a" value="<?=$a;?>" />
+	<input type="hidden" name="tid" value="<?=$tid;?>" />
+	<input type="hidden" name="taskBeginDate" value="<?=$taskBeginDate;?>" />
+	<input type="hidden" name="taskEndDate" value="<?=$taskEndDate;?>" />
+	<table width="100%">
+		<tr>
+			<td width="80" align="right">姓名：</td>
+			<td align="left"><input type="text" name="name" value="<?=$name;?>" class="input input-search-basic" /></td>
+			<td align="right">易记码：</td>
+			<td align="left" ><input type="text" name="easycode" value="<?=$easycode;?>" class="input input-search-basic" style="width:150px;" /></td>
+			<td align="right">专/兼职：</td>
+			<td align="left"><select name="audit_job" class="input-search-basic">
+				<option value="">-请选择-</option>
+				<?=$audit_job_select;?>
+			</select></td>
+			 <td align="right">体系：</td>
+			<td align="left">
+				<select name="iso">
+                <option value="">--请选择--</option>
+                <?=f_select("iso",$iso);?>
+			</td>
+		</tr>
+		<tr>
+			<td align="right">省份：</td>
+			<td align="left"><select id="areacode" name="areacode" class='fselect'><option value="">--请选择--</option><?=$province_select;?></select></td>
+			<td align="right">人员来源：</td>
+			<td align="left"><select name="ctfrom" style="width:150px;">
+				<option value="">-请选择-</option>
+				<?=$ctfrom_select;?>
+			</select></td> 
+			<td align="right">人员分层：</td>
+			<td align="left">
+				<select name="m_separate" class="input-search-basic">
+					<option value="">请选择</option>
+					<option value="A" <?php if($m_separate == 'A')  echo "selected";?>>A</option>
+            		<option value="B" <?php if($m_separate == 'B')  echo "selected";?>>B</option>
+            		<option value="C" <?php if($m_separate == 'C')  echo "selected";?>>C</option>
+            		<option value="D" <?php if($m_separate == 'D')  echo "selected";?>>D</option>
+				</select>
+			</td>
+			<td align="right">审核员资格：</td>
+			<td align="left">
+				<select name="qua_type" class="input-search-basic">
+					<option value="">请选择</option>
+					<?=$qua_type_select;?>
+				</select>
+			</td>
+		</tr>
+		<tr>
+			
+			
+            <td align="right">代码(GC)：</td>
+			<td align="left">
+				<input type="text" name="audit_code_2017" value="<?=$audit_code_2017?>" />
+			</td>
+			<td align="right">代码(TRC)：</td>
+			<td align="left">
+				<input type="text" name="audit_code" value="<?=$audit_code?>" />
+			</td>
+		</tr>
+		
+		<tr>
+			<td colspan="2" align="left" >
+				<button type="submit" class="btn btn-submit"> 搜索 </button>
+                &nbsp;
+    			<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+			</td>
+            <td colspan="4">
+            <div id='view' style=" position:fixed; top:80px; padding-top:10px; right:5px; z-index:1000; width:350px; height:110px; background-color:#CF6" >此处显示体系资格，监督次数，见证次数，二阶段审核次数</div>
+
+            </td>
+		</tr>
+	</table>
+</form>
+<br/>
+<!--  -->
+<?=$pages['pages'];?>
+<!--  -->
+
+<span style="display:none; " id="plan-btn"><button type="button"> 安 排 </button></span>
+
+<div style="margin:9px 0;width:100%;" id="views">
+	<table class="grid-table" style="width:1200px">
+		<thead>
+		<tr>
+			<th width="30"><a href="javascript:checkall()" style="cursor:pointer">全选</a></th>
+			<th width="40">姓名</th>
+			<th width="30">性别</th>
+			<th width="50">专\兼职</th>
+			<th width="60">资格</th>
+			<th width="30">已排</th>
+			<th width="30">人员分层</th>
+			<th width="30">体系</th>
+			<th width="60">分组(GC)</th>
+            <th width="60">专业代码(GC)</th>
+			<th width="60">分组(TRC)</th>
+            <th width="60">专业代码(TRC)</th>
+			<th width="80">手机</th>
+			<th width="30">组长资质</th>
+			<th width="40">省份</th>
+			 
+			<th width="*">地址</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $hr_quas ){
+	foreach( $hr_quas as $qid => $qua ){
+?>
+		<tr class="view" i='<?=$qua['uid'];?>'>
+			<td>
+				
+					<input type="checkbox" class="q-item" name="item" value="<?=$qua['uid'];?>@<?=$qua['name'];?>@<?=$qua['qua_type'];?>@<?=$qua['iso'];?>@<?=$qua['audit_code'];?>@<?=read_cache('qualification',$qua['qua_type']);?>@<?=$qua['use_code'];?>@<?=$qua['use_code_2017'];?>@<?=$qua['audit_code_2017'];?>" />
+				
+			</td>
+			<td><a href="?c=audit&a=project_send_query&name=<?=$qua['name'];?>" target="_blank"><?=$qua['name'];?></a></td>
+			<td><?=$qua['sex'];?></td>
+			<td><?=$qua['audit_job'];?></td>
+			<td ><?php if($qua['iso']=='OTHER'): echo r_sys_cache("data_for", $qua['qua_type']); else: echo read_cache('qualification',$qua['qua_type']); endif; ?></td> 
+			<td><?=$qua['is_plan'];?></td>
+			<td><?=$qua['m_separate'];?></td>
+			<td><?php echo read_cache('iso',$qua['iso'] );?></td>
+			<td><?=$qua['use_code_2017'];?></td>
+            <td><?=$qua['audit_code_2017'];?></td>
+			<td><?=$qua['use_code'];?></td>
+            <td><?=$qua['audit_code'];?></td>
+			<td><?=str_replace(",","<br/>",$qua['tel']);?></td>
+			<td><?=$qua['is_leader'];?></td>
+			<td><?=$qua['province'];?></td>		 
+			<td align="left"><?=$qua['address'];?></td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td colspan="12">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+
+</div>
+
+
+
+</body>
+</html>

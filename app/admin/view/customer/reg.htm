@@ -1,0 +1,139 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>企业/合作方注册</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/region.js"></script>
+<script type="text/javascript" src="theme/js/ui-dialog.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript" src="theme/js/validator.js"></script>
+<script> 
+    $(function() {
+		var tooltips = $( "[title]" ).tooltip({position:{my:"left bottom+37", at:"left bottom"}});
+        $( "#user-tab" ).tabs({
+            collapsible: false
+        });
+        //$('button.form-submit').click(check_form);
+        $('button.form-submit').click(form_check_username);
+        //$('button.form-submit').click( $('#cu-form').submit());
+    });
+
+  // function check_form(){//@zbzytech 不能由onsubmit代替本函数检查
+  //   if(!Validator.Validate($('#cu-form')[0],2)) return;
+  //   $('#cu-form').submit();
+  // }
+
+  function check_data(){
+      var pw1 = $("#pw1").val();
+      var pw2 = $("#pw2").val();
+      var pw3 = $("#pw3").val();
+      if(!pw1 && !pw2){//check_form已经检查
+           alert('请输入用户名和密码');
+           return false;
+      }
+      if(!pw2 || !pw3){//check_form已经检查
+           alert('请输入密码');
+           return false;
+       }
+      if(pw2 != pw3){
+        alert('密码两次输入不一致');
+        return false;
+      }
+  }
+  //防止被浏览器串改帐号密码
+  // setTimeout("reset_value()", 1000);
+  // function reset_value()
+  // {
+  //   $('#username').attr("value",'<?=$cu_info['username'];?>');
+  // }
+  //检测用户帐号是否重复
+  var r = 0; 
+  function form_check_username() {
+    //alert(check_data());
+    if(check_username() > 0){
+      //alert(1);
+      //alert(check_username());
+      return false;
+    }else{
+       //alert(2333333);
+      //alert(check_username());
+      $("#cu-form").submit();
+    }
+  }
+
+  function check_username() {
+
+    username = $('#pw1').val();
+    uid = $('#cu_id').val();
+    if( username != '' ){
+      $.post(
+        '?c=ajax&a=check_username&step=customer',
+        {username:username, uid:uid},
+        function(result) {
+          r = parseInt( result );
+          if( r > 0 ) {
+            alert('用户帐号系统中已存在');
+          }
+        }
+      );
+    }
+    return r;
+  }
+</script>
+</head>
+
+<body>
+<div id="user-tab" style="margin:0 auto;width:750px;" class="tal">
+  <ul>
+    <li><a href="#tab-basic">基本信息</a></li>
+  </ul>
+  <? if(!isset($_SESSION['userinfo']['is_customer'])){ ?>
+  <form method="post" id="cu-form"  action="?c=customer&a=add&step=save" onsubmit="return check_data()">
+  <?}else{?>
+  <form method="post" id="cu-form"  action="?c=customer&a=edit&step=update" onsubmit="return check_data()">
+  <?}?>
+    <input type="hidden" name="a" value="<?=$a?>" />
+    <input type="hidden" name="cu_id" id="cu_id" value="<?=$cu_id?>" />
+    <div id="tab-basic" >
+      <ul class="main-form">
+        <li>
+          <label class="field">用户名：</label>
+          <span>
+          <input id='pw1' name="username" <?=$approval_disabled;?>  value="<?=$cu_info['username'];?>" style="width:180px" dataType="Require" msg="用户名不能为空！"/>
+          <em>*</em></span> </li>
+        <li>
+          <label class="field">密码：</label>
+          <span>
+          <input id='pw2' name="password" value="" style="width:180px" dataType="Require" msg="密码不能为空！"/>
+          <em>*</em></span> </li>
+        <li>
+          <label class="field">确认密码：</label>
+          <span>
+          <input id='pw3' name="check_password" value="" style="width:180px"  dataType="Require"  msg="密码不能为空！"/><em>*</em></span> </li> 
+       <li>
+        <label class="field">姓 名：</label>
+        <span>
+        <input name="name" value="<?=$cu_info['name'];?>" style="width:180px" /></span></li>
+      </ul>
+      <p>
+        <center>
+        <?php if($_GET[type]=='view') {?>
+         <a href="javascript:window.close();">关闭窗口</a>
+         <?php }else {?>
+          <button class="btn btn-submit form-submit" type="button" <?=$disabled_save;?> > 保 存 </button>
+          <?php }?>
+          <? if(!isset($_SESSION['userinfo']['is_customer'])){ ?>
+          <a href="index.php"><button class="btn btn-submit" type="button"> 返回登陆 </button></a>
+            <?}?>
+        </center>
+      </p>
+      <br/>
+    </div>
+  </form>
+</div>
+</body>
+</html>

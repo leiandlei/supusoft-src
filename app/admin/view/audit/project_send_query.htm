@@ -1,0 +1,204 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>已派人项目查询</title>
+<meta name="generator" content="editplus" />
+<meta name="author" content="" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<script type="text/javascript">
+$(function() {
+	$( ".input-date" ).datepicker({
+		changeMonth	: true,
+		changeYear	: true,
+		dateFormat	: "yy-mm-dd"
+	});
+	$('#export-xls-btn').click( do_export_xls );
+});
+
+
+
+function do_export_xls(){
+	var form = $('#search-form');
+	form.append($('<input type="hidden" name="export" value="1" />'));
+	form.submit();
+	form.find('input[name=export]').remove();
+}
+function clearForm(objE){
+    $(objE).find(':input').each(
+        function(){
+            switch(this.type){
+                case "text":
+                case "select-one":
+				case "radio":
+                	$(this).val('');
+                    break;
+            }
+        }
+    );
+}
+
+</script>
+</head>
+
+<body>
+<form method="get" action="?" id="search-form" class="search-form tal" style='width:1700px;margin:0 auto;'>
+<input type="hidden" name="c" value="<?=$c;?>" />
+<input type="hidden" name="a" value="<?=$a;?>" />
+	<table>
+		<tr>
+			<td class="left">企业名称：</td>
+			<td class="right"><input type="text" id="ep_name" name="ep_name" value="<?=$ep_name;?>" class="input finput" /></td>
+			<td class="left">项目编号：</td>
+			<td class="right"><input type="text" id="cti_code" name="cti_code" value="<?=$cti_code;?>" class="input finput" /></td>
+            <td class="left">合同编号：</td>
+			<td class="right"><input type="text" id="ct_code" name="ct_code" value="<?=$ct_code;?>" class="input finput" /></td>
+			
+            
+			<td class="left">省份：</td>
+      <td class="right"><select id="areacode" name="areacode"
+			class='fselect'>
+          <option value="">--请选择--</option>
+          <?=$province_select;?>
+        </select></td>
+		</tr>
+		</tr>
+		<tr>
+			
+			<!--td class="left">审核类型：</td>
+			<td class="right"><select id="audit_type" name="audit_type" class='fselect'><option value=""></option><?=$audit_type_select;?></select></td -->
+			<td class="left">认证体系：</td>
+			<td class="right"><select id="iso" name="iso" class='fselect'><option value=""></option><?=$iso_select;?></select></td>
+			<td class='left'>标准版本：</td>
+			<td class='right'><select id="audit_ver" name="audit_ver" class='fselect'><option value=""></option><?=$audit_ver_select;?></select></td>
+            <td class="left">合同来源：</td>
+			<td class="right"><select id="ctfrom" name="ctfrom" class='fselect'><option value=""></option><?=$ctfrom_select;?></select></td><td class="left">审核员：</td>
+			<td class="right"><input type="text" id="name" name="name" value="<?=$name;?>" class="input finput" /></td>
+            
+		</tr>
+		<tr>
+			<td class="left">审核开始：</td>
+			<td class="right"><input type="text" id="audit_start_s" name="audit_start_s" value="<?=$audit_start_s?>" class="input finput input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" id="audit_start_e" name="audit_start_e" value="<?=$audit_start_e?>" class="input finput input-date" /></td>
+			<td class="left">审核结束：</td>
+			<td class="right"><input type="text" id="audit_end_s" name="audit_end_s" value="<?=$audit_end_s?>" class="input finput input-date" /></td>
+			<td class="left">至</td>
+			<td class="right"><input type="text" id="audit_end_e" name="audit_end_e" value="<?=$audit_end_e?>"  class="input finput input-date" /></td>
+            
+		</tr>
+		<tr>
+			<td class="left">组内身份：</td>
+			<td class="right"><label><input type="radio" name="role" value="01" <?=$role=='01'?'checked':'';?> />组长</label>&nbsp;<label><input type="radio" name="role" value="02" <?=$role=='02'?'checked':'';?> />组员</label></td>
+			<td class="left">注册资格：</td>
+			<td class="right">
+            <select name="qua_type">
+            <option value="">==请选择==</option>
+            <?=f_select('qualification',$qua_type)?>
+            </select>
+            </td>
+            <td class="left">专业代码(GC)：</td>
+			<td class="right"><input type="text" name="audit_code_2017" value="<?=$audit_code_2017;?>" class="input finput" /></td>
+			<td class="left">专业代码(TRC)：</td>
+			<td class="right"><input type="text" name="audit_code" value="<?=$audit_code;?>" class="input finput" /></td>
+		</tr>
+	</table>
+	<p class="button-panel">
+		<button class="btn btn-submit" type="submit"> 搜 索 </button> &nbsp; 
+		<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>&nbsp;
+		<button id="export-xls-btn" class="btn btn-button" type="button"> 批量导出 </button>
+        <span style="font-size:14px"><?=$qua;?></span>
+	</p>
+</form>
+<br/>
+<div class="tal ui-tabs ui-widget ui-widget-content ui-corner-all" style="width:1700px; margin:0 auto;">
+	<ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+		<li class="ui-state-default ui-corner-top"><a href="javascript:;">已派人项目查询 <span class="cnt-total"><?=$total;?></span></a></li>
+	</ul>
+	<div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+
+<form method="post" action="?c=audit&a=approval" id="audit-form">
+	<table class="grid-table">
+		<thead>
+		<tr>
+			<th width="30">查看</th>
+			<th width="60">项目编号</th>
+			<th width="" style="width:200px;">组织名称</th>
+			<th width="60">姓名</th>
+			<th width="30">组内身份</th>
+			<th width="70">资格</th>
+            <th width="80">组长</th>
+			<th width="80">标准</th>
+			<th width="70">审核类型</th>
+            <th width="70">专业代码(GC)</th>
+            <th width="70">专业代码(TRC)</th>
+			
+			<th width="110">审核开始时间</th>
+			<th width="110">审核结束时间</th>
+            <th width="30">天数</th>
+			<th width="70">见证类型</th>
+			<th width="50">状态</th>
+			 
+            <th width="70">联系人</th>
+            <th width="70">电话</th>
+            <th width="80">合同来源</th>
+            <th width="80">签到记录</th>
+		</tr>
+		</thead>
+		<tbody>
+<?php
+if( $resdb ){
+	foreach( $resdb as $row ){
+?>
+		<tr>
+			<td align="center"><a href="?c=contract&a=show&ct_id=<?=$row['ct_id'];?>"><img src="theme/images/select1.gif" border="0" /></a></td>
+			<td align="center"><?=$row['cti_code']?></td>
+			<td><?=$row['ep_name'];?></td>
+			<td align="center"><a href="?c=hr&a=edit&uid=<?=$row[uid]?>&type=view" target="_blank" title="查看基础信息"><?=$row['name'];?></a></td>
+			<td align="center"><?=$row['role']?></td>
+			<td align="center"><?=$row['qua_type']?></td>
+            <td><?=$row['leader']?></td>
+			<td align="center"><?=$row['audit_ver'];?></td>
+			<td align="center"><?=$row['audit_type'];?></td>
+            <td align="center"><?=$row['audit_code_2017'];?></td>
+            <td align="center"><?=$row['audit_code'];?></td>
+			
+			<td align="center"><?=$row['taskBeginDate'];?></td>
+			<td align="center"><?=$row['taskEndDate'];?></td>
+            <td align="center"><?=$row['dates'];?></td>
+			<td align="center"><?=$row['witness'];?></td>
+			
+			<td align="center"><?=$row['status_V'];?></td>
+		 
+            <td align="center"><?=$row['person'];?></td>
+            <td align="center"><?=$row['person_tel'];?></td>
+            <td align="center"><?=$row['ctfrom_V'];?></td>
+            <td align="center">
+				<a href="?c=qiandao&a=list&userID=<?=$row['uid'];?>&ct_id=<?=$row['ct_id'];?>&tid=<?=$row['tid'];?>"><img src="theme/images/select1.gif" border=0 /></a>
+            </td>
+		</tr>
+<?php
+	}
+} else {
+?>
+		<tr>
+			<td align="center" colspan="14">未找到相关记录</td>
+		</tr>
+<?php
+}
+?>
+		</tbody>
+	</table>
+</form>
+	<p><?=$pages['pages'];?></p>
+
+	</div>
+</div>
+</body>
+</html>

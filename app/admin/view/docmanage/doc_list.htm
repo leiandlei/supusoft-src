@@ -1,0 +1,268 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>文件列表</title>
+    <meta name="generator" content="editplus" />
+    <meta name="author" content="" />
+    <meta name="keywords" content="" />
+    <meta name="description" content="" />
+    <link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+    <link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+    <script type="text/javascript" src="theme/js/jquery.js"></script>
+    <script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+    <script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+    <script type="text/javascript" src="theme/js/common.js"></script>
+    </head>
+
+    <body>
+		<form method="get" action="" class="search-form tal" id="search-form"  style='width:1050px;margin:0 auto;'>
+			<input type="hidden" name="c" value="<?=$c;?>" />
+			<input type="hidden" name="a" value="<?=$a;?>" />
+			<input type="hidden" name="status" value="<?=$status;?>" />
+			<table >
+			    <tr>
+			        <td class="left">文件级别:</td>
+			        <td class='right'>
+			            <select name="seach_type_level" class='fselect is_todo-js' style="width:171px;">
+			            	<option></option>
+	                      	<option value="1" <?php if($type_level==1)echo 'selected';?>>一级</option>
+	                      	<option value="2" <?php if($type_level==2)echo 'selected';?>>手册附件</option>
+	                      	<option value="3" <?php if($type_level==3)echo 'selected';?>>二级</option>
+	                      	<option value="4" <?php if($type_level==4)echo 'selected';?>>三级</option>
+	                  	</select>
+			        </td>
+
+			        <td class="left">文件属性:</td>
+			        <td class='right'>
+			            <select name="seach_type_shuxing" class='fselect is_todo-js' style="width:171px;">
+			            	<option ></option>
+	                      	<option value="1" <?php if($type_shuxing==1)echo 'selected';?>>手册</option>
+	                      	<option value="2" <?php if($type_shuxing==2)echo 'selected';?>>公开文件</option>
+	                      	<option value="3" <?php if($type_shuxing==3)echo 'selected';?>>通用程序</option>
+	                      	<option value="4" <?php if($type_shuxing==4)echo 'selected';?>>机构内部管理程序</option>
+	                      	<option value="5" <?php if($type_shuxing==5)echo 'selected';?>>专业能力管理程序</option>
+	                      	<option value="6" <?php if($type_shuxing==6)echo 'selected';?>>认证业务管理程序</option>
+	                      	<option value="7" <?php if($type_shuxing==7)echo 'selected';?>>其他</option>
+	                 	</select>
+			        </td>
+
+			        <td class="left">文件编号:</td>
+			        <td class='right'>
+			            <input type="text" name="seach_code" value="<?=$ep_name;?>" class="input finput"/>
+			        </td>
+			    </tr>
+
+			    <tr>
+			        <td class="left">文件名称:</td>
+			        <td class='right'>
+			            <input type="text" name="seach_name" value="<?=$ep_name;?>" class="input finput"/>
+			        </td>
+
+			        <td class="left">文件备注:</td>
+			        <td class='right'>
+			            <input type="text" name="seach_note" value="<?=$ep_name;?>" class="input finput"/>
+			        </td>
+			    </tr>
+			</table>
+		  	<p class="button-panel">
+		    	<button class="btn btn-submit" type="submit"> 搜 索 </button>
+		    	&nbsp;
+		    	<button  class="btn btn-button" onclick="clearForm(this.form);" >清空</button>
+			 	</p>
+		</form>
+		<br/>
+
+<div id="toolTipLayer" style="position:absolute; visibility: hidden"></div>
+<div style='width:1350px;margin:0 auto;' class="tal ui-tabs ui-widget ui-widget-content ui-corner-all">
+      <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix ui-widget-header ui-corner-all">
+    <li class="ui-state-default ui-corner-top <?=$status_n_tab;?>">
+    	<a href="javascript:;">
+    		文件列表
+    		<span class="cnt-total">
+      			<?=$total;?>
+      		</span>
+      	</a>
+    </li>
+  </ul>
+      <div class="ui-tabs-panel ui-widget-content ui-corner-bottom">
+    <table class="grid-table tal">
+          <thead>
+            <tr>
+              <th width=""><input type="checkbox" id="all">全选</th>
+              <th width="">文件编号</th>
+              <th width="">文件级别</th>
+              <th width="">文件属性</th>
+              <th width="">文件名称</th>
+              <th width="">文件备注</th>
+              <th width="">创建时间</th>
+              <th width="">修改时间</th>
+              <?php if($_GET['a']=='doc_list_edit'):?>
+              <th width="100px">权重</th>
+              <?PHP endif;?>
+              <th width="">操作</th>
+            </tr>
+      </thead>
+          <tbody>
+        <?php if( $results ):foreach( $results as $row ):
+?>
+        <tr align='center'  data-id="<?=$row['id']?>" style="height:27px">
+            <td width="">
+              <input type="checkbox" name="docmanage" value="<?=$row['id'];?>">
+            </td>
+      			<td style="background-color:<?=$row['color'];?>;"><?=$row['code'];?></td>
+      			<td>
+              	<?php
+              		switch ($row['type_level']) {
+              			case '1':
+              				$type_level = '一级';
+              				break;
+
+              			case '2':
+              				$type_level = '手册附件';
+              				break;
+
+              			case '3':
+              				$type_level = '二级';
+              				break;
+
+              			case '4':
+              				$type_level = '三级';
+              				break;
+              			
+              			default:
+              				$type_level = '其他';
+              				break;
+              		}
+              		echo $type_level;
+              	?>
+            </td>
+            <td>
+                <?php
+                switch ($row['type_shuxing']) {
+                	case '1':
+                        $type_shuxing = '手册';
+                        break;
+
+                	case '2':
+                        $type_shuxing = '公开文件';
+                        break;
+
+                	case '3':
+                        $type_shuxing = '通用程序';
+                        break;
+
+                	case '4':
+                        $type_shuxing = '机构内部管理程序';
+                        break;
+
+                	case '5':
+                        $type_shuxing = '专业能力管理程序';
+                        break;
+
+                	case '6':
+                        $type_shuxing = '认证业务管理程序';
+                        break;
+                	case '7':
+                        $type_shuxing = '其他';
+                        break;
+                  
+                  	default:
+                        $type_shuxing = '其他';
+                        break;
+                }
+                echo $type_shuxing;
+              	?>
+            </td>
+            <td><?=$row['name'];?></td>
+            <td><?=$row['note'];?></td>
+            <td><?=$row['createTime'];?></td>
+            <td><?=$row['modifyTime'];?></td>
+            <?php if( $_GET['a']=='doc_list_edit'):?>
+            <td>
+              <input type="number" name="weight" value="<?=$row['weight'];?>" class="input finput editWeight" style="width:100px;text-align: center;"/>
+            </td>
+            <?PHP endif;?>
+            <td>
+              <?php if( $_GET['a']=='doc_list_edit'):?>
+                <a href="?c=docmanage&a=doc_edit&id=<?=$row['id'];?>"><img src="theme/images/b_edit.png" border=0 /></a>&nbsp;&nbsp;
+                <a href="javascript:0" class="del"><img src="theme/images/b_drop.png" border=0 /></a>&nbsp;&nbsp;
+              <?PHP endif;?>
+                <a href="?c=docmanage&a=down&url=<?=$row['content'];?>&name=<?=$row['name'];?>&code=<?=$row['code'];?>"><img src="theme/images/down.gif"  border=0 /></a>
+            </td>
+        </tr>
+        <?php endforeach;?>
+        <tr>
+          <td colspan="8">
+            <button class="btn btn-submit btn-submit_down" type="button" style="margin-left:5px"> 批量下载 </button>
+          </td>
+        </tr>
+        <?php else:?>
+            <tr>
+              <td align="center" colspan="16">未找到相关记录</td>
+            </tr>
+        <?php endif;?>
+      </tbody>
+        </table>
+    <p>
+          <?=$pages['pages'];?>
+        </p>
+  </div>
+    </div>
+</body>
+<script type="text/javascript">
+	$(function(){
+		$('.del').on('click', function(event) {
+			var id      = $(this).parent().parent().data('id');
+			var data    = {'id':id};
+			var results = ajax(data,'docmanagedel');
+			if(results.errorCode==0){
+				alert('成功');
+				window.location.href="?c=docmanage&a=doc_list&edit=1"; 
+			}else{
+				alert('失败');
+			}
+		});
+
+    $('.editWeight').on('change', function(event) {
+      var id      = $(this).parent().parent().data('id');
+      var data    = {'id':id,'weight':$(this).val()};
+      var results = ajax(data,'docmanageEditWeight');
+      if(results.errorCode==0){
+        window.location.href="?c=docmanage&a=doc_list&edit=1"; 
+      }else{
+        alert('失败');
+      }
+    });
+
+    $(".btn-submit_down").on('click', function(event) {
+      var strId = "";
+      $('input:checkbox[name=docmanage]:checked').each(function(i){
+          strId += $(this).val()+',';
+      })
+
+      window.location.href="?c=docmanage&a=down&downs=1&strId="+strId+'&name=批量下载'; 
+    });
+
+	})
+  $("#all").click(function(){    
+      if(this.checked){    
+          $("input:checkbox").attr("checked", true);   
+      }else{    
+          $("input:checkbox").attr("checked", false); 
+      }    
+  });
+    function clearForm(objE){
+        $(objE).find(':input').each(
+            function(){
+                switch(this.type){
+                    case "text":
+                    case "select-one":
+                    	$(this).val('');
+                        break;
+                }
+            }
+        );
+    }
+    </script>
+</html>

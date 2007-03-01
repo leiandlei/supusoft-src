@@ -1,0 +1,94 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>选择用户</title>
+<link href="theme/css/style.css" type="text/css" rel="stylesheet" />
+<link href="theme/css/jquery-ui.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="theme/js/jquery.js"></script>
+<script type="text/javascript" src="theme/js/jquery-ui.js"></script>
+<script type="text/javascript" src="theme/js/jquery.ui.datepicker-zh-CN.js"></script>
+<style type="text/css">
+body{margin:0;padding:0;}
+</style>
+</head>
+
+<body>
+<form method="get" action="" class="search-form tal" id="search-form"  style='width:592px;margin:0 ;'>
+            <input type="hidden" name="c" value="<?=$c;?>" />
+            <input type="hidden" name="a" value="<?=$a;?>" />
+            <table >
+                <tr>
+                    <td class="left" style="width:30px">姓名:</td>
+                    <td class='right'>
+                        <input type="text" name="seach_name" value="<?=$name;?>" class="input finput"/>
+                    </td>
+                </tr>
+            </table>
+            <br />
+           
+            <tr class="button-panel">
+                <td  align="center">
+                    <button class="btn btn-submit" type="submit"> 搜 索 </button>
+                </td>
+            </tr>
+        </form>
+<div style="margin-right:12px;width:99%;height:26px;">
+	<table class="grid-table">
+		<thead>
+		<tr align="center">
+			<th width="30">选择</th> 
+			<th width="210">编号</th>  
+			<th width="*">姓名</th>  
+		</tr>
+		</thead>
+	</table>
+</div>
+<div style="height:370px;overflow-y:scroll; width:99%;">
+	<table class="grid-table">
+		<tbody>
+<?php
+if( $person ):foreach( $person as $row ):
+
+?>
+		<tr align="center"  data-id="<?=$row['id']?>" data-name="<?=$row['name'];?>">
+			<td width="30">  
+                <a href="javascript:0" class="student_button">
+                    <img src="theme/images/b_edit.png" border=0 />
+                </a>
+            </td>
+			<td width="210"><?=$row['id'];?></td> 
+			<td width="*"><?=$row['name'];?></td> 
+		</tr>
+
+        <?php endforeach;?>
+        <?php else:?>
+            <tr>
+              <td align="center" colspan="16">未找到相关记录</td>
+            </tr>
+        <?php endif;?>
+      </tbody>
+
+        </table>
+        <p>
+          <?=$pages['pages'];?>
+        </p>
+      
+
+</div>
+</body>
+<script type="text/javascript">
+    $(function(){
+        $('.student_button').on('click', function(event) {
+
+            var data = {
+                        'id':$(this).parent().parent().data('id'),
+                        'name':$(this).parent().parent().data('name'),
+                    }
+            console.log(data);
+            window.parent.insertStudent(data);
+        });
+    })
+    </script>
+</html>
